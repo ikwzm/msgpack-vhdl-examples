@@ -1,0 +1,5 @@
+add_0000: op=METHOD_EXIT, src=, dest=, next=0001
+add_0001: op=METHOD_ENTRY, src=, dest=, next=0002 (name=add)
+add_0002: op=ADD, src=add_a_0000:INT, add_b_0001:INT, dest=binary_expr_00002:INT, next=0003
+add_0003: op=RETURN, src=binary_expr_00002:INT, dest=, next=0000
+add_0004: op=JP, src=, dest=, next=0000

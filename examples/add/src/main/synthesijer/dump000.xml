@@ -1,0 +1,31 @@
+<?xml version="1.0" ?>
+<modules>
+<module name="ADD">
+<variables>
+</variables>
+<methods>
+<method name="ADD" unsynthesizableFlag="false" autoFlag="false" synchronizedFlag="false" privateFlag="false" rawFlag="false" combinationFlag="false" parallelFlag="false" noWaitFlag="false" constructorFlag="true">
+<type kind="myself"/>
+<statement type="block">
+<statement type="expr">
+<expr kind="MethodInvocation"><method name="super"></method>
+<params>
+</params>
+</expr></statement>
+</statement>
+</method>
+<method name="add" unsynthesizableFlag="false" autoFlag="false" synchronizedFlag="false" privateFlag="false" rawFlag="false" combinationFlag="false" parallelFlag="false" noWaitFlag="false" constructorFlag="false">
+<type kind="primitive" name="INT"/>
+<statement type="block">
+<statement type="return">
+<expr kind="BinaryExpr" op="PLUS"><lhs>
+<expr kind="Ident" value="a"/></lhs>
+<rhs>
+<expr kind="Ident" value="b"/></rhs>
+</expr>
+</statement>
+</statement>
+</method>
+</methods>
+</module>
+</modules>
