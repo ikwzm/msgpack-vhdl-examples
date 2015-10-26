@@ -3,7 +3,7 @@
 #
 
 set project_directory       [file dirname [info script]]
-set project_name            "msgpack_rpc_server"
+set project_name            "accumulator_server"
 set device_parts            "xc7z010clg400-1"
 #
 # Create project
@@ -78,7 +78,7 @@ add_files -fileset constrs_1 -norecurse ./timing.xdc
 # Set 'sources_1' fileset properties
 #
 set obj [get_filesets sources_1]
-set_property "top" "Add_Server"  $obj
+set_property "top" "Accumulator_Server"  $obj
 #
 # Set 'sim_1' fileset properties
 #
