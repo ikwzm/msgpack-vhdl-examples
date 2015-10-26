@@ -1,0 +1,36 @@
+<?xml version="1.0" ?>
+<modules>
+<module name="Accumulator">
+<variables>
+<var name="reg">
+<type kind="primitive" name="INT"/>
+</var></variables>
+<methods>
+<method name="Accumulator" unsynthesizableFlag="false" autoFlag="false" synchronizedFlag="false" privateFlag="false" rawFlag="false" combinationFlag="false" parallelFlag="false" noWaitFlag="false" constructorFlag="true">
+<type kind="myself"/>
+<statement type="block">
+<statement type="expr">
+<expr kind="MethodInvocation"><method name="super"></method>
+<params>
+</params>
+</expr></statement>
+</statement>
+</method>
+<method name="add" unsynthesizableFlag="false" autoFlag="false" synchronizedFlag="false" privateFlag="false" rawFlag="false" combinationFlag="false" parallelFlag="false" noWaitFlag="false" constructorFlag="false">
+<type kind="primitive" name="INT"/>
+<statement type="block">
+<statement type="expr">
+<expr kind="AssignExpr"><lhs><expr kind="Ident" value="reg"/></lhs><rhs><expr kind="BinaryExpr" op="PLUS"><lhs>
+<expr kind="Ident" value="reg"/></lhs>
+<rhs>
+<expr kind="Ident" value="x"/></rhs>
+</expr>
+</rhs></expr>
+</statement>
+<statement type="return">
+<expr kind="Ident" value="reg"/></statement>
+</statement>
+</method>
+</methods>
+</module>
+</modules>

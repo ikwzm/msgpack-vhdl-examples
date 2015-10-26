@@ -1,0 +1,14 @@
+digraph {
+add_0 [shape = box, label = "add_0000: op=METHOD_EXIT, src=, dest=, next=0001"];
+add_0 -> add_1;
+add_1 [shape = box, label = "add_0001: op=METHOD_ENTRY, src=, dest=, next=0002 (name=add)"];
+add_1 -> add_2;
+add_2 [shape = box, label = "add_0002: op=ADD, src=class_reg_0000:INT, add_x_0001:INT, dest=binary_expr_00002:INT, next=0003"];
+add_2 -> add_3;
+add_3 [shape = box, label = "add_0003: op=ASSIGN, src=binary_expr_00002:INT, dest=class_reg_0000:INT, next=0004"];
+add_3 -> add_4;
+add_4 [shape = box, label = "add_0004: op=RETURN, src=class_reg_0000:INT, dest=, next=0000"];
+add_4 -> add_0;
+add_5 [shape = box, label = "add_0005: op=JP, src=, dest=, next=0000"];
+add_5 -> add_0;
+}

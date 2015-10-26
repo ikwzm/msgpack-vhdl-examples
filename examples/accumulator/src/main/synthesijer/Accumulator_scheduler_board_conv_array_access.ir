@@ -1,0 +1,31 @@
+(MODULE Accumulator
+  (VARIABLES 
+    (VAR INT class_reg_0000 :public true :global_constant false :method_param false :orginal reg :method null :private_method false :volatile false :member true)
+  )
+ (BOARD INT add
+  (VARIABLES 
+    (VAR INT add_x_0001 :public false :global_constant false :method_param true :orginal x :method add :private_method false :volatile false :member false)
+    (VAR INT binary_expr_00002 :public false :global_constant false :method_param false :orginal binary_expr_00002 :method null :private_method false :volatile false :member false)
+  )
+    (SEQUENCER add
+      (SLOT 0
+        (METHOD_EXIT :next (1))
+      )
+      (SLOT 1
+        (METHOD_ENTRY :next (2))
+      )
+      (SLOT 2
+        (SET binary_expr_00002 (ADD class_reg_0000 add_x_0001) :next (3))
+      )
+      (SLOT 3
+        (SET class_reg_0000 (ASSIGN binary_expr_00002) :next (4))
+      )
+      (SLOT 4
+        (RETURN class_reg_0000 :next (0))
+      )
+      (SLOT 5
+        (JP :next (0))
+      )
+    )
+ )
+)
