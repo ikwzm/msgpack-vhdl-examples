@@ -1,7 +1,3 @@
-
-- Global:
-    Print    :  false
-
 - Library:
     Name     :  msgpack
     Archive  :  msgpack.vhd
