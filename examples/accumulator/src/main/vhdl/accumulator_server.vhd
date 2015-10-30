@@ -50,12 +50,12 @@ entity  Accumulator_Server is
     -- Clock and Reset Signals
     -------------------------------------------------------------------------------
         CLK             : in  std_logic; 
-        RST             : in  std_logic;
+        ARESETn         : in  std_logic;
     -------------------------------------------------------------------------------
     -- MessagePack-RPC Byte Data Input Interface
     -------------------------------------------------------------------------------
         I_TDATA         : in  std_logic_vector(8*I_BYTES-1 downto 0);
-        I_TSTRB         : in  std_logic_vector(  I_BYTES-1 downto 0);
+        I_TKEEP         : in  std_logic_vector(  I_BYTES-1 downto 0);
         I_TLAST         : in  std_logic := '0';
         I_TVALID        : in  std_logic;
         I_TREADY        : out std_logic;
@@ -63,7 +63,7 @@ entity  Accumulator_Server is
     -- MessagePack-RPC Byte Data Output Interface
     -------------------------------------------------------------------------------
         O_TDATA         : out std_logic_vector(8*O_BYTES-1 downto 0);
-        O_TSTRB         : out std_logic_vector(  O_BYTES-1 downto 0);
+        O_TKEEP         : out std_logic_vector(  O_BYTES-1 downto 0);
         O_TLAST         : out std_logic;
         O_TVALID        : out std_logic;
         O_TREADY        : in  std_logic
@@ -84,6 +84,7 @@ architecture RTL of Accumulator_Server is
     -------------------------------------------------------------------------------
     constant PROC_NUM       :  integer :=  3;
     constant MATCH_PHASE    :  integer :=  8;
+    signal   reset          :  std_logic;
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
@@ -231,6 +232,7 @@ architecture RTL of Accumulator_Server is
         );
     end component;
 begin
+    reset <= '1' when (ARESETn = '0') else '0';
     -------------------------------------------------------------------------------
     -- 
     -------------------------------------------------------------------------------
@@ -243,15 +245,15 @@ begin
         )                                        -- 
         port map (                               -- 
             CLK             => CLK             , -- In  :
-            RST             => RST             , -- In  :
+            RST             => reset           , -- In  :
             CLR             => '0'             , -- In  :
             I_DATA          => I_TDATA         , -- In  :
-            I_STRB          => I_TSTRB         , -- In  :
+            I_STRB          => I_TKEEP         , -- In  :
             I_LAST          => I_TLAST         , -- In  :
             I_VALID         => I_TVALID        , -- In  :
             I_READY         => I_TREADY        , -- Out :
             O_DATA          => O_TDATA         , -- Out :
-            O_STRB          => O_TSTRB         , -- Out :
+            O_STRB          => O_TKEEP         , -- Out :
             O_LAST          => O_TLAST         , -- Out :
             O_VALID         => O_TVALID        , -- Out :
             O_READY         => O_TREADY        , -- In  :
@@ -283,7 +285,7 @@ begin
         )                                            -- 
         port map (                                   -- 
             CLK             => CLK                 , -- In  :
-            RST             => RST                 , -- In  :
+            RST             => reset               , -- In  :
             CLR             => '0'                 , -- In  :
             MATCH_REQ       => match_req           , -- In  :
             MATCH_CODE      => match_code          , -- In  :
@@ -317,7 +319,7 @@ begin
         )                                            -- 
         port map (                                   -- 
             CLK             => CLK                 , -- In  :
-            RST             => RST                 , -- In  :
+            RST             => reset               , -- In  :
             CLR             => '0'                 , -- In  :
             MATCH_REQ       => match_req           , -- In  :
             MATCH_CODE      => match_code          , -- In  :
@@ -349,7 +351,7 @@ begin
         )                                            -- 
         port map (                                   -- 
             CLK             => CLK                 , -- In  :
-            RST             => RST                 , -- In  :
+            RST             => reset               , -- In  :
             CLR             => '0'                 , -- In  :
             MATCH_REQ       => match_req           , -- In  :
             MATCH_CODE      => match_code          , -- In  :
@@ -376,7 +378,7 @@ begin
     ACC: Accumulator                                 -- 
         port map (                                   -- 
             clk             => CLK                 , -- In  :
-            reset           => RST                 , -- In  :
+            reset           => reset               , -- In  :
             reg_in          => reg_in              , -- In  :
             reg_we          => reg_we              , -- In  :
             reg_out         => reg_out             , -- Out :

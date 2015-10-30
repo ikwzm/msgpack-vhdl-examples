@@ -96,6 +96,7 @@ architecture MODEL of TEST_BENCH is
     -------------------------------------------------------------------------------
     signal   I_TDATA         : std_logic_vector(I_WIDTH.DATA   -1 downto 0);
     signal   I_TSTRB         : std_logic_vector(I_WIDTH.DATA/8 -1 downto 0);
+    signal   I_TKEEP         : std_logic_vector(I_WIDTH.DATA/8 -1 downto 0);
     signal   I_TLAST         : std_logic;
     signal   I_TVALID        : std_logic;
     signal   I_TREADY        : std_logic;
@@ -104,7 +105,7 @@ architecture MODEL of TEST_BENCH is
     -------------------------------------------------------------------------------
     signal   O_TDATA         : std_logic_vector(O_WIDTH.DATA   -1 downto 0);
     signal   O_TSTRB         : std_logic_vector(O_WIDTH.DATA/8 -1 downto 0);
-    constant O_TKEEP         : std_logic_vector(O_WIDTH.DATA/8 -1 downto 0) := (others => '1');
+    signal   O_TKEEP         : std_logic_vector(O_WIDTH.DATA/8 -1 downto 0) := (others => '1');
     signal   O_TUSER         : std_logic_vector(O_WIDTH.USER   -1 downto 0) := (others => '0');
     constant O_TDEST         : std_logic_vector(O_WIDTH.DEST   -1 downto 0) := (others => '0');
     constant O_TID           : std_logic_vector(O_WIDTH.ID     -1 downto 0) := (others => '0');
@@ -137,14 +138,14 @@ architecture MODEL of TEST_BENCH is
         );
         port (
             CLK             : in  std_logic; 
-            RST             : in  std_logic;
+            ARESETn         : in  std_logic;
             I_TDATA         : in  std_logic_vector(8*I_BYTES-1 downto 0);
-            I_TSTRB         : in  std_logic_vector(  I_BYTES-1 downto 0);
+            I_TKEEP         : in  std_logic_vector(  I_BYTES-1 downto 0);
             I_TLAST         : in  std_logic := '0';
             I_TVALID        : in  std_logic;
             I_TREADY        : out std_logic;
             O_TDATA         : out std_logic_vector(8*O_BYTES-1 downto 0);
-            O_TSTRB         : out std_logic_vector(  O_BYTES-1 downto 0);
+            O_TKEEP         : out std_logic_vector(  O_BYTES-1 downto 0);
             O_TLAST         : out std_logic;
             O_TVALID        : out std_logic;
             O_TREADY        : in  std_logic
@@ -189,8 +190,8 @@ begin
             ACLK            => CLOCK           , -- In  :
             ARESETn         => ARESETn         , -- In  :
             TDATA           => I_TDATA         , -- Out :
-            TSTRB           => I_TSTRB         , -- Out :
-            TKEEP           => open            , -- Out :
+            TSTRB           => open            , -- Out :
+            TKEEP           => I_TKEEP         , -- Out :
             TUSER           => open            , -- Out :
             TDEST           => open            , -- Out :
             TID             => open            , -- Out :
@@ -222,7 +223,7 @@ begin
             ACLK            => CLOCK           , -- In  :
             ARESETn         => ARESETn         , -- In  :
             TDATA           => O_TDATA         , -- In  :
-            TSTRB           => O_TSTRB         , -- In  :
+            TSTRB           => O_TKEEP         , -- In  :
             TKEEP           => O_TKEEP         , -- In  :
             TUSER           => O_TUSER         , -- In  :
             TDEST           => O_TDEST         , -- In  :
@@ -246,14 +247,14 @@ begin
         )                                        -- 
         port map (                               -- 
             CLK             => CLOCK           , -- In  :
-            RST             => RESET           , -- In  :
+            ARESETn         => ARESETn         , -- In  :
             I_TDATA         => I_TDATA         , -- In  :
-            I_TSTRB         => I_TSTRB         , -- In  :
+            I_TKEEP         => I_TKEEP         , -- In  :
             I_TLAST         => I_TLAST         , -- In  :
             I_TVALID        => I_TVALID        , -- In  :
             I_TREADY        => I_TREADY        , -- Out :
             O_TDATA         => O_TDATA         , -- Out :
-            O_TSTRB         => O_TSTRB         , -- Out :
+            O_TKEEP         => O_TKEEP         , -- Out :
             O_TLAST         => O_TLAST         , -- Out :
             O_TVALID        => O_TVALID        , -- Out :
             O_TREADY        => O_TREADY          -- In  :
