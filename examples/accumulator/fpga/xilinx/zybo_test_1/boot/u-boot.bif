@@ -1,0 +1,6 @@
+the_ROM_image:
+{
+	[bootloader]../project/project.sdk/fsbl/Debug/fsbl.elf
+	../project/project.runs/impl_1/design_1_wrapper.bit
+	.\u-boot.elf
+}
