@@ -7,3 +7,9 @@
 [submodule "msgpack-vhdl"]
 	path = msgpack-vhdl
 	url = git://github.com/ikwzm/msgpack-vhdl
+[submodule "LED_AXI"]
+	path = LED_AXI
+	url = git://github.com/ikwzm/LED_AXI.git
+[submodule "PTTY_AXI"]
+	path = PTTY_AXI
+	url = git://github.com/ikwzm/PTTY_AXI.git
