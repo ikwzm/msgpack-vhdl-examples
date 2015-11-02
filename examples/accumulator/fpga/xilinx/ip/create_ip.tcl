@@ -4,7 +4,7 @@
 set ip_name                 "accumulator_server"
 set ip_vendor_name          "ikwzm"
 set ip_library_name         "msgpack"
-set ip_root_directory       [file join [file dirname [info script]] "ip" $ip_name]
+set ip_root_directory       [file join [file dirname [info script]] $ip_name]
 set project_name            "accumulator_server"
 set project_directory       [file join [file dirname [info script]] "work"]
 set device_parts            "xc7z010clg400-1"
