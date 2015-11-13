@@ -6,7 +6,7 @@
     Name     :  msgpack
     Format   :  "#{File.basename(file_name,\".vhd\")}.o : #{file_name} #{@use_list.map{|u|File.basename(u.file_name,\".vhd\")+\".o\"}.join(\" \")}\n\tghdl -a -C $(GHDLFLAGS) --work=#{library_name} #{file_name}\n\n"
     PathList :  
-      - "../../../../msgpack-vhdl/src/msgpack/"
-      - "../../src/main/vhdl/"
-      - "../../src/test/vhdl/"
+      - "../../../../../msgpack-vhdl/src/msgpack/"
+      - "../../../src/main/vhdl/"
+      - "../../../src/test/vhdl/"
     Top      :  ["TEST_BENCH"]

@@ -6,11 +6,11 @@
     Name     :  msgpack
     Format   :  "add_vhdl_file sources_1 #{library_name} #{file_name}"
     PathList :  
-        - "../../../../msgpack-vhdl/src/msgpack/"
+        - "../../../../../msgpack-vhdl/src/msgpack/"
 
 - Library:
     Name     :  work
     Format   :  "add_vhdl_file sources_1 #{library_name} #{file_name}"
     PathList :  
-        - "../../src/main/vhdl/"
+        - "../../../src/main/vhdl/"
     Top      :  ["Fibonacci_Server"]

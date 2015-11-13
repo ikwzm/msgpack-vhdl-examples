@@ -84,10 +84,10 @@ set_property "top" "Fibonacci_Server"  $obj
 #
 set obj [get_filesets sim_1]
 set_property "top" "TEST_BENCH"  $obj
-set_property "generic" "SCENARIO_FILE=../../../../../src/test/scenarios/test_1.snr" $obj
+set_property "generic" "SCENARIO_FILE=../../../../../../src/test/scenarios/test_1.snr" $obj
 
 update_compile_order -fileset sources_1
 update_compile_order -fileset sim_1
 set_property source_mgmt_mode DisplayOnly [current_project]
-reorder_files -fileset sources_1 -front [file normalize ../../../../msgpack-vhdl/src/msgpack/object/msgpack_object.vhd]
-reorder_files -fileset sources_1 -after [file normalize ../../../../msgpack-vhdl/src/msgpack/object/msgpack_object.vhd] [file normalize ../../../../msgpack-vhdl/src/msgpack/rpc/msgpack_rpc.vhd] 
+reorder_files -fileset sources_1 -front [file normalize ../../../../../msgpack-vhdl/src/msgpack/object/msgpack_object.vhd]
+reorder_files -fileset sources_1 -after [file normalize ../../../../../msgpack-vhdl/src/msgpack/object/msgpack_object.vhd] [file normalize ../../../../../msgpack-vhdl/src/msgpack/rpc/msgpack_rpc.vhd] 
