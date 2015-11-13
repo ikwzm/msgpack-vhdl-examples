@@ -1,0 +1,76 @@
+(MODULE Fib
+  (VARIABLES 
+  )
+ (BOARD LONG fib
+  (VARIABLES 
+    (VAR INT fib_n_0000 :public false :global_constant false :method_param true :orginal n :method fib :private_method false :volatile false :member false)
+    (CONSTANT INT constant_00002 0)
+    (VAR LONG fib_cur_0001 :public false :global_constant false :method_param false :orginal cur :method fib :private_method false :volatile false :member false :init (REF CONSTANT constant_00004))
+    (CONSTANT INT constant_00003 0)
+    (CONSTANT LONG constant_00004 0)
+    (CONSTANT INT constant_00006 1)
+    (VAR LONG fib_next_0005 :public false :global_constant false :method_param false :orginal next :method fib :private_method false :volatile false :member false :init (REF CONSTANT constant_00008))
+    (CONSTANT INT constant_00007 1)
+    (CONSTANT LONG constant_00008 1)
+    (CONSTANT INT constant_00010 0)
+    (VAR INT fib_i_0009 :public false :global_constant false :method_param false :orginal i :method fib :private_method false :volatile false :member false :init (REF CONSTANT constant_00011))
+    (CONSTANT INT constant_00011 0)
+    (VAR BOOLEAN binary_expr_00012 :public false :global_constant false :method_param false :orginal binary_expr_00012 :method null :private_method false :volatile false :member false)
+    (CONSTANT INT constant_00013 1)
+    (CONSTANT INT constant_00014 0)
+    (VAR INT unary_expr_00015 :public false :global_constant false :method_param false :orginal unary_expr_00015 :method null :private_method false :volatile false :member false)
+    (VAR LONG fib_tmp_0016 :public false :global_constant false :method_param false :orginal tmp :method fib :private_method false :volatile false :member false :init (REF VAR fib_cur_0001))
+    (VAR LONG binary_expr_00017 :public false :global_constant false :method_param false :orginal binary_expr_00017 :method null :private_method false :volatile false :member false)
+  )
+    (SEQUENCER fib
+      (SLOT 0
+        (METHOD_EXIT :next (1))
+      )
+      (SLOT 1
+        (METHOD_ENTRY :next (2))
+      )
+      (SLOT 2
+        (SET fib_cur_0001 (ASSIGN constant_00004) :next (5))
+        (SET fib_next_0005 (ASSIGN constant_00008) :next (5))
+        (SET fib_i_0009 (ASSIGN constant_00011) :next (5))
+      )
+      (SLOT 5
+        (SET binary_expr_00012 (LT fib_i_0009 fib_n_0000) :next (6))
+      )
+      (SLOT 6
+        (JT binary_expr_00012 :next (11 7))
+      )
+      (SLOT 7
+        (JP :next (16))
+      )
+      (SLOT 8
+        (SET unary_expr_00015 (ADD fib_i_0009 constant_00013) :next (9))
+      )
+      (SLOT 9
+        (SET fib_i_0009 (ASSIGN unary_expr_00015) :next (10))
+      )
+      (SLOT 10
+        (JP :next (5))
+      )
+      (SLOT 11
+        (SET fib_tmp_0016 (ASSIGN fib_cur_0001) :next (12))
+      )
+      (SLOT 12
+        (SET fib_cur_0001 (ASSIGN fib_next_0005) :next (14))
+        (SET binary_expr_00017 (ADD fib_next_0005 fib_tmp_0016) :next (14))
+      )
+      (SLOT 14
+        (SET fib_next_0005 (ASSIGN binary_expr_00017) :next (15))
+      )
+      (SLOT 15
+        (JP :next (8))
+      )
+      (SLOT 16
+        (RETURN fib_cur_0001 :next (0))
+      )
+      (SLOT 17
+        (JP :next (0))
+      )
+    )
+ )
+)

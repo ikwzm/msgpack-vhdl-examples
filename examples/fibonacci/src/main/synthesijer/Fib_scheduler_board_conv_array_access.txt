@@ -1,0 +1,38 @@
+Variables:
+fib_n_0000:INT, public=false, globalConstant=false, methodParam=true, origName=n, methodName=fib, privateMethod=false, volatile=false, chaining=false
+constant_00002:INT, value = 0
+fib_cur_0001:LONG, public=false, globalConstant=false, methodParam=false, origName=cur, methodName=fib, privateMethod=false, volatile=false, chaining=false, init=0:LONG(constant_00004)
+constant_00003:INT, value = 0
+constant_00004:LONG, value = 0
+constant_00006:INT, value = 1
+fib_next_0005:LONG, public=false, globalConstant=false, methodParam=false, origName=next, methodName=fib, privateMethod=false, volatile=false, chaining=false, init=1:LONG(constant_00008)
+constant_00007:INT, value = 1
+constant_00008:LONG, value = 1
+constant_00010:INT, value = 0
+fib_i_0009:INT, public=false, globalConstant=false, methodParam=false, origName=i, methodName=fib, privateMethod=false, volatile=false, chaining=false, init=0:INT(constant_00011)
+constant_00011:INT, value = 0
+binary_expr_00012:BOOLEAN, public=false, globalConstant=false, methodParam=false, origName=binary_expr_00012, methodName=null, privateMethod=false, volatile=false, chaining=false
+constant_00013:INT, value = 1
+constant_00014:INT, value = 0
+unary_expr_00015:INT, public=false, globalConstant=false, methodParam=false, origName=unary_expr_00015, methodName=null, privateMethod=false, volatile=false, chaining=false
+fib_tmp_0016:LONG, public=false, globalConstant=false, methodParam=false, origName=tmp, methodName=fib, privateMethod=false, volatile=false, chaining=false, init=fib_cur_0001:LONG
+binary_expr_00017:LONG, public=false, globalConstant=false, methodParam=false, origName=binary_expr_00017, methodName=null, privateMethod=false, volatile=false, chaining=false
+
+fib_0000: op=METHOD_EXIT, src=, dest=, next=0001
+fib_0001: op=METHOD_ENTRY, src=, dest=, next=0002 (name=fib)
+fib_0002: op=ASSIGN, src=0:LONG(constant_00004), dest=fib_cur_0001:LONG, next=0003
+fib_0003: op=ASSIGN, src=1:LONG(constant_00008), dest=fib_next_0005:LONG, next=0004
+fib_0004: op=ASSIGN, src=0:INT(constant_00011), dest=fib_i_0009:INT, next=0005
+fib_0005: op=LT, src=fib_i_0009:INT, fib_n_0000:INT, dest=binary_expr_00012:BOOLEAN, next=0006
+fib_0006: op=JT, src=binary_expr_00012:BOOLEAN, dest=, next=0011, 0007
+fib_0007: op=JP, src=, dest=, next=0016
+fib_0008: op=ADD, src=fib_i_0009:INT, 1:INT(constant_00013), dest=unary_expr_00015:INT, next=0009
+fib_0009: op=ASSIGN, src=unary_expr_00015:INT, dest=fib_i_0009:INT, next=0010
+fib_0010: op=JP, src=, dest=, next=0005
+fib_0011: op=ASSIGN, src=fib_cur_0001:LONG, dest=fib_tmp_0016:LONG, next=0012
+fib_0012: op=ASSIGN, src=fib_next_0005:LONG, dest=fib_cur_0001:LONG, next=0013
+fib_0013: op=ADD, src=fib_next_0005:LONG, fib_tmp_0016:LONG, dest=binary_expr_00017:LONG, next=0014
+fib_0014: op=ASSIGN, src=binary_expr_00017:LONG, dest=fib_next_0005:LONG, next=0015
+fib_0015: op=JP, src=, dest=, next=0008
+fib_0016: op=RETURN, src=fib_cur_0001:LONG, dest=, next=0000
+fib_0017: op=JP, src=, dest=, next=0000
