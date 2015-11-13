@@ -1,0 +1,14 @@
+
+- Global:
+    Print    :  true
+
+- Library:
+    Name     :  msgpack
+    Format   :  "#{File.basename(file_name,\".vhd\")}.o : #{file_name} #{@use_list.map{|u|File.basename(u.file_name,\".vhd\")+\".o\"}.join(\" \")}\n\tghdl -a -C $(GHDLFLAGS) --work=#{library_name} #{file_name}\n\n"
+    PathList :  
+      - "../../../../../msgpack-vhdl/src/msgpack/"
+      - "../../../src/main/synthesijer/Fib.vhd"
+      - "../../../src/main/synthesijer/fib_interface.vhd"
+      - "../../../src/main/synthesijer/fibonacci_server.vhd"
+      - "../../../src/test/vhdl/"
+    Top      :  ["TEST_BENCH"]

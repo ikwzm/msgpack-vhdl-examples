@@ -74,6 +74,7 @@ end  Fibonacci_Server;
 -----------------------------------------------------------------------------------
 library ieee;
 use     ieee.std_logic_1164.all;
+use     ieee.numeric_std.all;
 library MsgPack;
 use     MsgPack.MsgPack_Object;
 use     MsgPack.MsgPack_RPC;
@@ -108,7 +109,8 @@ architecture RTL of Fibonacci_Server is
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
-    signal   fib_n          :  std_logic_vector( 7 downto 0);
+    signal   fib_arg        :  std_logic_vector( 7 downto 0);
+    signal   fib_n          :  signed(31 downto 0);
     signal   fib_return     :  signed(63 downto 0);
     signal   fib_go         :  std_logic;
     signal   fib_busy       :  std_logic;
@@ -233,20 +235,21 @@ begin
             PROC_RES_VALID  => proc_res_valid(0)   , -- Out :
             PROC_RES_LAST   => proc_res_last (0)   , -- Out :
             PROC_RES_READY  => proc_res_ready(0)   , -- In  :
-            fib_n           => fib_n               , -- Out :
+            fib_n           => fib_arg             , -- Out :
             fib_o           => std_logic_vector(fib_return) , -- In  :
             fib_busy        => fib_busy            , -- In  :
             fib_go          => fib_go                -- Out :
-        );                                           -- 
+        );                                           --
+    fib_n <= resize(signed(fib_arg),32);
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
     U_FIB:  Fib                                      -- 
         port map (                                   -- 
-            clock           => CLK                 , -- In  :
+            clk             => CLK                 , -- In  :
             reset           => reset               , -- In  :
             fib_req         => fib_go              , -- In  :
-            fib_n           => resize(signed(fib_n),32)  , -- In  :
+            fib_n           => fib_n               , -- In  :
             fib_busy        => fib_busy            , -- Out :
             fib_return      => fib_return            -- Out :
         );                                           --
