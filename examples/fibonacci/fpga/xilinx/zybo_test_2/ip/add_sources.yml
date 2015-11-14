@@ -1,0 +1,15 @@
+- Library:
+    Name     :  msgpack
+    Archive  :  msgpack.vhd
+    PathList :  
+        - "../../../../../../msgpack-vhdl/src/msgpack/"
+
+- Library:
+    Name     :  work
+    Print    :  true
+    Format   :  "add_vhdl_file sources_1 #{library_name} #{file_name}"
+    PathList :  
+      - "../../../../src/main/synthesijer/Fib.vhd"
+      - "../../../../src/main/synthesijer/fib_interface.vhd"
+      - "../../../../src/main/synthesijer/fibonacci_server.vhd"
+    Top      :  ["Fibonacci_Server"]
