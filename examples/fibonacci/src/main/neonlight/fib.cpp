@@ -9,45 +9,56 @@ public:
   int state;
   uint64_t r1_main;
   uint64_t r3_main;
-  uint64_t reg_t3;
-  uint64_t reg_t6;
-  uint64_t reg_t7_v2;
-  uint64_t reg_t8_v3;
-  uint64_t reg_t9_v5;
-  uint64_t reg_t9_v6;
-  uint64_t reg_t7_v7;
-  uint64_t reg_t8_v8;
-  uint64_t reg_t9_v9;
-  uint64_t reg_t16;
-  void s_0();
-  void s_91();
+  uint64_t reg_t2;
+  uint64_t reg_t9;
+  uint64_t reg_t5_v3;
+  uint64_t reg_t7_v5;
+  uint64_t reg_t5_v6;
+  uint64_t reg_t6_v8;
+  uint64_t reg_t6_v9;
+  uint64_t reg_t7_v10;
+  uint64_t reg_t7_v11;
+  uint64_t r4_main_v17;
+  uint64_t reg_t14;
+  void s_3();
+  void s_93();
+  void s_6();
   void s_15();
-  void s_66();
+  void s_65();
+  void s_69();
   void s_72();
   void s_77();
   void s_82();
   void s_88();
+  void s_89();
+  void s_91();
   void reset();
   void PostState();
   bool Dispatch();
   void DumpState();
 };
 
-void Mod_main::s_0() {
-  uint64_t wire_t17;
-  wire_t17 =!0UL;
-  reg_t6 = wire_t17;
+void Mod_main::s_3() {
   if (true) {
-    state = 91;
+    state = 93;
   }
 }
 
-void Mod_main::s_91() {
-  reg_t8_v3 = SRAMRead(0UL, NULL);
+void Mod_main::s_93() {
+  r4_main_v17 = SRAMRead(0UL, NULL);
   if (true) {
-    if (reg_t6) state = 66;
+    state = 6;
+  }
+}
+
+void Mod_main::s_6() {
+  uint64_t wire_t16;
+  wire_t16 = 1UL > r4_main_v17;
+  reg_t2 = wire_t16;
+  if (true) {
+    if (wire_t16) state = 65;
     else
-    state = 66;
+    state = 65;
   }
 }
 
@@ -58,42 +69,50 @@ void Mod_main::s_15() {
   finish_ = true;
 }
 
-void Mod_main::s_66() {
-  uint64_t wire_t18;
-  wire_t18 = 0UL == 1UL;
-  reg_t6 = wire_t18;
+void Mod_main::s_65() {
+  uint64_t wire_t17;
+  wire_t17 = r4_main_v17 == 1UL;
+  reg_t14 = wire_t17;
   if (true) {
-    if (wire_t18) state = 72;
+    if (wire_t17) state = 69;
     else
     state = 72;
   }
 }
 
+void Mod_main::s_69() {
+  r1_main = 1UL;
+  reg_t9 = 0UL;
+  if (true) {
+    state = 89;
+  }
+}
+
 void Mod_main::s_72() {
-  r1_main = 0UL;
-  reg_t6 = 0UL;
-  reg_t8_v3 = 1UL;
-  reg_t9_v5 = 1UL;
-  reg_t3 = 0UL;
-  reg_t16 = 0UL;
+  r3_main = 0UL;
+  reg_t2 = 1UL;
+  reg_t6_v9 = 1UL;
+  reg_t14 = 1UL;
+  reg_t7_v11 = 1UL;
+  reg_t9 = 1UL;
   if (true) {
     state = 77;
   }
 }
 
 void Mod_main::s_77() {
-  uint64_t wire_t22;
-  uint64_t wire_t19;
   uint64_t wire_t21;
+  uint64_t wire_t19;
+  uint64_t wire_t22;
   uint64_t wire_t20;
-  wire_t19 = reg_t6 ? reg_t7_v2 : r1_main;
-  wire_t20 = reg_t3 ? r3_main : reg_t8_v3;
-  wire_t21 = reg_t16 ? reg_t9_v6 : reg_t9_v5;
-  wire_t22 = 0UL > wire_t21;
-  reg_t7_v7 = wire_t19;
-  reg_t8_v8 = wire_t20;
-  reg_t9_v9 = wire_t21;
-  reg_t3 = wire_t22;
+  wire_t19 = reg_t2 ? r3_main : reg_t5_v6;
+  wire_t20 = reg_t14 ? reg_t6_v9 : reg_t6_v8;
+  wire_t21 = reg_t9 ? reg_t7_v11 : reg_t7_v10;
+  wire_t22 = r4_main_v17 > wire_t21;
+  reg_t5_v3 = wire_t19;
+  r1_main = wire_t20;
+  reg_t7_v5 = wire_t21;
+  reg_t2 = wire_t22;
   if (true) {
     if (wire_t22) state = 82;
     else
@@ -102,31 +121,48 @@ void Mod_main::s_77() {
 }
 
 void Mod_main::s_82() {
-  uint64_t wire_t24;
   uint64_t wire_t23;
-  wire_t23 = reg_t7_v7 + reg_t8_v8;
+  uint64_t wire_t24;
+  wire_t23 = reg_t5_v3 + r1_main;
+  reg_t6_v8 = wire_t23;
+  reg_t14 = 0UL;
+  reg_t5_v6 = wire_t23;
+  wire_t24 = reg_t7_v5 + 1UL;
+  reg_t9 = 0UL;
+  reg_t2 = 0UL;
   r3_main = wire_t23;
-  reg_t3 = 1UL;
-  reg_t7_v2 = wire_t23;
-  wire_t24 = reg_t9_v9 + 1UL;
-  reg_t16 = 1UL;
-  reg_t6 = 1UL;
-  r1_main = wire_t23;
-  reg_t9_v6 = wire_t24;
+  reg_t7_v10 = wire_t24;
   if (true) {
     state = 77;
   }
 }
 
 void Mod_main::s_88() {
-  SRAMWrite(1UL, reg_t8_v8, NULL);
+  r3_main = r1_main;
+  reg_t9 = 1UL;
+  if (true) {
+    state = 89;
+  }
+}
+
+void Mod_main::s_89() {
+  uint64_t wire_t18;
+  wire_t18 = reg_t9 ? r3_main : r1_main;
+  reg_t6_v8 = wire_t18;
+  if (true) {
+    state = 91;
+  }
+}
+
+void Mod_main::s_91() {
+  SRAMWrite(1UL, reg_t6_v8, NULL);
   if (true) {
     state = 15;
   }
 }
 
 void Mod_main::reset() {
-  state = 0;
+  state = 3;
   finish_ = false;
 }
 
@@ -136,17 +172,23 @@ void Mod_main::PostState() {
 
 bool Mod_main::Dispatch() {
   switch (state) {
-    case 0:
-      s_0();
+    case 3:
+      s_3();
       break;
-    case 91:
-      s_91();
+    case 93:
+      s_93();
+      break;
+    case 6:
+      s_6();
       break;
     case 15:
       s_15();
       break;
-    case 66:
-      s_66();
+    case 65:
+      s_65();
+      break;
+    case 69:
+      s_69();
       break;
     case 72:
       s_72();
@@ -159,6 +201,12 @@ bool Mod_main::Dispatch() {
       break;
     case 88:
       s_88();
+      break;
+    case 89:
+      s_89();
+      break;
+    case 91:
+      s_91();
       break;
     case kIdleState:
       break;

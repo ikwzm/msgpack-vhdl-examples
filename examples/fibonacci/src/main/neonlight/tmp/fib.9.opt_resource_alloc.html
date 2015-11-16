@@ -9,147 +9,176 @@
 <br>pre_wire_insn<hr>
 Summary:<br>Basic blocks<br>
 * id -> next | reachable<br>
-0-> 2| 1 2 3 4 5 6<br>
+0-> 2| 1 2 3 4 5 6 7 8<br>
 1-> 1| 1<br>
-2-> 6| 1 3 4 5 6<br>
-3-> 1| 1<br>
-4-> 3 5| 1 3 4 5<br>
-5-> 4| 1 3 4 5<br>
-6-> 4| 1 3 4 5<br>
+2-> 3 8| 1 3 4 5 6 7 8<br>
+3-> 5| 1 5<br>
+4-> 5| 1 5<br>
+5-> 1| 1<br>
+6-> 4 7| 1 4 5 6 7<br>
+7-> 6| 1 4 5 6 7<br>
+8-> 6| 1 4 5 6 7<br>
 <br>
 Data flow analysys<br>
 Defs<br>
-bb0<br>-&gt var:reg_t6 (insn85 st0 bb0)<br>-&gt var:reg_t8_v3 (insn152 st91 bb0)<br>
+bb0<br>-&gt var:reg_t2 (insn82 st6 bb0)<br>-&gt var:r4_main_v17 (insn159 st93 bb0)<br>
 bb1<br>
-bb2<br>-&gt var:reg_t6 (insn96 st66 bb2)<br>
-bb3<br>
-bb4<br>-&gt var:reg_t3 (insn115 st90 bb4)<br>-&gt var:reg_t7_v7 (insn144 st77 bb4)<br>-&gt var:reg_t8_v8 (insn147 st77 bb4)<br>-&gt var:reg_t9_v9 (insn150 st77 bb4)<br>
-bb5<br>-&gt var:r1_main (insn120 st82 bb5)<br>-&gt var:r3_main (insn122 st83 bb5)<br>-&gt var:reg_t7_v2 (insn124 st83 bb5)<br>-&gt var:reg_t9_v6 (insn126 st83 bb5)<br>-&gt var:reg_t6 (insn143 st84 bb5)<br>-&gt var:reg_t3 (insn146 st83 bb5)<br>-&gt var:reg_t16 (insn149 st83 bb5)<br>
-bb6<br>-&gt var:r1_main (insn104 st72 bb6)<br>-&gt var:reg_t8_v3 (insn107 st72 bb6)<br>-&gt var:reg_t9_v5 (insn110 st72 bb6)<br>-&gt var:reg_t6 (insn142 st72 bb6)<br>-&gt var:reg_t3 (insn145 st74 bb6)<br>-&gt var:reg_t16 (insn148 st74 bb6)<br>
+bb2<br>-&gt var:reg_t14 (insn93 st65 bb2)<br>
+bb3<br>-&gt var:r1_main (insn98 st69 bb3)<br>-&gt var:reg_t9 (insn146 st69 bb3)<br>
+bb4<br>-&gt var:r3_main (insn128 st88 bb4)<br>-&gt var:reg_t9 (insn147 st88 bb4)<br>
+bb5<br>-&gt var:reg_t6_v8 (insn148 st89 bb5)<br>
+bb6<br>-&gt var:reg_t2 (insn113 st92 bb6)<br>-&gt var:reg_t5_v3 (insn151 st77 bb6)<br>-&gt var:r1_main (insn154 st77 bb6)<br>-&gt var:reg_t7_v5 (insn157 st77 bb6)<br>
+bb7<br>-&gt var:r3_main (insn118 st82 bb7)<br>-&gt var:reg_t6_v8 (insn120 st83 bb7)<br>-&gt var:reg_t5_v6 (insn122 st83 bb7)<br>-&gt var:reg_t7_v10 (insn124 st83 bb7)<br>-&gt var:reg_t2 (insn149 st84 bb7)<br>-&gt var:reg_t14 (insn152 st83 bb7)<br>-&gt var:reg_t9 (insn155 st83 bb7)<br>
+bb8<br>-&gt var:r3_main (insn102 st72 bb8)<br>-&gt var:reg_t6_v9 (insn105 st74 bb8)<br>-&gt var:reg_t7_v11 (insn108 st74 bb8)<br>-&gt var:reg_t2 (insn150 st72 bb8)<br>-&gt var:reg_t14 (insn153 st74 bb8)<br>-&gt var:reg_t9 (insn156 st76 bb8)<br>
 
-Kills<br>bb0<br>-&gt var:reg_t6 (insn96 st66 bb2)<br>-&gt var:reg_t6 (insn143 st84 bb5)<br>-&gt var:reg_t6 (insn142 st72 bb6)<br>-&gt var:reg_t8_v3 (insn107 st72 bb6)<br>bb1<br>bb2<br>-&gt var:reg_t6 (insn85 st0 bb0)<br>-&gt var:reg_t6 (insn143 st84 bb5)<br>-&gt var:reg_t6 (insn142 st72 bb6)<br>bb3<br>bb4<br>-&gt var:reg_t3 (insn146 st83 bb5)<br>-&gt var:reg_t3 (insn145 st74 bb6)<br>bb5<br>-&gt var:reg_t6 (insn85 st0 bb0)<br>-&gt var:reg_t6 (insn96 st66 bb2)<br>-&gt var:reg_t3 (insn115 st90 bb4)<br>-&gt var:r1_main (insn104 st72 bb6)<br>-&gt var:reg_t6 (insn142 st72 bb6)<br>-&gt var:reg_t3 (insn145 st74 bb6)<br>-&gt var:reg_t16 (insn148 st74 bb6)<br>bb6<br>-&gt var:reg_t6 (insn85 st0 bb0)<br>-&gt var:reg_t8_v3 (insn152 st91 bb0)<br>-&gt var:reg_t6 (insn96 st66 bb2)<br>-&gt var:reg_t3 (insn115 st90 bb4)<br>-&gt var:r1_main (insn120 st82 bb5)<br>-&gt var:reg_t3 (insn146 st83 bb5)<br>-&gt var:reg_t16 (insn149 st83 bb5)<br>-&gt var:reg_t6 (insn143 st84 bb5)<br>Reaches<br>bb0<br>bb1<br>-&gt var:reg_t7_v7 (insn144 st77 bb4)<br>-&gt var:reg_t8_v8 (insn147 st77 bb4)<br>-&gt var:reg_t9_v9 (insn150 st77 bb4)<br>-&gt var:reg_t3 (insn115 st90 bb4)<br>-&gt var:r1_main (insn120 st82 bb5)<br>-&gt var:r3_main (insn122 st83 bb5)<br>-&gt var:reg_t7_v2 (insn124 st83 bb5)<br>-&gt var:reg_t9_v6 (insn126 st83 bb5)<br>-&gt var:reg_t16 (insn149 st83 bb5)<br>-&gt var:reg_t6 (insn143 st84 bb5)<br>-&gt var:r1_main (insn104 st72 bb6)<br>-&gt var:reg_t6 (insn142 st72 bb6)<br>-&gt var:reg_t8_v3 (insn107 st72 bb6)<br>-&gt var:reg_t9_v5 (insn110 st72 bb6)<br>-&gt var:reg_t16 (insn148 st74 bb6)<br>bb2<br>-&gt var:reg_t6 (insn85 st0 bb0)<br>-&gt var:reg_t8_v3 (insn152 st91 bb0)<br>bb3<br>-&gt var:reg_t7_v7 (insn144 st77 bb4)<br>-&gt var:reg_t8_v8 (insn147 st77 bb4)<br>-&gt var:reg_t9_v9 (insn150 st77 bb4)<br>-&gt var:reg_t3 (insn115 st90 bb4)<br>-&gt var:r1_main (insn120 st82 bb5)<br>-&gt var:r3_main (insn122 st83 bb5)<br>-&gt var:reg_t7_v2 (insn124 st83 bb5)<br>-&gt var:reg_t9_v6 (insn126 st83 bb5)<br>-&gt var:reg_t16 (insn149 st83 bb5)<br>-&gt var:reg_t6 (insn143 st84 bb5)<br>-&gt var:r1_main (insn104 st72 bb6)<br>-&gt var:reg_t6 (insn142 st72 bb6)<br>-&gt var:reg_t8_v3 (insn107 st72 bb6)<br>-&gt var:reg_t9_v5 (insn110 st72 bb6)<br>-&gt var:reg_t16 (insn148 st74 bb6)<br>bb4<br>-&gt var:reg_t7_v7 (insn144 st77 bb4)<br>-&gt var:reg_t8_v8 (insn147 st77 bb4)<br>-&gt var:reg_t9_v9 (insn150 st77 bb4)<br>-&gt var:r1_main (insn120 st82 bb5)<br>-&gt var:r3_main (insn122 st83 bb5)<br>-&gt var:reg_t3 (insn146 st83 bb5)<br>-&gt var:reg_t7_v2 (insn124 st83 bb5)<br>-&gt var:reg_t9_v6 (insn126 st83 bb5)<br>-&gt var:reg_t16 (insn149 st83 bb5)<br>-&gt var:reg_t6 (insn143 st84 bb5)<br>-&gt var:r1_main (insn104 st72 bb6)<br>-&gt var:reg_t6 (insn142 st72 bb6)<br>-&gt var:reg_t8_v3 (insn107 st72 bb6)<br>-&gt var:reg_t9_v5 (insn110 st72 bb6)<br>-&gt var:reg_t3 (insn145 st74 bb6)<br>-&gt var:reg_t16 (insn148 st74 bb6)<br>bb5<br>-&gt var:reg_t7_v7 (insn144 st77 bb4)<br>-&gt var:reg_t8_v8 (insn147 st77 bb4)<br>-&gt var:reg_t9_v9 (insn150 st77 bb4)<br>-&gt var:reg_t3 (insn115 st90 bb4)<br>-&gt var:r1_main (insn120 st82 bb5)<br>-&gt var:r3_main (insn122 st83 bb5)<br>-&gt var:reg_t7_v2 (insn124 st83 bb5)<br>-&gt var:reg_t9_v6 (insn126 st83 bb5)<br>-&gt var:reg_t16 (insn149 st83 bb5)<br>-&gt var:reg_t6 (insn143 st84 bb5)<br>-&gt var:r1_main (insn104 st72 bb6)<br>-&gt var:reg_t6 (insn142 st72 bb6)<br>-&gt var:reg_t8_v3 (insn107 st72 bb6)<br>-&gt var:reg_t9_v5 (insn110 st72 bb6)<br>-&gt var:reg_t16 (insn148 st74 bb6)<br>bb6<br>-&gt var:reg_t8_v3 (insn152 st91 bb0)<br>-&gt var:reg_t6 (insn96 st66 bb2)<br><br><br>Registers:<table border=1>
+Kills<br>bb0<br>-&gt var:reg_t2 (insn113 st92 bb6)<br>-&gt var:reg_t2 (insn149 st84 bb7)<br>-&gt var:reg_t2 (insn150 st72 bb8)<br>bb1<br>bb2<br>-&gt var:reg_t14 (insn152 st83 bb7)<br>-&gt var:reg_t14 (insn153 st74 bb8)<br>bb3<br>-&gt var:reg_t9 (insn147 st88 bb4)<br>-&gt var:r1_main (insn154 st77 bb6)<br>-&gt var:reg_t9 (insn155 st83 bb7)<br>-&gt var:reg_t9 (insn156 st76 bb8)<br>bb4<br>-&gt var:reg_t9 (insn146 st69 bb3)<br>-&gt var:r3_main (insn118 st82 bb7)<br>-&gt var:reg_t9 (insn155 st83 bb7)<br>-&gt var:r3_main (insn102 st72 bb8)<br>-&gt var:reg_t9 (insn156 st76 bb8)<br>bb5<br>-&gt var:reg_t6_v8 (insn120 st83 bb7)<br>bb6<br>-&gt var:reg_t2 (insn82 st6 bb0)<br>-&gt var:r1_main (insn98 st69 bb3)<br>-&gt var:reg_t2 (insn149 st84 bb7)<br>-&gt var:reg_t2 (insn150 st72 bb8)<br>bb7<br>-&gt var:reg_t2 (insn82 st6 bb0)<br>-&gt var:reg_t14 (insn93 st65 bb2)<br>-&gt var:reg_t9 (insn146 st69 bb3)<br>-&gt var:r3_main (insn128 st88 bb4)<br>-&gt var:reg_t9 (insn147 st88 bb4)<br>-&gt var:reg_t6_v8 (insn148 st89 bb5)<br>-&gt var:reg_t2 (insn113 st92 bb6)<br>-&gt var:r3_main (insn102 st72 bb8)<br>-&gt var:reg_t2 (insn150 st72 bb8)<br>-&gt var:reg_t14 (insn153 st74 bb8)<br>-&gt var:reg_t9 (insn156 st76 bb8)<br>bb8<br>-&gt var:reg_t2 (insn82 st6 bb0)<br>-&gt var:reg_t14 (insn93 st65 bb2)<br>-&gt var:reg_t9 (insn146 st69 bb3)<br>-&gt var:r3_main (insn128 st88 bb4)<br>-&gt var:reg_t9 (insn147 st88 bb4)<br>-&gt var:reg_t2 (insn113 st92 bb6)<br>-&gt var:r3_main (insn118 st82 bb7)<br>-&gt var:reg_t14 (insn152 st83 bb7)<br>-&gt var:reg_t9 (insn155 st83 bb7)<br>-&gt var:reg_t2 (insn149 st84 bb7)<br>Reaches<br>bb0<br>bb1<br>-&gt var:reg_t7_v5 (insn157 st77 bb6)<br>-&gt var:r4_main_v17 (insn159 st93 bb0)<br>-&gt var:reg_t2 (insn82 st6 bb0)<br>-&gt var:reg_t14 (insn93 st65 bb2)<br>-&gt var:r1_main (insn98 st69 bb3)<br>-&gt var:reg_t9 (insn146 st69 bb3)<br>-&gt var:r3_main (insn128 st88 bb4)<br>-&gt var:reg_t9 (insn147 st88 bb4)<br>-&gt var:reg_t6_v8 (insn148 st89 bb5)<br>-&gt var:reg_t5_v3 (insn151 st77 bb6)<br>-&gt var:r1_main (insn154 st77 bb6)<br>-&gt var:reg_t2 (insn113 st92 bb6)<br>-&gt var:reg_t14 (insn152 st83 bb7)<br>-&gt var:reg_t5_v6 (insn122 st83 bb7)<br>-&gt var:reg_t7_v10 (insn124 st83 bb7)<br>-&gt var:reg_t6_v9 (insn105 st74 bb8)<br>-&gt var:reg_t14 (insn153 st74 bb8)<br>-&gt var:reg_t7_v11 (insn108 st74 bb8)<br>bb2<br>-&gt var:r4_main_v17 (insn159 st93 bb0)<br>-&gt var:reg_t2 (insn82 st6 bb0)<br>bb3<br>-&gt var:r4_main_v17 (insn159 st93 bb0)<br>-&gt var:reg_t2 (insn82 st6 bb0)<br>-&gt var:reg_t14 (insn93 st65 bb2)<br>bb4<br>-&gt var:reg_t7_v5 (insn157 st77 bb6)<br>-&gt var:r4_main_v17 (insn159 st93 bb0)<br>-&gt var:reg_t5_v3 (insn151 st77 bb6)<br>-&gt var:r1_main (insn154 st77 bb6)<br>-&gt var:reg_t2 (insn113 st92 bb6)<br>-&gt var:r3_main (insn118 st82 bb7)<br>-&gt var:reg_t6_v8 (insn120 st83 bb7)<br>-&gt var:reg_t14 (insn152 st83 bb7)<br>-&gt var:reg_t5_v6 (insn122 st83 bb7)<br>-&gt var:reg_t7_v10 (insn124 st83 bb7)<br>-&gt var:reg_t9 (insn155 st83 bb7)<br>-&gt var:r3_main (insn102 st72 bb8)<br>-&gt var:reg_t6_v9 (insn105 st74 bb8)<br>-&gt var:reg_t14 (insn153 st74 bb8)<br>-&gt var:reg_t7_v11 (insn108 st74 bb8)<br>-&gt var:reg_t9 (insn156 st76 bb8)<br>bb5<br>-&gt var:reg_t7_v5 (insn157 st77 bb6)<br>-&gt var:r4_main_v17 (insn159 st93 bb0)<br>-&gt var:reg_t2 (insn82 st6 bb0)<br>-&gt var:reg_t14 (insn93 st65 bb2)<br>-&gt var:r1_main (insn98 st69 bb3)<br>-&gt var:reg_t9 (insn146 st69 bb3)<br>-&gt var:r3_main (insn128 st88 bb4)<br>-&gt var:reg_t9 (insn147 st88 bb4)<br>-&gt var:reg_t5_v3 (insn151 st77 bb6)<br>-&gt var:r1_main (insn154 st77 bb6)<br>-&gt var:reg_t2 (insn113 st92 bb6)<br>-&gt var:reg_t6_v8 (insn120 st83 bb7)<br>-&gt var:reg_t14 (insn152 st83 bb7)<br>-&gt var:reg_t5_v6 (insn122 st83 bb7)<br>-&gt var:reg_t7_v10 (insn124 st83 bb7)<br>-&gt var:reg_t6_v9 (insn105 st74 bb8)<br>-&gt var:reg_t14 (insn153 st74 bb8)<br>-&gt var:reg_t7_v11 (insn108 st74 bb8)<br>bb6<br>-&gt var:reg_t7_v5 (insn157 st77 bb6)<br>-&gt var:r4_main_v17 (insn159 st93 bb0)<br>-&gt var:reg_t5_v3 (insn151 st77 bb6)<br>-&gt var:r1_main (insn154 st77 bb6)<br>-&gt var:r3_main (insn118 st82 bb7)<br>-&gt var:reg_t6_v8 (insn120 st83 bb7)<br>-&gt var:reg_t14 (insn152 st83 bb7)<br>-&gt var:reg_t5_v6 (insn122 st83 bb7)<br>-&gt var:reg_t7_v10 (insn124 st83 bb7)<br>-&gt var:reg_t9 (insn155 st83 bb7)<br>-&gt var:reg_t2 (insn149 st84 bb7)<br>-&gt var:r3_main (insn102 st72 bb8)<br>-&gt var:reg_t2 (insn150 st72 bb8)<br>-&gt var:reg_t6_v9 (insn105 st74 bb8)<br>-&gt var:reg_t14 (insn153 st74 bb8)<br>-&gt var:reg_t7_v11 (insn108 st74 bb8)<br>-&gt var:reg_t9 (insn156 st76 bb8)<br>bb7<br>-&gt var:reg_t7_v5 (insn157 st77 bb6)<br>-&gt var:r4_main_v17 (insn159 st93 bb0)<br>-&gt var:reg_t5_v3 (insn151 st77 bb6)<br>-&gt var:r1_main (insn154 st77 bb6)<br>-&gt var:reg_t2 (insn113 st92 bb6)<br>-&gt var:r3_main (insn118 st82 bb7)<br>-&gt var:reg_t6_v8 (insn120 st83 bb7)<br>-&gt var:reg_t14 (insn152 st83 bb7)<br>-&gt var:reg_t5_v6 (insn122 st83 bb7)<br>-&gt var:reg_t7_v10 (insn124 st83 bb7)<br>-&gt var:reg_t9 (insn155 st83 bb7)<br>-&gt var:r3_main (insn102 st72 bb8)<br>-&gt var:reg_t6_v9 (insn105 st74 bb8)<br>-&gt var:reg_t14 (insn153 st74 bb8)<br>-&gt var:reg_t7_v11 (insn108 st74 bb8)<br>-&gt var:reg_t9 (insn156 st76 bb8)<br>bb8<br>-&gt var:r4_main_v17 (insn159 st93 bb0)<br>-&gt var:reg_t2 (insn82 st6 bb0)<br>-&gt var:reg_t14 (insn93 st65 bb2)<br><br><br>Registers:<table border=1>
 <tr><th>alloc type</th><th>name</th><th>data type</th><th>annotation</th></tr>
  <tr>  <td>const</td><td>0</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>r1_main</td><td>int:32</td><td></td> </tr>
  <tr>  <td>const</td><td>1</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>r3_main</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t3</td><td>enum:2</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t6</td><td>enum:2</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t7_v2</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t8_v3</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t9_v5</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t9_v6</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t7_v7</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t8_v8</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t9_v9</td><td>int:32</td><td></td> </tr>
- <tr>  <td>const</td><td>0</td><td>int:6</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2</td><td>enum:2</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t9</td><td>enum:2</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t5_v3</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t7_v5</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t5_v6</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t6_v8</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t6_v9</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t7_v10</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t7_v11</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>r4_main_v17</td><td>int:32</td><td></td> </tr>
  <tr>  <td>const</td><td>const:0</td><td>enum:2</td><td></td> </tr>
  <tr>  <td>const</td><td>const:1</td><td>enum:2</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t16</td><td>enum:2</td><td></td> </tr>
-</table>State Machine: 15states<br><table border=1>
+ <tr>  <td>normal</td><td>reg_t14</td><td>enum:2</td><td></td> </tr>
+</table>State Machine: 20states<br><table border=1>
  <tr><th></th>
-<th>branch:1</th><th>assign:3<br>shared</th><th>memory:4</th><th>inv:7<br>shared</th><th>eq:8<br>inputs:<br>int:6<br>int:6<br>outputs:<br>enum:2<br>shared</th><th>gt:9<br>inputs:<br>int:32<br>int:32<br>outputs:<br>enum:2</th><th>add:10<br>inputs:<br>int:32<br>int:32<br>outputs:<br>int:32</th><th>selector:13<br>shared</th><th>sram_if:14</th><th>read_channel:15</th> <th>annotation</th> </tr>
+<th>branch:1</th><th>assign:3<br>shared</th><th>memory:4</th><th>gt:6<br>inputs:<br>int:32<br>int:32<br>outputs:<br>enum:2</th><th>eq:7<br>inputs:<br>int:32<br>int:32<br>outputs:<br>enum:2<br>shared</th><th>add:8<br>inputs:<br>int:32<br>int:32<br>outputs:<br>int:32</th><th>selector:11<br>shared</th><th>sram_if:12</th><th>read_channel:13</th> <th>annotation</th> </tr>
  <tr class=even>
-  <th>s0(0,1:0,)  </th><td>next:<br>91<br>id:133<br></td><td></td><td></td><td>inputs:<br>const:0<br>outputs:<br>var:reg_t6<br>id:85<br></td><td></td><td></td><td></td><td></td><td>inputs:<br>const:0<br>id:151<br></td><td></td><td>,bb_id=0(0)</td> </tr>
+  <th>s3(initial)(0,1:0,)  </th><td>next:<br>93<br>id:10<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>const:0<br>id:158<br></td><td></td><td>,bb_id=0(0)</td> </tr>
  <tr class=odd>
-  <th>s91(1,1:0,)  </th><td>next:<br>59<br>id:153<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>const:0<br>outputs:<br>var:reg_t8_v3<br>id:152<br></td><td></td><td>,bb_id=0(1)</td> </tr>
+  <th>s93(1,1:0,)  </th><td>next:<br>6<br>id:160<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>const:0<br>outputs:<br>var:r4_main_v17<br>id:159<br></td><td></td><td>,bb_id=0(1)</td> </tr>
  <tr class=even>
-  <th>s15(2,1:1,)  </th><td>next:<br>15<br>id:134<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=1(0)</td> </tr>
+  <th>s6(1,1:0,)  </th><td>next:<br>58<br>id:13<br></td><td></td><td></td><td>inputs:<br>const:1<br>var:r4_main_v17<br>outputs:<br>var:reg_t2<br>id:82<br></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=0(2)</td> </tr>
  <tr class=odd>
-  <th>s59(1,2:0,)  </th><td>inputs:<br>var:reg_t6<br>next:<br>66<br>66<br>id:87<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=0(2)</td> </tr>
+  <th>s15(2,1:1,)  </th><td>next:<br>15<br>id:132<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=1(0)</td> </tr>
  <tr class=even>
-  <th>s66(2,1:2,)  </th><td>next:<br>67<br>id:97<br></td><td></td><td></td><td></td><td>inputs:<br>const:0<br>const:1<br>outputs:<br>var:reg_t6<br>id:96<br></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=2(0)</td> </tr>
+  <th>s58(1,2:0,)  </th><td>inputs:<br>var:reg_t2<br>next:<br>65<br>65<br>id:84<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=0(3)</td> </tr>
  <tr class=odd>
-  <th>s67(1,2:2,)  </th><td>inputs:<br>var:reg_t6<br>next:<br>72<br>72<br>id:98<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=2(1)</td> </tr>
+  <th>s65(2,1:2,)  </th><td>next:<br>66<br>id:94<br></td><td></td><td></td><td></td><td>inputs:<br>var:r4_main_v17<br>const:1<br>outputs:<br>var:reg_t14<br>id:93<br></td><td></td><td></td><td></td><td></td><td>,bb_id=2(0)</td> </tr>
  <tr class=even>
-  <th>s72(2,1:6,)  </th><td>next:<br>74<br>id:105<br></td><td>inputs:<br>const:0<br>outputs:<br>var:r1_main<br>id:104<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t6<br>id:142<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t8_v3<br>id:107<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t9_v5<br>id:110<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=6(0)</td> </tr>
+  <th>s66(1,2:2,)  </th><td>inputs:<br>var:reg_t14<br>next:<br>69<br>72<br>id:95<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=2(1)</td> </tr>
  <tr class=odd>
-  <th>s74(1,1:6,)  </th><td>next:<br>77<br>id:108<br></td><td>inputs:<br>const:0<br>outputs:<br>var:reg_t3<br>id:145<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t16<br>id:148<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=6(1)</td> </tr>
+  <th>s69(1,1:3,)  </th><td>next:<br>89<br>id:99<br></td><td>inputs:<br>const:1<br>outputs:<br>var:r1_main<br>id:98<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t9<br>id:146<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=3(0)</td> </tr>
  <tr class=even>
-  <th>s77(2,1:4,)  </th><td>next:<br>90<br>id:112<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:r1_main<br>var:reg_t7_v2<br>var:reg_t6<br>outputs:<br>var:reg_t7_v7<br>id:144<br><hr>inputs:<br>var:reg_t8_v3<br>var:r3_main<br>var:reg_t3<br>outputs:<br>var:reg_t8_v8<br>id:147<br><hr>inputs:<br>var:reg_t9_v5<br>var:reg_t9_v6<br>var:reg_t16<br>outputs:<br>var:reg_t9_v9<br>id:150<br></td><td></td><td></td><td>,bb_id=4(0)</td> </tr>
+  <th>s72(1,1:8,)  </th><td>next:<br>74<br>id:103<br></td><td>inputs:<br>const:0<br>outputs:<br>var:r3_main<br>id:102<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t2<br>id:150<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=8(0)</td> </tr>
  <tr class=odd>
-  <th>s90(1,1:4,)  </th><td>next:<br>80<br>id:137<br></td><td></td><td></td><td></td><td></td><td>inputs:<br>const:0<br>var:reg_t9_v9<br>outputs:<br>var:reg_t3<br>id:115<br></td><td></td><td></td><td></td><td></td><td>,bb_id=4(1)</td> </tr>
+  <th>s74(1,1:8,)  </th><td>next:<br>76<br>id:106<br></td><td>inputs:<br>const:1<br>outputs:<br>var:reg_t6_v9<br>id:105<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t14<br>id:153<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t7_v11<br>id:108<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=8(1)</td> </tr>
  <tr class=even>
-  <th>s80(1,2:4,)  </th><td>inputs:<br>var:reg_t3<br>next:<br>82<br>88<br>id:117<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=4(2)</td> </tr>
+  <th>s76(1,1:8,)  </th><td>next:<br>77<br>id:109<br></td><td>inputs:<br>const:1<br>outputs:<br>var:reg_t9<br>id:156<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=8(2)</td> </tr>
  <tr class=odd>
-  <th>s82(1,1:5,)  </th><td>next:<br>83<br>id:121<br></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t7_v7<br>var:reg_t8_v8<br>outputs:<br>var:r1_main<br>id:120<br></td><td></td><td></td><td></td><td>,bb_id=5(0)</td> </tr>
+  <th>s77(2,1:6,)  </th><td>next:<br>92<br>id:110<br></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t5_v6<br>var:r3_main<br>var:reg_t2<br>outputs:<br>var:reg_t5_v3<br>id:151<br><hr>inputs:<br>var:reg_t6_v8<br>var:reg_t6_v9<br>var:reg_t14<br>outputs:<br>var:r1_main<br>id:154<br><hr>inputs:<br>var:reg_t7_v10<br>var:reg_t7_v11<br>var:reg_t9<br>outputs:<br>var:reg_t7_v5<br>id:157<br></td><td></td><td></td><td>,bb_id=6(0)</td> </tr>
  <tr class=even>
-  <th>s83(1,1:5,)  </th><td>next:<br>84<br>id:123<br></td><td>inputs:<br>var:r1_main<br>outputs:<br>var:r3_main<br>id:122<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t3<br>id:146<br><hr>inputs:<br>var:r1_main<br>outputs:<br>var:reg_t7_v2<br>id:124<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t16<br>id:149<br></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t9_v9<br>const:1<br>outputs:<br>var:reg_t9_v6<br>id:126<br></td><td></td><td></td><td></td><td>,bb_id=5(1)</td> </tr>
+  <th>s92(1,1:6,)  </th><td>next:<br>80<br>id:137<br></td><td></td><td></td><td>inputs:<br>var:r4_main_v17<br>var:reg_t7_v5<br>outputs:<br>var:reg_t2<br>id:113<br></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=6(1)</td> </tr>
  <tr class=odd>
-  <th>s84(1,1:5,)  </th><td>next:<br>77<br>id:125<br></td><td>inputs:<br>const:1<br>outputs:<br>var:reg_t6<br>id:143<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=5(2)</td> </tr>
+  <th>s80(1,2:6,)  </th><td>inputs:<br>var:reg_t2<br>next:<br>82<br>88<br>id:115<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=6(2)</td> </tr>
  <tr class=even>
-  <th>s88(1,1:3,)  </th><td>next:<br>15<br>id:131<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>const:1<br>var:reg_t8_v8<br>id:154<br></td><td></td><td>,bb_id=3(0)</td> </tr>
+  <th>s82(1,1:7,)  </th><td>next:<br>83<br>id:119<br></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t5_v3<br>var:r1_main<br>outputs:<br>var:r3_main<br>id:118<br></td><td></td><td></td><td></td><td>,bb_id=7(0)</td> </tr>
+ <tr class=odd>
+  <th>s83(1,1:7,)  </th><td>next:<br>84<br>id:121<br></td><td>inputs:<br>var:r3_main<br>outputs:<br>var:reg_t6_v8<br>id:120<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t14<br>id:152<br><hr>inputs:<br>var:r3_main<br>outputs:<br>var:reg_t5_v6<br>id:122<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t9<br>id:155<br></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t7_v5<br>const:1<br>outputs:<br>var:reg_t7_v10<br>id:124<br></td><td></td><td></td><td></td><td>,bb_id=7(1)</td> </tr>
+ <tr class=even>
+  <th>s84(1,1:7,)  </th><td>next:<br>77<br>id:123<br></td><td>inputs:<br>const:0<br>outputs:<br>var:reg_t2<br>id:149<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=7(2)</td> </tr>
+ <tr class=odd>
+  <th>s88(1,1:4,)  </th><td>next:<br>89<br>id:129<br></td><td>inputs:<br>var:r1_main<br>outputs:<br>var:r3_main<br>id:128<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t9<br>id:147<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=4(0)</td> </tr>
+ <tr class=even>
+  <th>s89(2,1:5,)  </th><td>next:<br>91<br>id:130<br></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:r1_main<br>var:r3_main<br>var:reg_t9<br>outputs:<br>var:reg_t6_v8<br>id:148<br></td><td></td><td></td><td>,bb_id=5(0)</td> </tr>
+ <tr class=odd>
+  <th>s91(1,1:5,)  </th><td>next:<br>15<br>id:136<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>const:1<br>var:reg_t6_v8<br>id:161<br></td><td></td><td>,bb_id=5(1)</td> </tr>
 </table><br>wire_insn<hr>
 Summary:<br>Basic blocks<br>
 * id -> next | reachable<br>
-0-> 2| 1 2 3 4 5 6<br>
+0-> 2| 1 2 3 4 5 6 7 8<br>
 1-> 1| 1<br>
-2-> 6| 1 3 4 5 6<br>
-3-> 1| 1<br>
-4-> 3 5| 1 3 4 5<br>
-5-> 4| 1 3 4 5<br>
-6-> 4| 1 3 4 5<br>
+2-> 3 8| 1 3 4 5 6 7 8<br>
+3-> 5| 1 5<br>
+4-> 5| 1 5<br>
+5-> 1| 1<br>
+6-> 4 7| 1 4 5 6 7<br>
+7-> 6| 1 4 5 6 7<br>
+8-> 6| 1 4 5 6 7<br>
 <br>
 Data flow analysys<br>
 Defs<br>
-bb0<br>-&gt var:reg_t6 (insn85 st0 bb0)<br>-&gt var:reg_t8_v3 (insn152 st91 bb0)<br>
+bb0<br>-&gt var:reg_t2 (insn82 st6 bb0)<br>-&gt var:r4_main_v17 (insn159 st93 bb0)<br>
 bb1<br>
-bb2<br>-&gt var:reg_t6 (insn96 st66 bb2)<br>
-bb3<br>
-bb4<br>-&gt var:reg_t3 (insn115 st90 bb4)<br>-&gt var:reg_t7_v7 (insn144 st77 bb4)<br>-&gt var:reg_t8_v8 (insn147 st77 bb4)<br>-&gt var:reg_t9_v9 (insn150 st77 bb4)<br>
-bb5<br>-&gt var:r1_main (insn120 st82 bb5)<br>-&gt var:r3_main (insn122 st83 bb5)<br>-&gt var:reg_t7_v2 (insn124 st83 bb5)<br>-&gt var:reg_t9_v6 (insn126 st83 bb5)<br>-&gt var:reg_t6 (insn143 st84 bb5)<br>-&gt var:reg_t3 (insn146 st83 bb5)<br>-&gt var:reg_t16 (insn149 st83 bb5)<br>
-bb6<br>-&gt var:r1_main (insn104 st72 bb6)<br>-&gt var:reg_t8_v3 (insn107 st72 bb6)<br>-&gt var:reg_t9_v5 (insn110 st72 bb6)<br>-&gt var:reg_t6 (insn142 st72 bb6)<br>-&gt var:reg_t3 (insn145 st74 bb6)<br>-&gt var:reg_t16 (insn148 st74 bb6)<br>
+bb2<br>-&gt var:reg_t14 (insn93 st65 bb2)<br>
+bb3<br>-&gt var:r1_main (insn98 st69 bb3)<br>-&gt var:reg_t9 (insn146 st69 bb3)<br>
+bb4<br>-&gt var:r3_main (insn128 st88 bb4)<br>-&gt var:reg_t9 (insn147 st88 bb4)<br>
+bb5<br>-&gt var:reg_t6_v8 (insn148 st89 bb5)<br>
+bb6<br>-&gt var:reg_t2 (insn113 st92 bb6)<br>-&gt var:reg_t5_v3 (insn151 st77 bb6)<br>-&gt var:r1_main (insn154 st77 bb6)<br>-&gt var:reg_t7_v5 (insn157 st77 bb6)<br>
+bb7<br>-&gt var:r3_main (insn118 st82 bb7)<br>-&gt var:reg_t6_v8 (insn120 st83 bb7)<br>-&gt var:reg_t5_v6 (insn122 st83 bb7)<br>-&gt var:reg_t7_v10 (insn124 st83 bb7)<br>-&gt var:reg_t2 (insn149 st84 bb7)<br>-&gt var:reg_t14 (insn152 st83 bb7)<br>-&gt var:reg_t9 (insn155 st83 bb7)<br>
+bb8<br>-&gt var:r3_main (insn102 st72 bb8)<br>-&gt var:reg_t6_v9 (insn105 st74 bb8)<br>-&gt var:reg_t7_v11 (insn108 st74 bb8)<br>-&gt var:reg_t2 (insn150 st72 bb8)<br>-&gt var:reg_t14 (insn153 st74 bb8)<br>-&gt var:reg_t9 (insn156 st76 bb8)<br>
 
-Kills<br>bb0<br>-&gt var:reg_t6 (insn96 st66 bb2)<br>-&gt var:reg_t6 (insn143 st84 bb5)<br>-&gt var:reg_t6 (insn142 st72 bb6)<br>-&gt var:reg_t8_v3 (insn107 st72 bb6)<br>bb1<br>bb2<br>-&gt var:reg_t6 (insn85 st0 bb0)<br>-&gt var:reg_t6 (insn143 st84 bb5)<br>-&gt var:reg_t6 (insn142 st72 bb6)<br>bb3<br>bb4<br>-&gt var:reg_t3 (insn146 st83 bb5)<br>-&gt var:reg_t3 (insn145 st74 bb6)<br>bb5<br>-&gt var:reg_t6 (insn85 st0 bb0)<br>-&gt var:reg_t6 (insn96 st66 bb2)<br>-&gt var:reg_t3 (insn115 st90 bb4)<br>-&gt var:r1_main (insn104 st72 bb6)<br>-&gt var:reg_t6 (insn142 st72 bb6)<br>-&gt var:reg_t3 (insn145 st74 bb6)<br>-&gt var:reg_t16 (insn148 st74 bb6)<br>bb6<br>-&gt var:reg_t6 (insn85 st0 bb0)<br>-&gt var:reg_t8_v3 (insn152 st91 bb0)<br>-&gt var:reg_t6 (insn96 st66 bb2)<br>-&gt var:reg_t3 (insn115 st90 bb4)<br>-&gt var:r1_main (insn120 st82 bb5)<br>-&gt var:reg_t3 (insn146 st83 bb5)<br>-&gt var:reg_t16 (insn149 st83 bb5)<br>-&gt var:reg_t6 (insn143 st84 bb5)<br>Reaches<br>bb0<br>bb1<br>-&gt var:reg_t7_v7 (insn144 st77 bb4)<br>-&gt var:reg_t8_v8 (insn147 st77 bb4)<br>-&gt var:reg_t9_v9 (insn150 st77 bb4)<br>-&gt var:reg_t3 (insn115 st90 bb4)<br>-&gt var:r1_main (insn120 st82 bb5)<br>-&gt var:r3_main (insn122 st83 bb5)<br>-&gt var:reg_t7_v2 (insn124 st83 bb5)<br>-&gt var:reg_t9_v6 (insn126 st83 bb5)<br>-&gt var:reg_t16 (insn149 st83 bb5)<br>-&gt var:reg_t6 (insn143 st84 bb5)<br>-&gt var:r1_main (insn104 st72 bb6)<br>-&gt var:reg_t6 (insn142 st72 bb6)<br>-&gt var:reg_t8_v3 (insn107 st72 bb6)<br>-&gt var:reg_t9_v5 (insn110 st72 bb6)<br>-&gt var:reg_t16 (insn148 st74 bb6)<br>bb2<br>-&gt var:reg_t6 (insn85 st0 bb0)<br>-&gt var:reg_t8_v3 (insn152 st91 bb0)<br>bb3<br>-&gt var:reg_t7_v7 (insn144 st77 bb4)<br>-&gt var:reg_t8_v8 (insn147 st77 bb4)<br>-&gt var:reg_t9_v9 (insn150 st77 bb4)<br>-&gt var:reg_t3 (insn115 st90 bb4)<br>-&gt var:r1_main (insn120 st82 bb5)<br>-&gt var:r3_main (insn122 st83 bb5)<br>-&gt var:reg_t7_v2 (insn124 st83 bb5)<br>-&gt var:reg_t9_v6 (insn126 st83 bb5)<br>-&gt var:reg_t16 (insn149 st83 bb5)<br>-&gt var:reg_t6 (insn143 st84 bb5)<br>-&gt var:r1_main (insn104 st72 bb6)<br>-&gt var:reg_t6 (insn142 st72 bb6)<br>-&gt var:reg_t8_v3 (insn107 st72 bb6)<br>-&gt var:reg_t9_v5 (insn110 st72 bb6)<br>-&gt var:reg_t16 (insn148 st74 bb6)<br>bb4<br>-&gt var:reg_t7_v7 (insn144 st77 bb4)<br>-&gt var:reg_t8_v8 (insn147 st77 bb4)<br>-&gt var:reg_t9_v9 (insn150 st77 bb4)<br>-&gt var:r1_main (insn120 st82 bb5)<br>-&gt var:r3_main (insn122 st83 bb5)<br>-&gt var:reg_t3 (insn146 st83 bb5)<br>-&gt var:reg_t7_v2 (insn124 st83 bb5)<br>-&gt var:reg_t9_v6 (insn126 st83 bb5)<br>-&gt var:reg_t16 (insn149 st83 bb5)<br>-&gt var:reg_t6 (insn143 st84 bb5)<br>-&gt var:r1_main (insn104 st72 bb6)<br>-&gt var:reg_t6 (insn142 st72 bb6)<br>-&gt var:reg_t8_v3 (insn107 st72 bb6)<br>-&gt var:reg_t9_v5 (insn110 st72 bb6)<br>-&gt var:reg_t3 (insn145 st74 bb6)<br>-&gt var:reg_t16 (insn148 st74 bb6)<br>bb5<br>-&gt var:reg_t7_v7 (insn144 st77 bb4)<br>-&gt var:reg_t8_v8 (insn147 st77 bb4)<br>-&gt var:reg_t9_v9 (insn150 st77 bb4)<br>-&gt var:reg_t3 (insn115 st90 bb4)<br>-&gt var:r1_main (insn120 st82 bb5)<br>-&gt var:r3_main (insn122 st83 bb5)<br>-&gt var:reg_t7_v2 (insn124 st83 bb5)<br>-&gt var:reg_t9_v6 (insn126 st83 bb5)<br>-&gt var:reg_t16 (insn149 st83 bb5)<br>-&gt var:reg_t6 (insn143 st84 bb5)<br>-&gt var:r1_main (insn104 st72 bb6)<br>-&gt var:reg_t6 (insn142 st72 bb6)<br>-&gt var:reg_t8_v3 (insn107 st72 bb6)<br>-&gt var:reg_t9_v5 (insn110 st72 bb6)<br>-&gt var:reg_t16 (insn148 st74 bb6)<br>bb6<br>-&gt var:reg_t8_v3 (insn152 st91 bb0)<br>-&gt var:reg_t6 (insn96 st66 bb2)<br><br><br>Registers:<table border=1>
+Kills<br>bb0<br>-&gt var:reg_t2 (insn113 st92 bb6)<br>-&gt var:reg_t2 (insn149 st84 bb7)<br>-&gt var:reg_t2 (insn150 st72 bb8)<br>bb1<br>bb2<br>-&gt var:reg_t14 (insn152 st83 bb7)<br>-&gt var:reg_t14 (insn153 st74 bb8)<br>bb3<br>-&gt var:reg_t9 (insn147 st88 bb4)<br>-&gt var:r1_main (insn154 st77 bb6)<br>-&gt var:reg_t9 (insn155 st83 bb7)<br>-&gt var:reg_t9 (insn156 st76 bb8)<br>bb4<br>-&gt var:reg_t9 (insn146 st69 bb3)<br>-&gt var:r3_main (insn118 st82 bb7)<br>-&gt var:reg_t9 (insn155 st83 bb7)<br>-&gt var:r3_main (insn102 st72 bb8)<br>-&gt var:reg_t9 (insn156 st76 bb8)<br>bb5<br>-&gt var:reg_t6_v8 (insn120 st83 bb7)<br>bb6<br>-&gt var:reg_t2 (insn82 st6 bb0)<br>-&gt var:r1_main (insn98 st69 bb3)<br>-&gt var:reg_t2 (insn149 st84 bb7)<br>-&gt var:reg_t2 (insn150 st72 bb8)<br>bb7<br>-&gt var:reg_t2 (insn82 st6 bb0)<br>-&gt var:reg_t14 (insn93 st65 bb2)<br>-&gt var:reg_t9 (insn146 st69 bb3)<br>-&gt var:r3_main (insn128 st88 bb4)<br>-&gt var:reg_t9 (insn147 st88 bb4)<br>-&gt var:reg_t6_v8 (insn148 st89 bb5)<br>-&gt var:reg_t2 (insn113 st92 bb6)<br>-&gt var:r3_main (insn102 st72 bb8)<br>-&gt var:reg_t2 (insn150 st72 bb8)<br>-&gt var:reg_t14 (insn153 st74 bb8)<br>-&gt var:reg_t9 (insn156 st76 bb8)<br>bb8<br>-&gt var:reg_t2 (insn82 st6 bb0)<br>-&gt var:reg_t14 (insn93 st65 bb2)<br>-&gt var:reg_t9 (insn146 st69 bb3)<br>-&gt var:r3_main (insn128 st88 bb4)<br>-&gt var:reg_t9 (insn147 st88 bb4)<br>-&gt var:reg_t2 (insn113 st92 bb6)<br>-&gt var:r3_main (insn118 st82 bb7)<br>-&gt var:reg_t14 (insn152 st83 bb7)<br>-&gt var:reg_t9 (insn155 st83 bb7)<br>-&gt var:reg_t2 (insn149 st84 bb7)<br>Reaches<br>bb0<br>bb1<br>-&gt var:reg_t7_v5 (insn157 st77 bb6)<br>-&gt var:r4_main_v17 (insn159 st93 bb0)<br>-&gt var:reg_t2 (insn82 st6 bb0)<br>-&gt var:reg_t14 (insn93 st65 bb2)<br>-&gt var:r1_main (insn98 st69 bb3)<br>-&gt var:reg_t9 (insn146 st69 bb3)<br>-&gt var:r3_main (insn128 st88 bb4)<br>-&gt var:reg_t9 (insn147 st88 bb4)<br>-&gt var:reg_t6_v8 (insn148 st89 bb5)<br>-&gt var:reg_t5_v3 (insn151 st77 bb6)<br>-&gt var:r1_main (insn154 st77 bb6)<br>-&gt var:reg_t2 (insn113 st92 bb6)<br>-&gt var:reg_t14 (insn152 st83 bb7)<br>-&gt var:reg_t5_v6 (insn122 st83 bb7)<br>-&gt var:reg_t7_v10 (insn124 st83 bb7)<br>-&gt var:reg_t6_v9 (insn105 st74 bb8)<br>-&gt var:reg_t14 (insn153 st74 bb8)<br>-&gt var:reg_t7_v11 (insn108 st74 bb8)<br>bb2<br>-&gt var:r4_main_v17 (insn159 st93 bb0)<br>-&gt var:reg_t2 (insn82 st6 bb0)<br>bb3<br>-&gt var:r4_main_v17 (insn159 st93 bb0)<br>-&gt var:reg_t2 (insn82 st6 bb0)<br>-&gt var:reg_t14 (insn93 st65 bb2)<br>bb4<br>-&gt var:reg_t7_v5 (insn157 st77 bb6)<br>-&gt var:r4_main_v17 (insn159 st93 bb0)<br>-&gt var:reg_t5_v3 (insn151 st77 bb6)<br>-&gt var:r1_main (insn154 st77 bb6)<br>-&gt var:reg_t2 (insn113 st92 bb6)<br>-&gt var:r3_main (insn118 st82 bb7)<br>-&gt var:reg_t6_v8 (insn120 st83 bb7)<br>-&gt var:reg_t14 (insn152 st83 bb7)<br>-&gt var:reg_t5_v6 (insn122 st83 bb7)<br>-&gt var:reg_t7_v10 (insn124 st83 bb7)<br>-&gt var:reg_t9 (insn155 st83 bb7)<br>-&gt var:r3_main (insn102 st72 bb8)<br>-&gt var:reg_t6_v9 (insn105 st74 bb8)<br>-&gt var:reg_t14 (insn153 st74 bb8)<br>-&gt var:reg_t7_v11 (insn108 st74 bb8)<br>-&gt var:reg_t9 (insn156 st76 bb8)<br>bb5<br>-&gt var:reg_t7_v5 (insn157 st77 bb6)<br>-&gt var:r4_main_v17 (insn159 st93 bb0)<br>-&gt var:reg_t2 (insn82 st6 bb0)<br>-&gt var:reg_t14 (insn93 st65 bb2)<br>-&gt var:r1_main (insn98 st69 bb3)<br>-&gt var:reg_t9 (insn146 st69 bb3)<br>-&gt var:r3_main (insn128 st88 bb4)<br>-&gt var:reg_t9 (insn147 st88 bb4)<br>-&gt var:reg_t5_v3 (insn151 st77 bb6)<br>-&gt var:r1_main (insn154 st77 bb6)<br>-&gt var:reg_t2 (insn113 st92 bb6)<br>-&gt var:reg_t6_v8 (insn120 st83 bb7)<br>-&gt var:reg_t14 (insn152 st83 bb7)<br>-&gt var:reg_t5_v6 (insn122 st83 bb7)<br>-&gt var:reg_t7_v10 (insn124 st83 bb7)<br>-&gt var:reg_t6_v9 (insn105 st74 bb8)<br>-&gt var:reg_t14 (insn153 st74 bb8)<br>-&gt var:reg_t7_v11 (insn108 st74 bb8)<br>bb6<br>-&gt var:reg_t7_v5 (insn157 st77 bb6)<br>-&gt var:r4_main_v17 (insn159 st93 bb0)<br>-&gt var:reg_t5_v3 (insn151 st77 bb6)<br>-&gt var:r1_main (insn154 st77 bb6)<br>-&gt var:r3_main (insn118 st82 bb7)<br>-&gt var:reg_t6_v8 (insn120 st83 bb7)<br>-&gt var:reg_t14 (insn152 st83 bb7)<br>-&gt var:reg_t5_v6 (insn122 st83 bb7)<br>-&gt var:reg_t7_v10 (insn124 st83 bb7)<br>-&gt var:reg_t9 (insn155 st83 bb7)<br>-&gt var:reg_t2 (insn149 st84 bb7)<br>-&gt var:r3_main (insn102 st72 bb8)<br>-&gt var:reg_t2 (insn150 st72 bb8)<br>-&gt var:reg_t6_v9 (insn105 st74 bb8)<br>-&gt var:reg_t14 (insn153 st74 bb8)<br>-&gt var:reg_t7_v11 (insn108 st74 bb8)<br>-&gt var:reg_t9 (insn156 st76 bb8)<br>bb7<br>-&gt var:reg_t7_v5 (insn157 st77 bb6)<br>-&gt var:r4_main_v17 (insn159 st93 bb0)<br>-&gt var:reg_t5_v3 (insn151 st77 bb6)<br>-&gt var:r1_main (insn154 st77 bb6)<br>-&gt var:reg_t2 (insn113 st92 bb6)<br>-&gt var:r3_main (insn118 st82 bb7)<br>-&gt var:reg_t6_v8 (insn120 st83 bb7)<br>-&gt var:reg_t14 (insn152 st83 bb7)<br>-&gt var:reg_t5_v6 (insn122 st83 bb7)<br>-&gt var:reg_t7_v10 (insn124 st83 bb7)<br>-&gt var:reg_t9 (insn155 st83 bb7)<br>-&gt var:r3_main (insn102 st72 bb8)<br>-&gt var:reg_t6_v9 (insn105 st74 bb8)<br>-&gt var:reg_t14 (insn153 st74 bb8)<br>-&gt var:reg_t7_v11 (insn108 st74 bb8)<br>-&gt var:reg_t9 (insn156 st76 bb8)<br>bb8<br>-&gt var:r4_main_v17 (insn159 st93 bb0)<br>-&gt var:reg_t2 (insn82 st6 bb0)<br>-&gt var:reg_t14 (insn93 st65 bb2)<br><br><br>Registers:<table border=1>
 <tr><th>alloc type</th><th>name</th><th>data type</th><th>annotation</th></tr>
  <tr>  <td>const</td><td>0</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>r1_main</td><td>int:32</td><td></td> </tr>
  <tr>  <td>const</td><td>1</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>r3_main</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t3</td><td>enum:2</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t6</td><td>enum:2</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t7_v2</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t8_v3</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t9_v5</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t9_v6</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t7_v7</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t8_v8</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t9_v9</td><td>int:32</td><td></td> </tr>
- <tr>  <td>const</td><td>0</td><td>int:6</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2</td><td>enum:2</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t9</td><td>enum:2</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t5_v3</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t7_v5</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t5_v6</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t6_v8</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t6_v9</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t7_v10</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t7_v11</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>r4_main_v17</td><td>int:32</td><td></td> </tr>
  <tr>  <td>const</td><td>const:0</td><td>enum:2</td><td></td> </tr>
  <tr>  <td>const</td><td>const:1</td><td>enum:2</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t16</td><td>enum:2</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t14</td><td>enum:2</td><td></td> </tr>
+ <tr>  <td>wire</td><td>wire_t16</td><td>enum:2</td><td></td> </tr>
  <tr>  <td>wire</td><td>wire_t17</td><td>enum:2</td><td></td> </tr>
- <tr>  <td>wire</td><td>wire_t18</td><td>enum:2</td><td></td> </tr>
+ <tr>  <td>wire</td><td>wire_t18</td><td>int:32</td><td></td> </tr>
  <tr>  <td>wire</td><td>wire_t19</td><td>int:32</td><td></td> </tr>
  <tr>  <td>wire</td><td>wire_t20</td><td>int:32</td><td></td> </tr>
  <tr>  <td>wire</td><td>wire_t21</td><td>int:32</td><td></td> </tr>
  <tr>  <td>wire</td><td>wire_t22</td><td>enum:2</td><td></td> </tr>
  <tr>  <td>wire</td><td>wire_t23</td><td>int:32</td><td></td> </tr>
  <tr>  <td>wire</td><td>wire_t24</td><td>int:32</td><td></td> </tr>
-</table>State Machine: 11states<br><table border=1>
+</table>State Machine: 16states<br><table border=1>
  <tr><th></th>
-<th>branch:1</th><th>assign:3<br>shared</th><th>memory:4</th><th>inv:7<br>shared</th><th>eq:8<br>inputs:<br>int:6<br>int:6<br>outputs:<br>enum:2<br>shared</th><th>gt:9<br>inputs:<br>int:32<br>int:32<br>outputs:<br>enum:2</th><th>add:10<br>inputs:<br>int:32<br>int:32<br>outputs:<br>int:32</th><th>selector:13<br>shared</th><th>sram_if:14</th><th>read_channel:15</th><th>add:16<br>inputs:<br>int:32<br>int:32<br>outputs:<br>int:32</th> <th>annotation</th> </tr>
+<th>branch:1</th><th>assign:3<br>shared</th><th>memory:4</th><th>gt:6<br>inputs:<br>int:32<br>int:32<br>outputs:<br>enum:2</th><th>eq:7<br>inputs:<br>int:32<br>int:32<br>outputs:<br>enum:2<br>shared</th><th>add:8<br>inputs:<br>int:32<br>int:32<br>outputs:<br>int:32</th><th>selector:11<br>shared</th><th>sram_if:12</th><th>read_channel:13</th><th>add:14<br>inputs:<br>int:32<br>int:32<br>outputs:<br>int:32</th> <th>annotation</th> </tr>
  <tr class=even>
-  <th>s0  </th><td>next:<br>91<br>id:133<br></td><td>inputs:<br>wire:wire_t17<br>outputs:<br>var:reg_t6<br>id:155<br></td><td></td><td>inputs:<br>const:0<br>outputs:<br>wire:wire_t17<br>id:85<br></td><td></td><td></td><td></td><td></td><td>inputs:<br>const:0<br>id:151<br></td><td></td><td></td><td>,bb_id=0(0)</td> </tr>
+  <th>s3(initial)  </th><td>next:<br>93<br>id:10<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>const:0<br>id:158<br></td><td></td><td></td><td>,bb_id=0(0)</td> </tr>
  <tr class=odd>
-  <th>s91  </th><td>inputs:<br>var:reg_t6<br>next:<br>66<br>66<br>id:153<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>const:0<br>outputs:<br>var:reg_t8_v3<br>id:152<br></td><td></td><td></td><td>,bb_id=0(1)</td> </tr>
+  <th>s93  </th><td>next:<br>6<br>id:160<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>const:0<br>outputs:<br>var:r4_main_v17<br>id:159<br></td><td></td><td></td><td>,bb_id=0(1)</td> </tr>
  <tr class=even>
-  <th>s15  </th><td>next:<br>15<br>id:134<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=1(0)</td> </tr>
+  <th>s6  </th><td>inputs:<br>wire:wire_t16<br>next:<br>65<br>65<br>id:13<br></td><td>inputs:<br>wire:wire_t16<br>outputs:<br>var:reg_t2<br>id:162<br></td><td></td><td>inputs:<br>const:1<br>var:r4_main_v17<br>outputs:<br>wire:wire_t16<br>id:82<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=0(2)</td> </tr>
  <tr class=odd>
-  <th>s66  </th><td>inputs:<br>wire:wire_t18<br>next:<br>72<br>72<br>id:97<br></td><td>inputs:<br>wire:wire_t18<br>outputs:<br>var:reg_t6<br>id:156<br></td><td></td><td></td><td>inputs:<br>const:0<br>const:1<br>outputs:<br>wire:wire_t18<br>id:96<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=2(0)</td> </tr>
+  <th>s15  </th><td>next:<br>15<br>id:132<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=1(0)</td> </tr>
  <tr class=even>
-  <th>s72  </th><td>next:<br>74<br>id:105<br></td><td>inputs:<br>const:0<br>outputs:<br>var:r1_main<br>id:104<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t6<br>id:142<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t8_v3<br>id:107<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t9_v5<br>id:110<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t3<br>id:145<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t16<br>id:148<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=6(0)</td> </tr>
+  <th>s65  </th><td>inputs:<br>wire:wire_t17<br>next:<br>69<br>72<br>id:94<br></td><td>inputs:<br>wire:wire_t17<br>outputs:<br>var:reg_t14<br>id:163<br></td><td></td><td></td><td>inputs:<br>var:r4_main_v17<br>const:1<br>outputs:<br>wire:wire_t17<br>id:93<br></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=2(0)</td> </tr>
  <tr class=odd>
-  <th>s74  </th><td>next:<br>77<br>id:108<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=6(1)</td> </tr>
+  <th>s69  </th><td>next:<br>89<br>id:99<br></td><td>inputs:<br>const:1<br>outputs:<br>var:r1_main<br>id:98<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t9<br>id:146<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=3(0)</td> </tr>
  <tr class=even>
-  <th>s77  </th><td>inputs:<br>wire:wire_t22<br>next:<br>82<br>88<br>id:112<br></td><td>inputs:<br>wire:wire_t19<br>outputs:<br>var:reg_t7_v7<br>id:157<br><hr>inputs:<br>wire:wire_t20<br>outputs:<br>var:reg_t8_v8<br>id:158<br><hr>inputs:<br>wire:wire_t21<br>outputs:<br>var:reg_t9_v9<br>id:159<br><hr>inputs:<br>wire:wire_t22<br>outputs:<br>var:reg_t3<br>id:160<br></td><td></td><td></td><td></td><td>inputs:<br>const:0<br>wire:wire_t21<br>outputs:<br>wire:wire_t22<br>id:115<br></td><td></td><td>inputs:<br>var:r1_main<br>var:reg_t7_v2<br>var:reg_t6<br>outputs:<br>wire:wire_t19<br>id:144<br><hr>inputs:<br>var:reg_t8_v3<br>var:r3_main<br>var:reg_t3<br>outputs:<br>wire:wire_t20<br>id:147<br><hr>inputs:<br>var:reg_t9_v5<br>var:reg_t9_v6<br>var:reg_t16<br>outputs:<br>wire:wire_t21<br>id:150<br></td><td></td><td></td><td></td><td>,bb_id=4(0)</td> </tr>
+  <th>s72  </th><td>next:<br>74<br>id:103<br></td><td>inputs:<br>const:0<br>outputs:<br>var:r3_main<br>id:102<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t2<br>id:150<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t6_v9<br>id:105<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t14<br>id:153<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t7_v11<br>id:108<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t9<br>id:156<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=8(0)</td> </tr>
  <tr class=odd>
-  <th>s82  </th><td>next:<br>83<br>id:121<br></td><td>inputs:<br>wire:wire_t23<br>outputs:<br>var:r3_main<br>id:122<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t3<br>id:146<br><hr>inputs:<br>wire:wire_t23<br>outputs:<br>var:reg_t7_v2<br>id:124<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t16<br>id:149<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t6<br>id:143<br><hr>inputs:<br>wire:wire_t23<br>outputs:<br>var:r1_main<br>id:161<br><hr>inputs:<br>wire:wire_t24<br>outputs:<br>var:reg_t9_v6<br>id:162<br></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t7_v7<br>var:reg_t8_v8<br>outputs:<br>wire:wire_t23<br>id:120<br></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t9_v9<br>const:1<br>outputs:<br>wire:wire_t24<br>id:126<br></td><td>,bb_id=5(0)</td> </tr>
+  <th>s74  </th><td>next:<br>76<br>id:106<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=8(1)</td> </tr>
  <tr class=even>
-  <th>s83  </th><td>next:<br>84<br>id:123<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=5(1)</td> </tr>
+  <th>s76  </th><td>next:<br>77<br>id:109<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=8(2)</td> </tr>
  <tr class=odd>
-  <th>s84  </th><td>next:<br>77<br>id:125<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=5(2)</td> </tr>
+  <th>s77  </th><td>inputs:<br>wire:wire_t22<br>next:<br>82<br>88<br>id:110<br></td><td>inputs:<br>wire:wire_t19<br>outputs:<br>var:reg_t5_v3<br>id:164<br><hr>inputs:<br>wire:wire_t20<br>outputs:<br>var:r1_main<br>id:165<br><hr>inputs:<br>wire:wire_t21<br>outputs:<br>var:reg_t7_v5<br>id:166<br><hr>inputs:<br>wire:wire_t22<br>outputs:<br>var:reg_t2<br>id:167<br></td><td></td><td>inputs:<br>var:r4_main_v17<br>wire:wire_t21<br>outputs:<br>wire:wire_t22<br>id:113<br></td><td></td><td></td><td>inputs:<br>var:reg_t5_v6<br>var:r3_main<br>var:reg_t2<br>outputs:<br>wire:wire_t19<br>id:151<br><hr>inputs:<br>var:reg_t6_v8<br>var:reg_t6_v9<br>var:reg_t14<br>outputs:<br>wire:wire_t20<br>id:154<br><hr>inputs:<br>var:reg_t7_v10<br>var:reg_t7_v11<br>var:reg_t9<br>outputs:<br>wire:wire_t21<br>id:157<br></td><td></td><td></td><td></td><td>,bb_id=6(0)</td> </tr>
  <tr class=even>
-  <th>s88  </th><td>next:<br>15<br>id:131<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>const:1<br>var:reg_t8_v8<br>id:154<br></td><td></td><td></td><td>,bb_id=3(0)</td> </tr>
+  <th>s82  </th><td>next:<br>83<br>id:119<br></td><td>inputs:<br>wire:wire_t23<br>outputs:<br>var:reg_t6_v8<br>id:120<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t14<br>id:152<br><hr>inputs:<br>wire:wire_t23<br>outputs:<br>var:reg_t5_v6<br>id:122<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t9<br>id:155<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t2<br>id:149<br><hr>inputs:<br>wire:wire_t23<br>outputs:<br>var:r3_main<br>id:168<br><hr>inputs:<br>wire:wire_t24<br>outputs:<br>var:reg_t7_v10<br>id:169<br></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t5_v3<br>var:r1_main<br>outputs:<br>wire:wire_t23<br>id:118<br></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t7_v5<br>const:1<br>outputs:<br>wire:wire_t24<br>id:124<br></td><td>,bb_id=7(0)</td> </tr>
+ <tr class=odd>
+  <th>s83  </th><td>next:<br>84<br>id:121<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=7(1)</td> </tr>
+ <tr class=even>
+  <th>s84  </th><td>next:<br>77<br>id:123<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=7(2)</td> </tr>
+ <tr class=odd>
+  <th>s88  </th><td>next:<br>89<br>id:129<br></td><td>inputs:<br>var:r1_main<br>outputs:<br>var:r3_main<br>id:128<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t9<br>id:147<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>,bb_id=4(0)</td> </tr>
+ <tr class=even>
+  <th>s89  </th><td>next:<br>91<br>id:130<br></td><td>inputs:<br>wire:wire_t18<br>outputs:<br>var:reg_t6_v8<br>id:170<br></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:r1_main<br>var:r3_main<br>var:reg_t9<br>outputs:<br>wire:wire_t18<br>id:148<br></td><td></td><td></td><td></td><td>,bb_id=5(0)</td> </tr>
+ <tr class=odd>
+  <th>s91  </th><td>next:<br>15<br>id:136<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>const:1<br>var:reg_t6_v8<br>id:161<br></td><td></td><td></td><td>,bb_id=5(1)</td> </tr>
 </table></body></html>

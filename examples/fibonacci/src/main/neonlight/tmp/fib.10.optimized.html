@@ -15,50 +15,61 @@ Registers:<table border=1>
  <tr>  <td>normal</td><td>r1_main</td><td>int:32</td> </tr>
  <tr>  <td>const</td><td>1</td><td>int:32</td> </tr>
  <tr>  <td>normal</td><td>r3_main</td><td>int:32</td> </tr>
- <tr>  <td>normal</td><td>reg_t3</td><td>enum:2</td> </tr>
- <tr>  <td>normal</td><td>reg_t6</td><td>enum:2</td> </tr>
- <tr>  <td>normal</td><td>reg_t7_v2</td><td>int:32</td> </tr>
- <tr>  <td>normal</td><td>reg_t8_v3</td><td>int:32</td> </tr>
- <tr>  <td>normal</td><td>reg_t9_v5</td><td>int:32</td> </tr>
- <tr>  <td>normal</td><td>reg_t9_v6</td><td>int:32</td> </tr>
- <tr>  <td>normal</td><td>reg_t7_v7</td><td>int:32</td> </tr>
- <tr>  <td>normal</td><td>reg_t8_v8</td><td>int:32</td> </tr>
- <tr>  <td>normal</td><td>reg_t9_v9</td><td>int:32</td> </tr>
- <tr>  <td>const</td><td>0</td><td>int:6</td> </tr>
+ <tr>  <td>normal</td><td>reg_t2</td><td>enum:2</td> </tr>
+ <tr>  <td>normal</td><td>reg_t9</td><td>enum:2</td> </tr>
+ <tr>  <td>normal</td><td>reg_t5_v3</td><td>int:32</td> </tr>
+ <tr>  <td>normal</td><td>reg_t7_v5</td><td>int:32</td> </tr>
+ <tr>  <td>normal</td><td>reg_t5_v6</td><td>int:32</td> </tr>
+ <tr>  <td>normal</td><td>reg_t6_v8</td><td>int:32</td> </tr>
+ <tr>  <td>normal</td><td>reg_t6_v9</td><td>int:32</td> </tr>
+ <tr>  <td>normal</td><td>reg_t7_v10</td><td>int:32</td> </tr>
+ <tr>  <td>normal</td><td>reg_t7_v11</td><td>int:32</td> </tr>
+ <tr>  <td>normal</td><td>r4_main_v17</td><td>int:32</td> </tr>
  <tr>  <td>const</td><td>const:0</td><td>enum:2</td> </tr>
  <tr>  <td>const</td><td>const:1</td><td>enum:2</td> </tr>
- <tr>  <td>normal</td><td>reg_t16</td><td>enum:2</td> </tr>
+ <tr>  <td>normal</td><td>reg_t14</td><td>enum:2</td> </tr>
+ <tr>  <td>wire</td><td>wire_t16</td><td>enum:2</td> </tr>
  <tr>  <td>wire</td><td>wire_t17</td><td>enum:2</td> </tr>
- <tr>  <td>wire</td><td>wire_t18</td><td>enum:2</td> </tr>
+ <tr>  <td>wire</td><td>wire_t18</td><td>int:32</td> </tr>
  <tr>  <td>wire</td><td>wire_t19</td><td>int:32</td> </tr>
  <tr>  <td>wire</td><td>wire_t20</td><td>int:32</td> </tr>
  <tr>  <td>wire</td><td>wire_t21</td><td>int:32</td> </tr>
  <tr>  <td>wire</td><td>wire_t22</td><td>enum:2</td> </tr>
  <tr>  <td>wire</td><td>wire_t23</td><td>int:32</td> </tr>
  <tr>  <td>wire</td><td>wire_t24</td><td>int:32</td> </tr>
-</table>State Machine: 11states<br><table border=1>
+</table>State Machine: 16states<br><table border=1>
  <tr><th></th>
-<th>branch:1</th><th>assign:3<br>shared</th><th>memory:4</th><th>inv:7<br>shared</th><th>eq:8<br>inputs:<br>int:6<br>int:6<br>outputs:<br>enum:2<br>shared</th><th>gt:9<br>inputs:<br>int:32<br>int:32<br>outputs:<br>enum:2</th><th>add:10<br>inputs:<br>int:32<br>int:32<br>outputs:<br>int:32</th><th>selector:13<br>shared</th><th>sram_if:14</th><th>read_channel:15</th><th>add:16<br>inputs:<br>int:32<br>int:32<br>outputs:<br>int:32</th> <th>annotation</th> </tr>
+<th>branch:1</th><th>assign:3<br>shared</th><th>memory:4</th><th>gt:6<br>inputs:<br>int:32<br>int:32<br>outputs:<br>enum:2</th><th>eq:7<br>inputs:<br>int:32<br>int:32<br>outputs:<br>enum:2<br>shared</th><th>add:8<br>inputs:<br>int:32<br>int:32<br>outputs:<br>int:32</th><th>selector:11<br>shared</th><th>sram_if:12</th><th>read_channel:13</th><th>add:14<br>inputs:<br>int:32<br>int:32<br>outputs:<br>int:32</th> <th>annotation</th> </tr>
  <tr class=even>
-  <th>s0  </th><td>next:<br>91<br>id:133<br></td><td>inputs:<br>wire:wire_t17<br>outputs:<br>var:reg_t6<br>id:155<br></td><td></td><td>inputs:<br>const:0<br>outputs:<br>wire:wire_t17<br>id:85<br></td><td></td><td></td><td></td><td></td><td>inputs:<br>const:0<br>id:151<br></td><td></td><td></td><td></td> </tr>
+  <th>s3(initial)  </th><td>next:<br>93<br>id:10<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>const:0<br>id:158<br></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s91  </th><td>inputs:<br>var:reg_t6<br>next:<br>66<br>66<br>id:153<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>const:0<br>outputs:<br>var:reg_t8_v3<br>id:152<br></td><td></td><td></td><td></td> </tr>
+  <th>s93  </th><td>next:<br>6<br>id:160<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>const:0<br>outputs:<br>var:r4_main_v17<br>id:159<br></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s15  </th><td>next:<br>15<br>id:134<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s6  </th><td>inputs:<br>wire:wire_t16<br>next:<br>65<br>65<br>id:13<br></td><td>inputs:<br>wire:wire_t16<br>outputs:<br>var:reg_t2<br>id:162<br></td><td></td><td>inputs:<br>const:1<br>var:r4_main_v17<br>outputs:<br>wire:wire_t16<br>id:82<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s66  </th><td>inputs:<br>wire:wire_t18<br>next:<br>72<br>72<br>id:97<br></td><td>inputs:<br>wire:wire_t18<br>outputs:<br>var:reg_t6<br>id:156<br></td><td></td><td></td><td>inputs:<br>const:0<br>const:1<br>outputs:<br>wire:wire_t18<br>id:96<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s15  </th><td>next:<br>15<br>id:132<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s72  </th><td>next:<br>74<br>id:105<br></td><td>inputs:<br>const:0<br>outputs:<br>var:r1_main<br>id:104<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t6<br>id:142<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t8_v3<br>id:107<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t9_v5<br>id:110<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t3<br>id:145<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t16<br>id:148<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s65  </th><td>inputs:<br>wire:wire_t17<br>next:<br>69<br>72<br>id:94<br></td><td>inputs:<br>wire:wire_t17<br>outputs:<br>var:reg_t14<br>id:163<br></td><td></td><td></td><td>inputs:<br>var:r4_main_v17<br>const:1<br>outputs:<br>wire:wire_t17<br>id:93<br></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s74  </th><td>next:<br>77<br>id:108<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s69  </th><td>next:<br>89<br>id:99<br></td><td>inputs:<br>const:1<br>outputs:<br>var:r1_main<br>id:98<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t9<br>id:146<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s77  </th><td>inputs:<br>wire:wire_t22<br>next:<br>82<br>88<br>id:112<br></td><td>inputs:<br>wire:wire_t19<br>outputs:<br>var:reg_t7_v7<br>id:157<br><hr>inputs:<br>wire:wire_t20<br>outputs:<br>var:reg_t8_v8<br>id:158<br><hr>inputs:<br>wire:wire_t21<br>outputs:<br>var:reg_t9_v9<br>id:159<br><hr>inputs:<br>wire:wire_t22<br>outputs:<br>var:reg_t3<br>id:160<br></td><td></td><td></td><td></td><td>inputs:<br>const:0<br>wire:wire_t21<br>outputs:<br>wire:wire_t22<br>id:115<br></td><td></td><td>inputs:<br>var:r1_main<br>var:reg_t7_v2<br>var:reg_t6<br>outputs:<br>wire:wire_t19<br>id:144<br><hr>inputs:<br>var:reg_t8_v3<br>var:r3_main<br>var:reg_t3<br>outputs:<br>wire:wire_t20<br>id:147<br><hr>inputs:<br>var:reg_t9_v5<br>var:reg_t9_v6<br>var:reg_t16<br>outputs:<br>wire:wire_t21<br>id:150<br></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s72  </th><td>next:<br>74<br>id:103<br></td><td>inputs:<br>const:0<br>outputs:<br>var:r3_main<br>id:102<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t2<br>id:150<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t6_v9<br>id:105<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t14<br>id:153<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t7_v11<br>id:108<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t9<br>id:156<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s82  </th><td>next:<br>83<br>id:121<br></td><td>inputs:<br>wire:wire_t23<br>outputs:<br>var:r3_main<br>id:122<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t3<br>id:146<br><hr>inputs:<br>wire:wire_t23<br>outputs:<br>var:reg_t7_v2<br>id:124<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t16<br>id:149<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t6<br>id:143<br><hr>inputs:<br>wire:wire_t23<br>outputs:<br>var:r1_main<br>id:161<br><hr>inputs:<br>wire:wire_t24<br>outputs:<br>var:reg_t9_v6<br>id:162<br></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t7_v7<br>var:reg_t8_v8<br>outputs:<br>wire:wire_t23<br>id:120<br></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t9_v9<br>const:1<br>outputs:<br>wire:wire_t24<br>id:126<br></td><td></td> </tr>
+  <th>s74  </th><td>next:<br>76<br>id:106<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s83  </th><td>next:<br>84<br>id:123<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s76  </th><td>next:<br>77<br>id:109<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s84  </th><td>next:<br>77<br>id:125<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s77  </th><td>inputs:<br>wire:wire_t22<br>next:<br>82<br>88<br>id:110<br></td><td>inputs:<br>wire:wire_t19<br>outputs:<br>var:reg_t5_v3<br>id:164<br><hr>inputs:<br>wire:wire_t20<br>outputs:<br>var:r1_main<br>id:165<br><hr>inputs:<br>wire:wire_t21<br>outputs:<br>var:reg_t7_v5<br>id:166<br><hr>inputs:<br>wire:wire_t22<br>outputs:<br>var:reg_t2<br>id:167<br></td><td></td><td>inputs:<br>var:r4_main_v17<br>wire:wire_t21<br>outputs:<br>wire:wire_t22<br>id:113<br></td><td></td><td></td><td>inputs:<br>var:reg_t5_v6<br>var:r3_main<br>var:reg_t2<br>outputs:<br>wire:wire_t19<br>id:151<br><hr>inputs:<br>var:reg_t6_v8<br>var:reg_t6_v9<br>var:reg_t14<br>outputs:<br>wire:wire_t20<br>id:154<br><hr>inputs:<br>var:reg_t7_v10<br>var:reg_t7_v11<br>var:reg_t9<br>outputs:<br>wire:wire_t21<br>id:157<br></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s88  </th><td>next:<br>15<br>id:131<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>const:1<br>var:reg_t8_v8<br>id:154<br></td><td></td><td></td><td></td> </tr>
+  <th>s82  </th><td>next:<br>83<br>id:119<br></td><td>inputs:<br>wire:wire_t23<br>outputs:<br>var:reg_t6_v8<br>id:120<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t14<br>id:152<br><hr>inputs:<br>wire:wire_t23<br>outputs:<br>var:reg_t5_v6<br>id:122<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t9<br>id:155<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t2<br>id:149<br><hr>inputs:<br>wire:wire_t23<br>outputs:<br>var:r3_main<br>id:168<br><hr>inputs:<br>wire:wire_t24<br>outputs:<br>var:reg_t7_v10<br>id:169<br></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t5_v3<br>var:r1_main<br>outputs:<br>wire:wire_t23<br>id:118<br></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t7_v5<br>const:1<br>outputs:<br>wire:wire_t24<br>id:124<br></td><td></td> </tr>
+ <tr class=odd>
+  <th>s83  </th><td>next:<br>84<br>id:121<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+ <tr class=even>
+  <th>s84  </th><td>next:<br>77<br>id:123<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+ <tr class=odd>
+  <th>s88  </th><td>next:<br>89<br>id:129<br></td><td>inputs:<br>var:r1_main<br>outputs:<br>var:r3_main<br>id:128<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t9<br>id:147<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+ <tr class=even>
+  <th>s89  </th><td>next:<br>91<br>id:130<br></td><td>inputs:<br>wire:wire_t18<br>outputs:<br>var:reg_t6_v8<br>id:170<br></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:r1_main<br>var:r3_main<br>var:reg_t9<br>outputs:<br>wire:wire_t18<br>id:148<br></td><td></td><td></td><td></td><td></td> </tr>
+ <tr class=odd>
+  <th>s91  </th><td>next:<br>15<br>id:136<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>const:1<br>var:reg_t6_v8<br>id:161<br></td><td></td><td></td><td></td> </tr>
 </table><hr></body></html>
