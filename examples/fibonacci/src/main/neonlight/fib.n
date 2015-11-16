@@ -1,0 +1,46 @@
+
+object Fib = Kernel.clone();
+object Global.Fib = Fib;
+
+int Fib.param  = 0;
+int Fib.result = 0;
+
+def Fib.fib() {
+  int r0;
+  int r1;
+  int prev_r1;
+  int i;
+  if (param <= 0) {
+    result = 0;
+  }
+  if (param == 1) {
+    result = 1;
+  }
+  r0 = 0;
+  r1 = 1;
+  for (i = 1; i < param; ++i) {
+    prev_r1 = r1;
+    r1 = r0 + r1;
+    r0 = prev_r1;
+  }
+  result = r1;
+}
+
+Fib.param = 42;
+Fib.fib();
+// print(Fib.result);
+
+def Fib.main() {
+   int *in  = 0;
+   int *out = 1;
+   param = *in;
+   fib();
+   *out = result;
+}
+
+if (Env.isMain()) {
+  Fib.setDump("./tmp/fib");
+  Fib.compile();
+  Fib.writeHdl("fib.v");
+  Fib.writeHdl("fib.cpp");
+}
