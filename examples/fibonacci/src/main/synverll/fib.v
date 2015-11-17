@@ -61,6 +61,7 @@ localparam __label__lr_ph = 4;
 localparam __label_3 = 6;
 localparam __label___crit_edge_loopexit = 10;
 localparam __label___crit_edge = 12;
+integer __label_pre;
 integer __label;
 always @(posedge __func_clock or negedge __func_reset) begin
 	if(!__func_reset) begin
@@ -82,6 +83,7 @@ always @(posedge __func_clock or negedge __func_reset) begin
 		end
 		__state_start_exec: begin
 			__state <= __state_1_exec;
+	__label_pre <= __label_0;
 		end
 		__state_1_exec: begin
 			__state <= __state_2_exec;
@@ -93,17 +95,19 @@ always @(posedge __func_clock or negedge __func_reset) begin
 		end
 		__state_3_exec: begin
 			__state <= (__sig_1)?__state_4_exec:__state_12_exec;
+			__label <= __label_pre;
 		end
 		__state_4_exec: begin
 			__state <= __state_5_exec;
-			__label <= __label__lr_ph;
+			__label_pre <= __label__lr_ph;
 		end
 		__state_5_exec: begin
 			__state <= __state_6_exec;
+			__label <= __label_pre;
 		end
 		__state_6_exec: begin
 			__state <= __state_7_exec;
-			__label <= __label_3;
+			__label_pre <= __label_3;
 		end
 		__state_7_exec: begin
 			__state <= __state_8_exec;
@@ -128,20 +132,22 @@ always @(posedge __func_clock or negedge __func_reset) begin
 		end
 		__state_9_exec: begin
 			__state <= (__sig_exitcond)?__state_10_exec:__state_6_exec;
+			__label <= __label_pre;
 		end
 		__state_10_exec: begin
 			__state <= __state_11_exec;
-			__label <= __label___crit_edge_loopexit;
+			__label_pre <= __label___crit_edge_loopexit;
 		end
 		__state_11_exec: begin
 			__state <= __state_12_exec;
+			__label <= __label_pre;
 			case(__label)
 				__label_3: __sig_next_01_lcssa <= __sig_next_01;
 			endcase
 		end
 		__state_12_exec: begin
 			__state <= __state_13_exec;
-			__label <= __label___crit_edge;
+			__label_pre <= __label___crit_edge;
 		end
 		__state_13_exec: begin
 			__state <= __state_14_exec;
