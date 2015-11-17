@@ -17,32 +17,24 @@ module fib(
 	output reg __func_done,
 	output reg __func_ready,
 
-	output reg __gm_req,
-	output reg __gm_rnw,
-	input __gm_done,
-	output reg [31:0] __gm_adrs,
-	output reg [1:0] __gm_leng,
-	input [31:0] __gm_di,
-	output reg [31:0] __gm_do,
-
 	// Memory Singal
 	input [31:0] __args_n,
 	// Call Singal
+	// Result Singal
+	output reg [31:0] __func_result
 
-	output reg __dummy
 );
 
 reg [0:0] __sig_1;
-reg [0:0] __sig_3;
+reg [31:0] __sig_2;
+reg [31:0] __sig_curr_03;
+reg [31:0] __sig_i_02;
+reg [31:0] __sig_next_01;
 reg [31:0] __sig_4;
-reg [31:0] __sig_i_03;
-reg [31:0] __sig_r1_02;
-reg [31:0] __sig_r0_01;
-reg [31:0] __sig_6;
-reg [31:0] __sig_7;
+reg [31:0] __sig_5;
 reg [0:0] __sig_exitcond;
-reg [31:0] __sig_r1_02_lcssa;
-reg [31:0] __sig__0;
+reg [31:0] __sig_next_01_lcssa;
+reg [31:0] __sig_curr_0_lcssa;
 	reg [31:0] __sig_n;
 localparam __state_fin_exec = 0;
 localparam __state_start_req = 1;
@@ -63,15 +55,12 @@ localparam __state_12_exec = 15;
 localparam __state_13_exec = 16;
 localparam __state_14_exec = 17;
 localparam __state_15_exec = 18;
-localparam __state_16_exec = 19;
-localparam __state_17_exec = 20;
 integer __state;
 localparam __label_0 = 0;
-localparam __label_2 = 4;
-localparam __label__lr_ph = 6;
-localparam __label_5 = 8;
-localparam __label__loopexit_loopexit = 12;
-localparam __label__loopexit = 14;
+localparam __label__lr_ph = 4;
+localparam __label_3 = 6;
+localparam __label___crit_edge_loopexit = 10;
+localparam __label___crit_edge = 12;
 integer __label;
 always @(posedge __func_clock or negedge __func_reset) begin
 	if(!__func_reset) begin
@@ -99,81 +88,73 @@ always @(posedge __func_clock or negedge __func_reset) begin
 		end
 		__state_2_exec: begin
 			__state <= __state_3_exec;
-			__sig_1 <= ( $signed(__sig_n) < $signed((1)) );
-			__sig_3 <= ( __sig_n == (1) );
-			__sig_4 <= $signed(__sig_n) + $signed((-1));
+			__sig_1 <= ( $signed(__sig_n) > $signed((0)) );
+			__sig_2 <= $signed(__sig_n) + $signed((-1));
 		end
 		__state_3_exec: begin
-			__state <= (__sig_1)?__state_14_exec:__state_4_exec;
+			__state <= (__sig_1)?__state_4_exec:__state_12_exec;
 		end
 		__state_4_exec: begin
 			__state <= __state_5_exec;
-			__label <= __label_2;
+			__label <= __label__lr_ph;
 		end
 		__state_5_exec: begin
-			__state <= (__sig_3)?__state_14_exec:__state_6_exec;
+			__state <= __state_6_exec;
 		end
 		__state_6_exec: begin
 			__state <= __state_7_exec;
-			__label <= __label__lr_ph;
+			__label <= __label_3;
 		end
 		__state_7_exec: begin
 			__state <= __state_8_exec;
+			case(__label)
+				__label__lr_ph: __sig_curr_03 <= (0);
+				__label_3: __sig_curr_03 <= __sig_next_01;
+			endcase
+			case(__label)
+				__label__lr_ph: __sig_i_02 <= (0);
+				__label_3: __sig_i_02 <= __sig_5;
+			endcase
+			case(__label)
+				__label__lr_ph: __sig_next_01 <= (1);
+				__label_3: __sig_next_01 <= __sig_4;
+			endcase
 		end
 		__state_8_exec: begin
 			__state <= __state_9_exec;
-			__label <= __label_5;
+			__sig_4 <= $signed(__sig_curr_03) + $signed(__sig_next_01);
+			__sig_5 <= $signed(__sig_i_02) + $signed((1));
+			__sig_exitcond <= ( __sig_i_02 == __sig_2 );
 		end
 		__state_9_exec: begin
-			__state <= __state_10_exec;
-			case(__label)
-				__label__lr_ph: __sig_i_03 <= (0);
-				__label_5: __sig_i_03 <= __sig_7;
-			endcase
-			case(__label)
-				__label__lr_ph: __sig_r1_02 <= (1);
-				__label_5: __sig_r1_02 <= __sig_6;
-			endcase
-			case(__label)
-				__label__lr_ph: __sig_r0_01 <= (0);
-				__label_5: __sig_r0_01 <= __sig_r1_02;
-			endcase
+			__state <= (__sig_exitcond)?__state_10_exec:__state_6_exec;
 		end
 		__state_10_exec: begin
 			__state <= __state_11_exec;
-			__sig_6 <= $signed(__sig_r1_02) + $signed(__sig_r0_01);
-			__sig_7 <= $signed(__sig_i_03) + $signed((1));
-			__sig_exitcond <= ( __sig_i_03 == __sig_4 );
+			__label <= __label___crit_edge_loopexit;
 		end
 		__state_11_exec: begin
-			__state <= (__sig_exitcond)?__state_12_exec:__state_8_exec;
+			__state <= __state_12_exec;
+			case(__label)
+				__label_3: __sig_next_01_lcssa <= __sig_next_01;
+			endcase
 		end
 		__state_12_exec: begin
 			__state <= __state_13_exec;
-			__label <= __label__loopexit_loopexit;
+			__label <= __label___crit_edge;
 		end
 		__state_13_exec: begin
 			__state <= __state_14_exec;
 			case(__label)
-				__label_5: __sig_r1_02_lcssa <= __sig_r1_02;
+				__label_0: __sig_curr_0_lcssa <= (0);
+				__label___crit_edge_loopexit: __sig_curr_0_lcssa <= __sig_next_01_lcssa;
 			endcase
 		end
 		__state_14_exec: begin
-			__state <= __state_15_exec;
-			__label <= __label__loopexit;
+			__state <= __state_fin_exec;
+			__func_result <= $signed(__sig_curr_0_lcssa);
 		end
 		__state_15_exec: begin
-			__state <= __state_16_exec;
-			case(__label)
-				__label_0: __sig__0 <= (0);
-				__label_2: __sig__0 <= (1);
-				__label__loopexit_loopexit: __sig__0 <= __sig_r1_02_lcssa;
-			endcase
-		end
-		__state_16_exec: begin
-			__state <= __state_fin_exec;
-		end
-		__state_17_exec: begin
 			__state <= __state_fin_exec;
 		end
 		__state_fin_exec: begin
