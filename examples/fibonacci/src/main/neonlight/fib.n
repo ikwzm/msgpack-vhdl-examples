@@ -20,10 +20,6 @@ def Fib.fib(){
   result = curr;
 }
 
-// Fib.param = 42;
-// Fib.fib();
-// print(Fib.result);
-
 def Fib.main() {
    int *in  = 0;
    int *out = 1;
@@ -31,6 +27,11 @@ def Fib.main() {
    fib();
    *out = result;
 }
+
+// Fib.param = 42;
+// Fib.fib();
+// print(Fib.result);
+
 
 if (Env.isMain()) {
   Fib.setDump("./tmp/fib");
