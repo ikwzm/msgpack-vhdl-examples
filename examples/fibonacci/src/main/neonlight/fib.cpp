@@ -9,23 +9,28 @@ public:
   int state;
   uint64_t r1_main;
   uint64_t r3_main;
-  uint64_t reg_t2;
-  uint64_t reg_t5;
-  uint64_t reg_t1_v2;
-  uint64_t reg_t2_v4;
+  uint64_t r7_main;
+  uint64_t r6_main;
+  uint64_t r14_main;
+  uint64_t reg_t3_v1;
+  uint64_t reg_t2_v3;
+  uint64_t reg_t4_v4;
+  uint64_t reg_t4_v5;
   uint64_t reg_t3_v6;
-  uint64_t r4_main_v11;
-  uint64_t reg_t1_v13;
-  uint64_t reg_t2_v14;
-  uint64_t reg_t3_v15;
+  uint64_t reg_t2_v9;
+  uint64_t r6_main_v17;
+  uint64_t r9_main_v18;
   uint64_t reg_t9;
   uint64_t reg_t10;
   void s_0();
-  void s_57();
+  void s_65();
+  void s_3();
   void s_13();
-  void s_15();
-  void s_43();
-  void s_48();
+  void s_66();
+  void s_20();
+  void s_63();
+  void s_50();
+  void s_54();
   void reset();
   void PostState();
   bool Dispatch();
@@ -33,72 +38,98 @@ public:
 };
 
 void Mod_main::s_0() {
-  r1_main = 0UL;
-  reg_t2_v4 = 1UL;
-  reg_t3_v6 = 0UL;
-  reg_t5 = 0UL;
-  reg_t9 = 1UL;
-  reg_t10 = 1UL;
   if (true) {
-    state = 57;
+    state = 65;
   }
 }
 
-void Mod_main::s_57() {
-  r4_main_v11 = SRAMRead(0UL, NULL);
+void Mod_main::s_65() {
+  r7_main = SRAMRead(0UL, NULL);
   if (true) {
-    state = 43;
+    state = 3;
+  }
+}
+
+void Mod_main::s_3() {
+  uint64_t wire_t12;
+  uint64_t wire_t13;
+  wire_t12 = r7_main == 0UL;
+  wire_t13 =!wire_t12;
+  r6_main_v17 = wire_t13;
+  if (true) {
+    if (wire_t13) state = 13;
+    else
+    state = 63;
   }
 }
 
 void Mod_main::s_13() {
-  SRAMWrite(1UL, reg_t1_v13, NULL);
+  reg_t2_v9 = 0UL;
+  reg_t3_v6 = 1UL;
+  reg_t4_v4 = 0UL;
+  reg_t9 = 0UL;
+  reg_t10 = 1UL;
+  r6_main = 0UL;
   if (true) {
-    state = 15;
+    state = 66;
   }
 }
 
-void Mod_main::s_15() {
+void Mod_main::s_66() {
+  r9_main_v18 = SRAMRead(1UL, NULL);
   if (true) {
-    state = 15;
+    state = 50;
+  }
+}
+
+void Mod_main::s_20() {
+  SRAMWrite(2UL, reg_t2_v3, NULL);
+  if (true) {
+    state = 63;
+  }
+}
+
+void Mod_main::s_63() {
+  if (true) {
+    state = 63;
   }
   finish_ = true;
 }
 
-void Mod_main::s_43() {
-  uint64_t wire_t11;
-  uint64_t wire_t12;
-  uint64_t wire_t13;
+void Mod_main::s_50() {
   uint64_t wire_t14;
-  wire_t11 = reg_t5 ? reg_t1_v2 : r1_main;
-  wire_t12 = reg_t9 ? reg_t2_v4 : r3_main;
-  wire_t13 = reg_t10 ? reg_t3_v6 : reg_t2;
-  wire_t14 = r4_main_v11 > wire_t13;
-  reg_t1_v13 = wire_t11;
-  reg_t2_v14 = wire_t12;
-  reg_t3_v15 = wire_t13;
-  reg_t5 = wire_t14;
+  uint64_t wire_t15;
+  uint64_t wire_t16;
+  uint64_t wire_t17;
+  wire_t14 = reg_t9 ? r14_main : reg_t3_v6;
+  wire_t15 = reg_t10 ? reg_t2_v9 : r3_main;
+  wire_t16 = r6_main ? reg_t4_v5 : reg_t4_v4;
+  wire_t17 = r9_main_v18 > wire_t16;
+  reg_t3_v1 = wire_t14;
+  reg_t2_v3 = wire_t15;
+  r1_main = wire_t16;
+  r6_main = wire_t17;
   if (true) {
-    if (wire_t14) state = 48;
+    if (wire_t17) state = 54;
     else
-    state = 13;
+    state = 20;
   }
 }
 
-void Mod_main::s_48() {
-  uint64_t wire_t15;
-  uint64_t wire_t16;
-  reg_t1_v2 = reg_t2_v14;
-  wire_t15 = reg_t2_v14 + reg_t1_v13;
-  reg_t5 = 1UL;
-  reg_t9 = 0UL;
+void Mod_main::s_54() {
+  uint64_t wire_t18;
+  uint64_t wire_t19;
+  r3_main = reg_t3_v1;
+  wire_t18 = reg_t3_v1 + reg_t2_v3;
   reg_t10 = 0UL;
-  r3_main = wire_t15;
-  wire_t16 = reg_t3_v15 + 1UL;
-  reg_t3_v6 = wire_t15;
-  reg_t2 = wire_t16;
+  r6_main = 1UL;
+  reg_t9 = 1UL;
+  r14_main = wire_t18;
+  wire_t19 = r1_main + 1UL;
+  reg_t2_v9 = wire_t18;
+  reg_t4_v5 = wire_t19;
   if (true) {
-    state = 43;
+    state = 50;
   }
 }
 
@@ -116,20 +147,29 @@ bool Mod_main::Dispatch() {
     case 0:
       s_0();
       break;
-    case 57:
-      s_57();
+    case 65:
+      s_65();
+      break;
+    case 3:
+      s_3();
       break;
     case 13:
       s_13();
       break;
-    case 15:
-      s_15();
+    case 66:
+      s_66();
       break;
-    case 43:
-      s_43();
+    case 20:
+      s_20();
       break;
-    case 48:
-      s_48();
+    case 63:
+      s_63();
+      break;
+    case 50:
+      s_50();
+      break;
+    case 54:
+      s_54();
       break;
     case kIdleState:
       break;

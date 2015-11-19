@@ -1,7 +1,8 @@
 module fib_test;
    reg         clk = 0;
    reg         fib_rst;
-   reg  [31:0] fib_data_i;
+   reg  [31:0] fib_mem[1:0];
+   wire [31:0] fib_data_i;
    wire [31:0] fib_addr;
    wire        fib_wen;
    wire [31:0] fib_data_o;
@@ -14,14 +15,14 @@ module fib_test;
       input [31:0] expected_result;
       integer      timeout;
       begin
-	 fib_rst    <= #1 1;
          @(posedge clk);
-         fib_data_i <= #1 n;
-         fib_rst    <= #1 0;
+         fib_mem[0] <= #1 1;
+         fib_mem[1] <= #1 n;
          timeout    = 1000;
          begin: loop
             forever begin
                @(posedge clk);
+               fib_mem[0] <= #1 0;
                if (fib_wen) begin
                   if (fib_data_o !== expected_result)
                       $display("fib_return = %d expected but %d found.", expected_result, fib_data_o);
@@ -41,7 +42,10 @@ module fib_test;
 
    initial begin
       fib_rst    <= 1;
-      fib_data_i <= 0;
+      fib_mem[0] <= 0;
+      fib_mem[1] <= 0;
+      repeat(10) @(posedge clk);
+      fib_rst    <= 0;
       repeat(10) @(posedge clk);
       test(0, 0);
       test(1, 1);
@@ -53,6 +57,8 @@ module fib_test;
       $stop;
    end
 
+   assign fib_data_i = (fib_addr == 1) ? fib_mem[1] : fib_mem[0];
+		 
    fib dut(
        .clk       (clk       ),
        .rst       (fib_rst   ),

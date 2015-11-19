@@ -21,11 +21,16 @@ def Fib.fib(){
 }
 
 def Fib.main() {
-   int *in  = 0;
-   int *out = 1;
-   param = *in;
-   fib();
-   *out = result;
+  int *req = 0;
+  int *in  = 1;
+  int *out = 2;
+  while(1) {
+    if (*req != 0) {
+      param = *in;
+      fib();
+      *out = result;
+    }
+  }
 }
 
 // Fib.param = 42;
