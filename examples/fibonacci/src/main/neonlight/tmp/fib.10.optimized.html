@@ -1,0 +1,54 @@
+<html>
+<head><title>Neon Light State Machine</title>
+ <style type="text/css">
+  table {font-size: x-small;}
+  tr.even {background-color: #c0c0ff}
+  tr.odd {background-color: #ffc0c0}
+ </style></head><body>
+<!-- NLI_HTML_BODY -->|<a href="fib.0.raw.html" target="fr">fib.0.raw.html</a>|<wbr>|<a href="fib.1.expanded.html" target="fr">fib.1.expanded.html</a>|<wbr>|<a href="fib.2.opt_pure_temp_variable_elimination.html" target="fr">fib.2.opt_pure_temp_variable_elimination.html</a>|<wbr>|<a href="fib.3.opt_basic_block_shrink.html" target="fr">fib.3.opt_basic_block_shrink.html</a>|<wbr>|<a href="fib.4.opt_ssa.html" target="fr">fib.4.opt_ssa.html</a>|<wbr>|<a href="fib.5.opt_ssa_assorted.html" target="fr">fib.5.opt_ssa_assorted.html</a>|<wbr>|<a href="fib.6.opt_ssa_cleanup.html" target="fr">fib.6.opt_ssa_cleanup.html</a>|<wbr>|<a href="fib.7.opt_register_share.html" target="fr">fib.7.opt_register_share.html</a>|<wbr>|<a href="fib.8.opt_basic_block_shrink.html" target="fr">fib.8.opt_basic_block_shrink.html</a>|<wbr>|<a href="fib.9.opt_resource_alloc.html" target="fr">fib.9.opt_resource_alloc.html</a>|<wbr>|<a href="fib.10.optimized.html" target="fr">fib.10.optimized.html</a>|<wbr>|<a href="fib.11.ll.html" target="fr">fib.11.ll.html</a>|<wbr>
+<br>optimized<hr>
+(THREAD)
+path:-main<br>
+Registers:<table border=1>
+<tr><th>alloc type</th><th>name</th><th>data type</th><th>annotation</th></tr>
+ <tr>  <td>const</td><td>0</td><td>int:32</td> </tr>
+ <tr>  <td>normal</td><td>r1_main</td><td>int:32</td> </tr>
+ <tr>  <td>const</td><td>1</td><td>int:32</td> </tr>
+ <tr>  <td>normal</td><td>r3_main</td><td>int:32</td> </tr>
+ <tr>  <td>normal</td><td>reg_t2</td><td>int:32</td> </tr>
+ <tr>  <td>normal</td><td>reg_t5</td><td>enum:2</td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v2</td><td>int:32</td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v4</td><td>int:32</td> </tr>
+ <tr>  <td>normal</td><td>reg_t3_v6</td><td>int:32</td> </tr>
+ <tr>  <td>normal</td><td>r4_main_v11</td><td>int:32</td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v13</td><td>int:32</td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v14</td><td>int:32</td> </tr>
+ <tr>  <td>normal</td><td>reg_t3_v15</td><td>int:32</td> </tr>
+ <tr>  <td>const</td><td>const:0</td><td>enum:2</td> </tr>
+ <tr>  <td>const</td><td>const:1</td><td>enum:2</td> </tr>
+ <tr>  <td>normal</td><td>reg_t9</td><td>enum:2</td> </tr>
+ <tr>  <td>normal</td><td>reg_t10</td><td>enum:2</td> </tr>
+ <tr>  <td>wire</td><td>wire_t11</td><td>int:32</td> </tr>
+ <tr>  <td>wire</td><td>wire_t12</td><td>int:32</td> </tr>
+ <tr>  <td>wire</td><td>wire_t13</td><td>int:32</td> </tr>
+ <tr>  <td>wire</td><td>wire_t14</td><td>enum:2</td> </tr>
+ <tr>  <td>wire</td><td>wire_t15</td><td>int:32</td> </tr>
+ <tr>  <td>wire</td><td>wire_t16</td><td>int:32</td> </tr>
+</table>State Machine: 7states<br><table border=1>
+ <tr><th></th>
+<th>branch:1</th><th>assign:3<br>shared</th><th>memory:4</th><th>gt:6<br>inputs:<br>int:32<br>int:32<br>outputs:<br>enum:2</th><th>add:7<br>inputs:<br>int:32<br>int:32<br>outputs:<br>int:32</th><th>selector:10<br>shared</th><th>sram_if:11</th><th>read_channel:12</th><th>add:13<br>inputs:<br>int:32<br>int:32<br>outputs:<br>int:32</th> <th>annotation</th> </tr>
+ <tr class=even>
+  <th>s0  </th><td>next:<br>57<br>id:85<br></td><td>inputs:<br>const:0<br>outputs:<br>var:r1_main<br>id:56<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t2_v4<br>id:59<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t3_v6<br>id:62<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t5<br>id:93<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t9<br>id:97<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t10<br>id:100<br></td><td></td><td></td><td></td><td></td><td>inputs:<br>const:0<br>id:102<br></td><td></td><td></td><td></td> </tr>
+ <tr class=odd>
+  <th>s57  </th><td>next:<br>43<br>id:104<br></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>const:0<br>outputs:<br>var:r4_main_v11<br>id:103<br></td><td></td><td></td><td></td> </tr>
+ <tr class=even>
+  <th>s13  </th><td>next:<br>15<br>id:20<br></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>const:1<br>var:reg_t1_v13<br>id:105<br></td><td></td><td></td><td></td> </tr>
+ <tr class=odd>
+  <th>s15  </th><td>next:<br>15<br>id:86<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+ <tr class=even>
+  <th>s43  </th><td>inputs:<br>wire:wire_t14<br>next:<br>48<br>13<br>id:64<br></td><td>inputs:<br>wire:wire_t11<br>outputs:<br>var:reg_t1_v13<br>id:106<br><hr>inputs:<br>wire:wire_t12<br>outputs:<br>var:reg_t2_v14<br>id:107<br><hr>inputs:<br>wire:wire_t13<br>outputs:<br>var:reg_t3_v15<br>id:108<br><hr>inputs:<br>wire:wire_t14<br>outputs:<br>var:reg_t5<br>id:109<br></td><td></td><td>inputs:<br>var:r4_main_v11<br>wire:wire_t13<br>outputs:<br>wire:wire_t14<br>id:67<br></td><td></td><td>inputs:<br>var:r1_main<br>var:reg_t1_v2<br>var:reg_t5<br>outputs:<br>wire:wire_t11<br>id:95<br><hr>inputs:<br>var:r3_main<br>var:reg_t2_v4<br>var:reg_t9<br>outputs:<br>wire:wire_t12<br>id:98<br><hr>inputs:<br>var:reg_t2<br>var:reg_t3_v6<br>var:reg_t10<br>outputs:<br>wire:wire_t13<br>id:101<br></td><td></td><td></td><td></td><td></td> </tr>
+ <tr class=odd>
+  <th>s48  </th><td>next:<br>49<br>id:73<br></td><td>inputs:<br>var:reg_t2_v14<br>outputs:<br>var:reg_t1_v2<br>id:72<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t5<br>id:94<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t9<br>id:96<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t10<br>id:99<br><hr>inputs:<br>wire:wire_t15<br>outputs:<br>var:r3_main<br>id:76<br><hr>inputs:<br>wire:wire_t15<br>outputs:<br>var:reg_t3_v6<br>id:110<br><hr>inputs:<br>wire:wire_t16<br>outputs:<br>var:reg_t2<br>id:111<br></td><td></td><td></td><td>inputs:<br>var:reg_t2_v14<br>var:reg_t1_v13<br>outputs:<br>wire:wire_t15<br>id:74<br></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t3_v15<br>const:1<br>outputs:<br>wire:wire_t16<br>id:78<br></td><td></td> </tr>
+ <tr class=even>
+  <th>s49  </th><td>next:<br>43<br>id:75<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+</table><hr></body></html>
