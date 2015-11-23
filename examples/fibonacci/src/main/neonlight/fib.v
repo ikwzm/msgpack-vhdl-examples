@@ -4,7 +4,7 @@ module fib_main(clk, rst, channel_result_data, channel_result_en, channel_result
   input clk;
   input rst;
   // Channel result
-  output [31:0] channel_result_data;
+  output [63:0] channel_result_data;
   output channel_result_en;
   input channel_result_ack;
   // Channel param
@@ -12,29 +12,29 @@ module fib_main(clk, rst, channel_result_data, channel_result_en, channel_result
   input channel_param_en;
   output channel_param_ack;
 
-  reg [31:0] channel_result_data;
+  reg [63:0] channel_result_data;
   reg channel_result_en;
   reg channel_param_ack;
 
   reg [31:0]  r4_main;
-  reg [31:0]  reg_t2;
+  reg [63:0]  reg_t1;
   reg  reg_t4;
-  reg [31:0]  reg_t1_v1;
-  reg [31:0]  reg_t2_v2;
-  reg [31:0]  reg_t3_v3;
-  reg [31:0]  reg_t2_v6;
-  reg [31:0]  reg_t2_v7;
+  reg [63:0]  reg_t6;
+  reg [63:0]  reg_t2_v2;
+  reg [63:0]  reg_t1_v4;
+  reg [63:0]  reg_t1_v5;
+  reg [63:0]  reg_t2_v7;
   reg [31:0]  reg_t3_v8;
   reg [31:0]  reg_t3_v9;
   reg [31:0]  r4_main_v13;
   reg  reg_t8;
   reg  reg_t9;
-  wire [31:0]  wire_t10;
-  wire [31:0]  wire_t11;
+  wire [63:0]  wire_t10;
+  wire [63:0]  wire_t11;
   wire [31:0]  wire_t12;
-  wire [31:0]  wire_t13;
+  wire  wire_t13;
   wire [31:0]  wire_t14;
-  wire  wire_t15;
+  wire [63:0]  wire_t15;
 
   // declare state begin
  `define S_3 3
@@ -59,53 +59,53 @@ module fib_main(clk, rst, channel_result_data, channel_result_en, channel_result
   wire [31:0] gt_7_s0;
   wire [31:0] gt_7_s1;
   assign gt_7_s0 = (cur_st == `S_40) ? r4_main_v13 : (0);
-  assign gt_7_s1 = (cur_st == `S_40) ? wire_t14 : (0);
+  assign gt_7_s1 = (cur_st == `S_40) ? wire_t12 : (0);
   assign gt_7_d0 = (gt_7_s0 > gt_7_s1);
 
   // add_8
-  wire [31:0] add_8_d0;
-  wire [31:0] add_8_s0;
-  wire [31:0] add_8_s1;
+  wire [63:0] add_8_d0;
+  wire [63:0] add_8_s0;
+  wire [63:0] add_8_s1;
   assign add_8_s0 = (cur_st == `S_43) ? reg_t2_v2 : (0);
-  assign add_8_s1 = (cur_st == `S_43) ? reg_t1_v1 : (0);
+  assign add_8_s1 = (cur_st == `S_43) ? reg_t6 : (0);
   assign add_8_d0 = (add_8_s0 + add_8_s1);
 
-  // selector_11
+  // add_9
+  wire [31:0] add_9_d0;
+  wire [31:0] add_9_s0;
+  wire [31:0] add_9_s1;
+  assign add_9_s0 = (cur_st == `S_43) ? r4_main : (0);
+  assign add_9_s1 = (cur_st == `S_43) ? 2'd1 : (0);
+  assign add_9_d0 = (add_9_s0 + add_9_s1);
 
-  // add_14
-  wire [31:0] add_14_d0;
-  wire [31:0] add_14_s0;
-  wire [31:0] add_14_s1;
-  assign add_14_s0 = (cur_st == `S_43) ? reg_t3_v3 : (0);
-  assign add_14_s1 = (cur_st == `S_43) ? 2'd1 : (0);
-  assign add_14_d0 = (add_14_s0 + add_14_s1);
+  // selector_12
 
   // resources end
 
   // insn wires begin
   wire [31:0] o_insn_2_0; // id:2
   assign o_insn_2_0 = channel_param_data;
-  wire [31:0] o_insn_86_0; // id:86
-  assign o_insn_86_0 = reg_t4 ? reg_t2 : r4_main;
-  wire [31:0] o_insn_89_0; // id:89
-  assign o_insn_89_0 = reg_t8 ? reg_t2_v7 : reg_t2_v6;
+  wire [63:0] o_insn_86_0; // id:86
+  assign o_insn_86_0 = reg_t4 ? reg_t1_v5 : reg_t1_v4;
+  wire [63:0] o_insn_89_0; // id:89
+  assign o_insn_89_0 = reg_t8 ? reg_t2_v7 : reg_t1;
   wire [31:0] o_insn_92_0; // id:92
   assign o_insn_92_0 = reg_t9 ? reg_t3_v9 : reg_t3_v8;
   wire o_insn_56_0; // id:56
   assign o_insn_56_0 = gt_7_d0;
-  wire [31:0] o_insn_63_0; // id:63
-  assign o_insn_63_0 = add_8_d0;
   wire [31:0] o_insn_67_0; // id:67
-  assign o_insn_67_0 = add_14_d0;
+  assign o_insn_67_0 = add_9_d0;
+  wire [63:0] o_insn_63_0; // id:63
+  assign o_insn_63_0 = add_8_d0;
   // insn wires end
 
   // insn result wires begin
-   assign wire_t12 = o_insn_86_0;
-   assign wire_t13 = o_insn_89_0;
-   assign wire_t14 = o_insn_92_0;
-   assign wire_t15 = o_insn_56_0;
-   assign wire_t10 = o_insn_63_0;
-   assign wire_t11 = o_insn_67_0;
+   assign wire_t10 = o_insn_86_0;
+   assign wire_t11 = o_insn_89_0;
+   assign wire_t12 = o_insn_92_0;
+   assign wire_t13 = o_insn_56_0;
+   assign wire_t14 = o_insn_67_0;
+   assign wire_t15 = o_insn_63_0;
   // insn result wires end
 
   // sub state regs begin
@@ -123,18 +123,18 @@ module fib_main(clk, rst, channel_result_data, channel_result_en, channel_result
     end else begin
 `ifdef NLI_DEBUG
       $display("NLI:st fib_main_main=%d", cur_st);
-      $display("NLI: r4_main =%d reg_t2 =%d reg_t4 =%d reg_t1_v1 =%d reg_t2_v2 =%d reg_t3_v3 =%d reg_t2_v6 =%d reg_t2_v7 =%d reg_t3_v8 =%d reg_t3_v9 =%d r4_main_v13 =%d reg_t8 =%d reg_t9 =%d" ,r4_main ,reg_t2 ,reg_t4 ,reg_t1_v1 ,reg_t2_v2 ,reg_t3_v3 ,reg_t2_v6 ,reg_t2_v7 ,reg_t3_v8 ,reg_t3_v9 ,r4_main_v13 ,reg_t8 ,reg_t9);
+      $display("NLI: r4_main =%d reg_t1 =%d reg_t4 =%d reg_t6 =%d reg_t2_v2 =%d reg_t1_v4 =%d reg_t1_v5 =%d reg_t2_v7 =%d reg_t3_v8 =%d reg_t3_v9 =%d r4_main_v13 =%d reg_t8 =%d reg_t9 =%d" ,r4_main ,reg_t1 ,reg_t4 ,reg_t6 ,reg_t2_v2 ,reg_t1_v4 ,reg_t1_v5 ,reg_t2_v7 ,reg_t3_v8 ,reg_t3_v9 ,r4_main_v13 ,reg_t8 ,reg_t9);
 `endif
       // state output
       // FSM.
       case (cur_st)
         `S_3: begin
-          reg_t2 <= 32'd0;
-          reg_t2_v6 <= 2'd1;
-          reg_t3_v8 <= 32'd0;
-          reg_t4 <= 2'd1;
+          reg_t1_v4 <= 32'd0;
+          reg_t1 <= 2'd1;
+          reg_t3_v9 <= 32'd0;
+          reg_t4 <= 2'd0;
           reg_t8 <= 2'd0;
-          reg_t9 <= 2'd0;
+          reg_t9 <= 2'd1;
           cur_st <= `S_8;
         end
         `S_8: begin
@@ -161,7 +161,7 @@ module fib_main(clk, rst, channel_result_data, channel_result_en, channel_result
             if (channel_result_ack) begin
               st_4 <= 3;
               channel_result_en <= 1;
-              channel_result_data <= reg_t1_v1;
+              channel_result_data <= reg_t6;
             end
           end else if (st_4 == 3) begin
             channel_result_en <= 0;
@@ -174,23 +174,23 @@ module fib_main(clk, rst, channel_result_data, channel_result_en, channel_result
           end
         end
         `S_40: begin
-          reg_t1_v1 <= wire_t12;
-          reg_t2_v2 <= wire_t13;
-          reg_t3_v3 <= wire_t14;
-          reg_t4 <= wire_t15;
-          if (wire_t15) begin
+          reg_t6 <= wire_t10;
+          reg_t2_v2 <= wire_t11;
+          r4_main <= wire_t12;
+          reg_t4 <= wire_t13;
+          if (wire_t13) begin
             cur_st <= `S_43;
           end else
           cur_st <= `S_12;
         end
         `S_43: begin
-          r4_main <= reg_t2_v2;
-          reg_t4 <= 2'd0;
+          reg_t1_v5 <= reg_t2_v2;
+          reg_t4 <= 2'd1;
+          reg_t9 <= 2'd0;
           reg_t8 <= 2'd1;
-          reg_t9 <= 2'd1;
-          reg_t2_v7 <= wire_t10;
-          reg_t2 <= wire_t10;
-          reg_t3_v9 <= wire_t11;
+          reg_t2_v7 <= wire_t15;
+          reg_t3_v8 <= wire_t14;
+          reg_t1_v4 <= wire_t15;
           cur_st <= `S_40;
         end
       endcase
@@ -209,7 +209,7 @@ module fib(clk, rst, channel_result_data, channel_result_en, channel_result_ack,
   input clk;
   input rst;
   // Channel result
-  output [31:0] channel_result_data;
+  output [63:0] channel_result_data;
   output channel_result_en;
   input channel_result_ack;
   // Channel param

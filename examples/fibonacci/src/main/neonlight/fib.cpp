@@ -10,12 +10,12 @@ public:
   NliChannel param_channel_inst;
   int state;
   uint64_t r4_main;
-  uint64_t reg_t2;
+  uint64_t reg_t1;
   uint64_t reg_t4;
-  uint64_t reg_t1_v1;
+  uint64_t reg_t6;
   uint64_t reg_t2_v2;
-  uint64_t reg_t3_v3;
-  uint64_t reg_t2_v6;
+  uint64_t reg_t1_v4;
+  uint64_t reg_t1_v5;
   uint64_t reg_t2_v7;
   uint64_t reg_t3_v8;
   uint64_t reg_t3_v9;
@@ -36,12 +36,12 @@ public:
 };
 
 void Mod_main::s_3() {
-  reg_t2 = 0UL;
-  reg_t2_v6 = 1UL;
-  reg_t3_v8 = 0UL;
-  reg_t4 = 1UL;
+  reg_t1_v4 = 0UL;
+  reg_t1 = 1UL;
+  reg_t3_v9 = 0UL;
+  reg_t4 = 0UL;
   reg_t8 = 0UL;
-  reg_t9 = 0UL;
+  reg_t9 = 1UL;
   if (true) {
     state = 8;
   }
@@ -66,7 +66,7 @@ void Mod_main::s_12() {
     finish_state = true;
   }
   // channel write.
-  result_channel_inst.Write(reg_t1_v1);
+  result_channel_inst.Write(reg_t6);
   if (finish_state) {
     st_4_ = 0;
     state = 3;
@@ -74,37 +74,37 @@ void Mod_main::s_12() {
 }
 
 void Mod_main::s_40() {
+  uint64_t wire_t10;
+  uint64_t wire_t11;
   uint64_t wire_t12;
   uint64_t wire_t13;
-  uint64_t wire_t14;
-  uint64_t wire_t15;
-  wire_t12 = reg_t4 ? reg_t2 : r4_main;
-  wire_t13 = reg_t8 ? reg_t2_v7 : reg_t2_v6;
-  wire_t14 = reg_t9 ? reg_t3_v9 : reg_t3_v8;
-  wire_t15 = r4_main_v13 > wire_t14;
-  reg_t1_v1 = wire_t12;
-  reg_t2_v2 = wire_t13;
-  reg_t3_v3 = wire_t14;
-  reg_t4 = wire_t15;
+  wire_t10 = reg_t4 ? reg_t1_v5 : reg_t1_v4;
+  wire_t11 = reg_t8 ? reg_t2_v7 : reg_t1;
+  wire_t12 = reg_t9 ? reg_t3_v9 : reg_t3_v8;
+  wire_t13 = r4_main_v13 > wire_t12;
+  reg_t6 = wire_t10;
+  reg_t2_v2 = wire_t11;
+  r4_main = wire_t12;
+  reg_t4 = wire_t13;
   if (true) {
-    if (wire_t15) state = 43;
+    if (wire_t13) state = 43;
     else
     state = 12;
   }
 }
 
 void Mod_main::s_43() {
-  uint64_t wire_t10;
-  uint64_t wire_t11;
-  r4_main = reg_t2_v2;
-  reg_t4 = 0UL;
-  wire_t10 = reg_t2_v2 + reg_t1_v1;
+  uint64_t wire_t14;
+  uint64_t wire_t15;
+  reg_t1_v5 = reg_t2_v2;
+  reg_t4 = 1UL;
+  wire_t14 = r4_main + 1UL;
+  wire_t15 = reg_t2_v2 + reg_t6;
+  reg_t9 = 0UL;
   reg_t8 = 1UL;
-  reg_t9 = 1UL;
-  reg_t2_v7 = wire_t10;
-  wire_t11 = reg_t3_v3 + 1UL;
-  reg_t2 = wire_t10;
-  reg_t3_v9 = wire_t11;
+  reg_t2_v7 = wire_t15;
+  reg_t3_v8 = wire_t14;
+  reg_t1_v4 = wire_t15;
   if (true) {
     state = 40;
   }
