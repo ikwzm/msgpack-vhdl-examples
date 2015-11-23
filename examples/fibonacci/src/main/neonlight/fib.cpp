@@ -4,137 +4,116 @@
 class Mod_main : public NliCCRTBase {
 public:
   Mod_main()
- : NliCCRTBase()  {}
+ : NliCCRTBase(), result_channel_inst("result"), param_channel_inst("param")  {}
 
+  NliChannel result_channel_inst;
+  NliChannel param_channel_inst;
   int state;
-  uint64_t r1_main;
-  uint64_t r3_main;
-  uint64_t r7_main;
-  uint64_t r6_main;
-  uint64_t r14_main;
-  uint64_t reg_t3_v1;
-  uint64_t reg_t2_v3;
-  uint64_t reg_t4_v4;
-  uint64_t reg_t4_v5;
-  uint64_t reg_t3_v6;
-  uint64_t reg_t2_v9;
-  uint64_t r6_main_v17;
-  uint64_t r9_main_v18;
+  uint64_t r4_main;
+  uint64_t reg_t2;
+  uint64_t reg_t4;
+  uint64_t reg_t1_v1;
+  uint64_t reg_t2_v2;
+  uint64_t reg_t3_v3;
+  uint64_t reg_t2_v6;
+  uint64_t reg_t2_v7;
+  uint64_t reg_t3_v8;
+  uint64_t reg_t3_v9;
+  uint64_t r4_main_v13;
+  uint64_t reg_t8;
   uint64_t reg_t9;
-  uint64_t reg_t10;
-  void s_0();
-  void s_65();
   void s_3();
-  void s_13();
-  void s_66();
-  void s_20();
-  void s_63();
-  void s_50();
-  void s_54();
+  void s_8();
+  int st_2_;
+  void s_12();
+  int st_4_;
+  void s_40();
+  void s_43();
   void reset();
   void PostState();
   bool Dispatch();
   void DumpState();
 };
 
-void Mod_main::s_0() {
+void Mod_main::s_3() {
+  reg_t2 = 0UL;
+  reg_t2_v6 = 1UL;
+  reg_t3_v8 = 0UL;
+  reg_t4 = 1UL;
+  reg_t8 = 0UL;
+  reg_t9 = 0UL;
   if (true) {
-    state = 65;
+    state = 8;
   }
 }
 
-void Mod_main::s_65() {
-  r7_main = SRAMRead(0UL, NULL);
-  if (true) {
+void Mod_main::s_8() {
+  bool finish_state = false;
+  if (st_2_ == 3) {
+    finish_state = true;
+  }
+  // channel read.
+  r4_main_v13 = param_channel_inst.Read();
+  if (finish_state) {
+    st_2_ = 0;
+    state = 40;
+  }
+}
+
+void Mod_main::s_12() {
+  bool finish_state = false;
+  if (st_4_ == 3) {
+    finish_state = true;
+  }
+  // channel write.
+  result_channel_inst.Write(reg_t1_v1);
+  if (finish_state) {
+    st_4_ = 0;
     state = 3;
   }
 }
 
-void Mod_main::s_3() {
+void Mod_main::s_40() {
   uint64_t wire_t12;
   uint64_t wire_t13;
-  wire_t12 = r7_main == 0UL;
-  wire_t13 =!wire_t12;
-  r6_main_v17 = wire_t13;
-  if (true) {
-    if (wire_t13) state = 13;
-    else
-    state = 63;
-  }
-}
-
-void Mod_main::s_13() {
-  reg_t2_v9 = 0UL;
-  reg_t3_v6 = 1UL;
-  reg_t4_v4 = 0UL;
-  reg_t9 = 0UL;
-  reg_t10 = 1UL;
-  r6_main = 0UL;
-  if (true) {
-    state = 66;
-  }
-}
-
-void Mod_main::s_66() {
-  r9_main_v18 = SRAMRead(1UL, NULL);
-  if (true) {
-    state = 50;
-  }
-}
-
-void Mod_main::s_20() {
-  SRAMWrite(2UL, reg_t2_v3, NULL);
-  if (true) {
-    state = 63;
-  }
-}
-
-void Mod_main::s_63() {
-  if (true) {
-    state = 63;
-  }
-  finish_ = true;
-}
-
-void Mod_main::s_50() {
   uint64_t wire_t14;
   uint64_t wire_t15;
-  uint64_t wire_t16;
-  uint64_t wire_t17;
-  wire_t14 = reg_t9 ? r14_main : reg_t3_v6;
-  wire_t15 = reg_t10 ? reg_t2_v9 : r3_main;
-  wire_t16 = r6_main ? reg_t4_v5 : reg_t4_v4;
-  wire_t17 = r9_main_v18 > wire_t16;
-  reg_t3_v1 = wire_t14;
-  reg_t2_v3 = wire_t15;
-  r1_main = wire_t16;
-  r6_main = wire_t17;
+  wire_t12 = reg_t4 ? reg_t2 : r4_main;
+  wire_t13 = reg_t8 ? reg_t2_v7 : reg_t2_v6;
+  wire_t14 = reg_t9 ? reg_t3_v9 : reg_t3_v8;
+  wire_t15 = r4_main_v13 > wire_t14;
+  reg_t1_v1 = wire_t12;
+  reg_t2_v2 = wire_t13;
+  reg_t3_v3 = wire_t14;
+  reg_t4 = wire_t15;
   if (true) {
-    if (wire_t17) state = 54;
+    if (wire_t15) state = 43;
     else
-    state = 20;
+    state = 12;
   }
 }
 
-void Mod_main::s_54() {
-  uint64_t wire_t18;
-  uint64_t wire_t19;
-  r3_main = reg_t3_v1;
-  wire_t18 = reg_t3_v1 + reg_t2_v3;
-  reg_t10 = 0UL;
-  r6_main = 1UL;
+void Mod_main::s_43() {
+  uint64_t wire_t10;
+  uint64_t wire_t11;
+  r4_main = reg_t2_v2;
+  reg_t4 = 0UL;
+  wire_t10 = reg_t2_v2 + reg_t1_v1;
+  reg_t8 = 1UL;
   reg_t9 = 1UL;
-  r14_main = wire_t18;
-  wire_t19 = r1_main + 1UL;
-  reg_t2_v9 = wire_t18;
-  reg_t4_v5 = wire_t19;
+  reg_t2_v7 = wire_t10;
+  wire_t11 = reg_t3_v3 + 1UL;
+  reg_t2 = wire_t10;
+  reg_t3_v9 = wire_t11;
   if (true) {
-    state = 50;
+    state = 40;
   }
 }
 
 void Mod_main::reset() {
-  state = 0;
+  st_2_ = 0;
+  st_4_ = 0;
+  state = 3;
   finish_ = false;
 }
 
@@ -144,32 +123,20 @@ void Mod_main::PostState() {
 
 bool Mod_main::Dispatch() {
   switch (state) {
-    case 0:
-      s_0();
-      break;
-    case 65:
-      s_65();
-      break;
     case 3:
       s_3();
       break;
-    case 13:
-      s_13();
+    case 8:
+      s_8();
       break;
-    case 66:
-      s_66();
+    case 12:
+      s_12();
       break;
-    case 20:
-      s_20();
+    case 40:
+      s_40();
       break;
-    case 63:
-      s_63();
-      break;
-    case 50:
-      s_50();
-      break;
-    case 54:
-      s_54();
+    case 43:
+      s_43();
       break;
     case kIdleState:
       break;

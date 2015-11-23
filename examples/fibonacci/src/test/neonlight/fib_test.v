@@ -1,11 +1,12 @@
 module fib_test;
    reg         clk = 0;
    reg         fib_rst;
-   reg  [31:0] fib_mem[1:0];
-   wire [31:0] fib_data_i;
-   wire [31:0] fib_addr;
-   wire        fib_wen;
-   wire [31:0] fib_data_o;
+   reg [31:0]  fib_param_data;
+   reg         fib_param_en;
+   wire        fib_param_ack;
+   wire [31:0] fib_result_data;
+   wire        fib_result_en;
+   reg         fib_result_ack;
 
    always #10
       clk <= !clk;
@@ -16,23 +17,41 @@ module fib_test;
       integer      timeout;
       begin
          @(posedge clk);
-         fib_mem[0] <= #1 1;
-         fib_mem[1] <= #1 n;
-         timeout    = 1000;
-         begin: loop
+	 fib_param_data <= #1 n;
+	 fib_param_en   <= #1 1;
+         timeout        = 1000;
+         begin: param_loop
             forever begin
                @(posedge clk);
-               fib_mem[0] <= #1 0;
-               if (fib_wen) begin
-                  if (fib_data_o !== expected_result)
-                      $display("fib_return = %d expected but %d found.", expected_result, fib_data_o);
-		  else
-                      $display("fib_return = %d ok", fib_data_o);
-                  disable loop;
+               if (fib_param_ack) begin
+                  fib_param_en   <= #1 0;
+                  disable param_loop;
                end
                if (timeout == 0) begin
-                  $display("fib_wen is timeout.");
-                  disable loop;
+                  $display("fib_param_ack is timeout.");
+                  fib_param_en   <= #1 0;
+                  disable param_loop;
+	       end
+               timeout = timeout - 1;
+            end 
+	 end
+         fib_result_ack <= #1 1;
+         timeout        = 1000;
+         begin: result_loop
+            forever begin
+               @(posedge clk);
+               if (fib_result_en) begin
+                  if (fib_result_data !== expected_result)
+                      $display("fib_result = %d expected but %d found.", expected_result, fib_result_data);
+                  else
+                      $display("fib_result = %d ok", fib_result_data);
+                  fib_result_ack <= #1 0;
+                  disable result_loop;
+               end
+               if (timeout == 0) begin
+                  $display("fib_result_en is timeout.");
+                  fib_result_ack <= #1 0;
+                  disable result_loop;
                end
                timeout = timeout - 1;
             end
@@ -41,11 +60,12 @@ module fib_test;
    endtask
 
    initial begin
-      fib_rst    <= 1;
-      fib_mem[0] <= 0;
-      fib_mem[1] <= 0;
+      fib_rst        <= 1;
+      fib_param_en   <= 0;
+      fib_param_data <= 0;
+      fib_result_ack <= 0;
       repeat(10) @(posedge clk);
-      fib_rst    <= 0;
+      fib_rst        <= 0;
       repeat(10) @(posedge clk);
       test(0, 0);
       test(1, 1);
@@ -57,14 +77,14 @@ module fib_test;
       $stop;
    end
 
-   assign fib_data_i = (fib_addr == 1) ? fib_mem[1] : fib_mem[0];
-		 
    fib dut(
-       .clk       (clk       ),
-       .rst       (fib_rst   ),
-       .addr_o    (fib_addr  ),
-       .write_en_o(fib_wen   ),
-       .data_o    (fib_data_o),
-       .data_i    (fib_data_i)
+       .clk                 (clk             ),
+       .rst                 (fib_rst         ),
+       .channel_param_data  (fib_param_data  ),
+       .channel_param_en    (fib_param_en    ),
+       .channel_param_ack   (fib_param_ack   ),
+       .channel_result_data (fib_result_data ),
+       .channel_result_en   (fib_result_en   ),
+       .channel_result_ack  (fib_result_ack  )
     );
 endmodule // fib_test
