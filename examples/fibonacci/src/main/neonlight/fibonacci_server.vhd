@@ -2,7 +2,7 @@
 --!     @file    fibonacci_server.vhd
 --!     @brief   Sample Module for MsgPack_RPC_Server
 --!     @version 0.1.0
---!     @date    2015/11/9
+--!     @date    2015/11/23
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
@@ -109,15 +109,15 @@ architecture RTL of Fibonacci_Server is
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
-    signal   fib_n          :  std_logic_vector(31 downto 0);
-    signal   fib_o          :  std_logic_vector(31 downto 0);
     signal   fib_go         :  std_logic;
     signal   fib_busy       :  std_logic;
-    signal   fib_rst        :  std_logic;
-    signal   fib_we         :  std_logic;
-    signal   fib_addr       :  std_logic_vector(31 downto 0);
-    signal   fib_data_o     :  std_logic_vector(31 downto 0);
-    signal   fib_data_i     :  std_logic_vector(31 downto 0);
+    signal   fib_run        :  std_logic;
+    signal   fib_n_data     :  std_logic_vector(31 downto 0);
+    signal   fib_n_en       :  std_logic;
+    signal   fib_n_ack      :  std_logic;
+    signal   fib_o_data     :  std_logic_vector(31 downto 0);
+    signal   fib_o_en       :  std_logic;
+    signal   fib_o_ack      :  std_logic;
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
@@ -158,12 +158,14 @@ architecture RTL of Fibonacci_Server is
     -------------------------------------------------------------------------------
     component fib is
         port (
-            clk             : in  std_logic;
-            rst             : in  std_logic;
-            write_en_o      : out std_logic;
-            addr_o          : out std_logic_vector(32-1 downto 0);
-            data_o          : out std_logic_vector(32-1 downto 0);
-            data_i          : in  std_logic_vector(32-1 downto 0)
+            clk                 : in  std_logic;
+            rst                 : in  std_logic;
+            channel_param_data  : in  std_logic_vector(32-1 downto 0);
+            channel_param_en    : in  std_logic;
+            channel_param_ack   : out std_logic;
+            channel_result_data : out std_logic_vector(32-1 downto 0);
+            channel_result_en   : out std_logic;
+            channel_result_ack  : in  std_logic
         );
     end component;
 begin
@@ -239,8 +241,8 @@ begin
             PROC_RES_VALID  => proc_res_valid(0)   , -- Out :
             PROC_RES_LAST   => proc_res_last (0)   , -- Out :
             PROC_RES_READY  => proc_res_ready(0)   , -- In  :
-            fib_n           => fib_n               , -- Out :
-            fib_o           => fib_o               , -- In  :
+            fib_n           => fib_n_data          , -- Out :
+            fib_o           => fib_o_data          , -- In  :
             fib_busy        => fib_busy            , -- In  :
             fib_go          => fib_go                -- Out :
         );                                           --
@@ -249,31 +251,39 @@ begin
     -------------------------------------------------------------------------------
     process (CLK, reset) begin
         if (reset = '1') then
-            fib_busy <= '0';
-            fib_o    <= (others => '0');
+            fib_run <= '0';
         elsif (CLK'event and CLK = '1') then
-            if    (fib_busy = '0' and fib_go = '1') then
-                fib_busy <= '1';
-            elsif (fib_busy = '1' and fib_we = '1' and unsigned(fib_addr) = 1) then
-                fib_busy <= '0';
-            end if;
-            if    (fib_busy = '1' and fib_we = '1' and unsigned(fib_addr) = 1) then
-                fib_o    <= fib_data_o;
+            if (fib_run = '0') then
+                if (fib_n_en = '1' and fib_n_ack = '1') then
+                    fib_run <= '1';
+                else
+                    fib_run <= '0';
+                end if;
+            else
+                if (fib_o_en = '1' and fib_o_ack = '1') then
+                    fib_run <= '0';
+                else
+                    fib_run <= '1';
+                end if;
             end if;
         end if;
     end process;
-    fib_rst    <= '1' when (fib_busy = '0') else '0';
-    fib_data_i <= fib_n;
+    fib_n_en  <= '1' when (fib_run = '0' and fib_go = '1') else '0';
+    fib_o_ack <= '1' when (fib_run = '1') else '0';
+    fib_busy  <= '1' when (fib_run = '0' and fib_n_en = '1' and fib_n_ack = '1') or
+                          (fib_run = '1' and fib_o_en = '0') else '0';
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
-    U_FIB: fib                                       -- 
-        port map (                                   -- 
-            clk             => CLK                 , -- In  :
-            rst             => fib_rst             , -- In  :
-            write_en_o      => fib_we              , -- Out :
-            addr_o          => fib_addr            , -- Out :
-            data_o          => fib_data_o          , -- Out :
-            data_i          => fib_data_i            -- In  :
+    U_FIB: fib                                           -- 
+        port map (                                       -- 
+            clk                 => CLK                 , -- In  :
+            rst                 => reset               , -- In  :
+            channel_param_data  => fib_n_data          , -- In  :
+            channel_param_en    => fib_n_en            , -- In  :
+            channel_param_ack   => fib_n_ack           , -- Out :
+            channel_result_data => fib_o_data          , -- Out :
+            channel_result_en   => fib_o_en            , -- Out :
+            channel_result_ack  => fib_o_ack             -- In  :
         );
 end RTL;

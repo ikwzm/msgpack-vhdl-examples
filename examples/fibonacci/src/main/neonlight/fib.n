@@ -2,30 +2,28 @@
 object Fib = Kernel.clone();
 object Global.Fib = Fib;
 
-int Fib.param  = 0;
-int Fib.result = 0;
+channel Fib.param  = int;
+channel Fib.result = int;
 
-def Fib.fib(){
+def Fib.fib(int n) (int){
   int curr;
   int next;
   int prev;
   int i;
   curr = 0;
   next = 1;
-  for (i = 0; i < param; ++i) {
+  for (i = 0; i < n; ++i) {
     prev = curr;
     curr = next;
     next = next + prev;
   }
-  result = curr;
+  return curr;
 }
 
 def Fib.main() {
-   int *in  = 0;
-   int *out = 1;
-   param = *in;
-   fib();
-   *out = result;
+  while(true) {
+    *result = fib(*param);
+  }
 }
 
 // Fib.param = 42;
