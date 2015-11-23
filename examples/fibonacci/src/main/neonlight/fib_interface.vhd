@@ -2,7 +2,7 @@
 --!     @file    fib_interface.vhd
 --!     @brief   Fib Interface Module
 --!     @version 0.1.0
---!     @date    2015/11/9
+--!     @date    2015/11/23
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
@@ -65,10 +65,12 @@ entity  Fib_Interface is
         PROC_RES_VALID  : out std_logic;
         PROC_RES_LAST   : out std_logic;
         PROC_RES_READY  : in  std_logic;
-        fib_n           : out std_logic_vector(31 downto 0);
-        fib_o           : in  std_logic_vector(31 downto 0);
-        fib_busy        : in  std_logic;
-        fib_go          : out std_logic
+        fib_n_data      : out std_logic_vector(31 downto 0);
+        fib_n_en        : out std_logic;
+        fib_n_ack       : in  std_logic;
+        fib_o_data      : in  std_logic_vector(63 downto 0);
+        fib_o_en        : in  std_logic;
+        fib_o_ack       : out std_logic
     );
 end  Fib_Interface;
 -----------------------------------------------------------------------------------
@@ -96,7 +98,10 @@ architecture RTL of Fib_Interface is
     signal    return_start      :  std_logic;
     signal    return_busy       :  std_logic;
     signal    proc_start        :  std_logic;
-    signal    fib_n_default     :  std_logic_vector(fib_n'range) := (others => '0');
+    signal    fib_n_default     :  std_logic_vector(fib_n_data'range) := (others => '0');
+    signal    fib_go            :  std_logic;
+    signal    fib_busy          :  std_logic;
+    signal    fib_run           :  std_logic;
 begin
     -------------------------------------------------------------------------------
     --
@@ -142,7 +147,7 @@ begin
     -------------------------------------------------------------------------------
     ARG0: MsgPack_RPC_Method_Set_Param_Integer       -- 
         generic map (                                -- 
-            VALUE_BITS      => fib_n'length        , --
+            VALUE_BITS      => fib_n_data'length   , --
             VALUE_SIGN      => TRUE                , --
             CHECK_RANGE     => TRUE                , --
             ENABLE64        => TRUE                  --
@@ -159,7 +164,7 @@ begin
             SET_PARAM_SHIFT => set_param_shift(0)  , -- : Out :
             DEFAULT_WE      => proc_start          , -- : In  :
             DEFAULT_VALUE   => fib_n_default       , -- : In  :
-            PARAM_VALUE     => fib_n               , -- : Out :
+            PARAM_VALUE     => fib_n_data          , -- : Out :
             PARAM_WE        => open                  -- : Out :
         );                                           --
     -------------------------------------------------------------------------------
@@ -167,7 +172,7 @@ begin
     -------------------------------------------------------------------------------
     RET : MsgPack_RPC_Method_Return_Integer          -- 
         generic map (                                -- 
-            VALUE_WIDTH     => fib_o'length        , --
+            VALUE_WIDTH     => fib_o_data'length   , --
             RETURN_UINT     => TRUE                , --
             RETURN_INT      => FALSE               , --
             RETURN_FLOAT    => FALSE               , --
@@ -184,6 +189,32 @@ begin
             RES_VALID       => PROC_RES_VALID      , -- Out :
             RES_LAST        => PROC_RES_LAST       , -- Out :
             RES_READY       => PROC_RES_READY      , -- In  :
-            VALUE           => fib_o                 -- In  :
-        );                                           -- 
+            VALUE           => fib_o_data            -- In  :
+        );                                           --
+    -------------------------------------------------------------------------------
+    --
+    -------------------------------------------------------------------------------
+    process (CLK, RST) begin
+        if (RST = '1') then
+            fib_run <= '0';
+        elsif (CLK'event and CLK = '1') then
+            if (fib_run = '0') then
+                if (fib_go = '1' and fib_n_ack = '1') then
+                    fib_run <= '1';
+                else
+                    fib_run <= '0';
+                end if;
+            else
+                if (fib_o_en = '1') then
+                    fib_run <= '0';
+                else
+                    fib_run <= '1';
+                end if;
+            end if;
+        end if;
+    end process;
+    fib_n_en  <= '1' when (fib_run = '0' and fib_go = '1') else '0';
+    fib_o_ack <= '1' when (fib_run = '1') else '0';
+    fib_busy  <= '1' when (fib_run = '0' and fib_go = '1' and fib_n_ack = '1') or
+                          (fib_run = '1' and fib_o_en = '0') else '0';
 end RTL;

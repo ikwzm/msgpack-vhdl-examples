@@ -3,12 +3,12 @@ object Fib = Kernel.clone();
 object Global.Fib = Fib;
 
 channel Fib.param  = int;
-channel Fib.result = int;
+channel Fib.result = int #64;
 
-def Fib.fib(int n) (int){
-  int curr;
-  int next;
-  int prev;
+def Fib.fib(int n) (int #64){
+  int #64 curr;
+  int #64 next;
+  int #64 prev;
   int i;
   curr = 0;
   next = 1;
@@ -25,11 +25,6 @@ def Fib.main() {
     *result = fib(*param);
   }
 }
-
-// Fib.param = 42;
-// Fib.fib();
-// print(Fib.result);
-
 
 if (Env.isMain()) {
   Fib.setDump("./tmp/fib");

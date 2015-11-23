@@ -1,10 +1,10 @@
 module fib_test;
    reg         clk = 0;
    reg         fib_rst;
-   reg [31:0]  fib_param_data;
+   reg [63:0]  fib_param_data;
    reg         fib_param_en;
    wire        fib_param_ack;
-   wire [31:0] fib_result_data;
+   wire [63:0] fib_result_data;
    wire        fib_result_en;
    reg         fib_result_ack;
 
@@ -13,7 +13,7 @@ module fib_test;
 
    task test;
       input [31:0] n;
-      input [31:0] expected_result;
+      input [63:0] expected_result;
       integer      timeout;
       begin
          @(posedge clk);

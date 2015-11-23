@@ -115,7 +115,7 @@ architecture RTL of Fibonacci_Server is
     signal   fib_n_data     :  std_logic_vector(31 downto 0);
     signal   fib_n_en       :  std_logic;
     signal   fib_n_ack      :  std_logic;
-    signal   fib_o_data     :  std_logic_vector(31 downto 0);
+    signal   fib_o_data     :  std_logic_vector(63 downto 0);
     signal   fib_o_en       :  std_logic;
     signal   fib_o_ack      :  std_logic;
     -------------------------------------------------------------------------------
@@ -147,10 +147,12 @@ architecture RTL of Fibonacci_Server is
             PROC_RES_VALID  : out std_logic;
             PROC_RES_LAST   : out std_logic;
             PROC_RES_READY  : in  std_logic;
-            fib_n           : out std_logic_vector(31 downto 0);
-            fib_o           : in  std_logic_vector(31 downto 0);
-            fib_busy        : in  std_logic;
-            fib_go          : out std_logic
+            fib_n_data      : out std_logic_vector(31 downto 0);
+            fib_n_en        : out std_logic;
+            fib_n_ack       : in  std_logic;
+            fib_o_data      : in  std_logic_vector(63 downto 0);
+            fib_o_en        : in  std_logic;
+            fib_o_ack       : out std_logic
         );
     end  component;
     -------------------------------------------------------------------------------
@@ -160,10 +162,10 @@ architecture RTL of Fibonacci_Server is
         port (
             clk                 : in  std_logic;
             rst                 : in  std_logic;
-            channel_param_data  : in  std_logic_vector(32-1 downto 0);
+            channel_param_data  : in  std_logic_vector(31 downto 0);
             channel_param_en    : in  std_logic;
             channel_param_ack   : out std_logic;
-            channel_result_data : out std_logic_vector(32-1 downto 0);
+            channel_result_data : out std_logic_vector(63 downto 0);
             channel_result_en   : out std_logic;
             channel_result_ack  : in  std_logic
         );
@@ -241,37 +243,13 @@ begin
             PROC_RES_VALID  => proc_res_valid(0)   , -- Out :
             PROC_RES_LAST   => proc_res_last (0)   , -- Out :
             PROC_RES_READY  => proc_res_ready(0)   , -- In  :
-            fib_n           => fib_n_data          , -- Out :
-            fib_o           => fib_o_data          , -- In  :
-            fib_busy        => fib_busy            , -- In  :
-            fib_go          => fib_go                -- Out :
+            fib_n_data      => fib_n_data          , -- Out :
+            fib_n_en        => fib_n_en            , -- Out :
+            fib_n_ack       => fib_n_ack           , -- In  :
+            fib_o_data      => fib_o_data          , -- In  :
+            fib_o_en        => fib_o_en            , -- In  :
+            fib_o_ack       => fib_o_ack             -- Out :
         );                                           --
-    -------------------------------------------------------------------------------
-    --
-    -------------------------------------------------------------------------------
-    process (CLK, reset) begin
-        if (reset = '1') then
-            fib_run <= '0';
-        elsif (CLK'event and CLK = '1') then
-            if (fib_run = '0') then
-                if (fib_n_en = '1' and fib_n_ack = '1') then
-                    fib_run <= '1';
-                else
-                    fib_run <= '0';
-                end if;
-            else
-                if (fib_o_en = '1' and fib_o_ack = '1') then
-                    fib_run <= '0';
-                else
-                    fib_run <= '1';
-                end if;
-            end if;
-        end if;
-    end process;
-    fib_n_en  <= '1' when (fib_run = '0' and fib_go = '1') else '0';
-    fib_o_ack <= '1' when (fib_run = '1') else '0';
-    fib_busy  <= '1' when (fib_run = '0' and fib_n_en = '1' and fib_n_ack = '1') or
-                          (fib_run = '1' and fib_o_en = '0') else '0';
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------

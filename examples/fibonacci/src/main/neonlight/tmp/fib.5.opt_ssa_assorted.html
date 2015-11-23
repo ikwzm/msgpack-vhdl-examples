@@ -12,583 +12,583 @@ Registers:<table border=1>
  <tr>  <td>const</td><td>0</td><td>int:32</td><td></td> </tr>
  <tr>  <td>const</td><td>const:1</td><td>enum:2</td><td></td> </tr>
  <tr>  <td>normal</td><td>r4_main</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t4</td><td>enum:2</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t5</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t6</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v1</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v2</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t5</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t6</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v1</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v2</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v3</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v4</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v5</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v6</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v7</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v4</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v5</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v6</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v7</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v8</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v9</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v10</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v11</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v10</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v11</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v12</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>r4_main_v13</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t4_v14</td><td>enum:2</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t5_v15</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t6_v16</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t5_v15</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t6_v16</td><td>int:64</td><td></td> </tr>
 </table>State Machine: 17states<br><table border=1>
  <tr><th></th>
-<th>branch:1</th><th>read_channel:3<br>(param)<br>outputs:<br>int:32</th><th>write_channel:5<br>(result)<br>inputs:<br>int:32</th><th>assign:6<br>shared</th><th>gt:7<br>inputs:<br>int:32<br>int:32<br>outputs:<br>enum:2</th><th>add:8<br>inputs:<br>int:32<br>int:32<br>outputs:<br>int:32</th><th>phi:10</th> <th>annotation</th> </tr>
+<th>branch:1</th><th>read_channel:3<br>(param)<br>outputs:<br>int:32</th><th>write_channel:5<br>(result)<br>inputs:<br>int:64</th><th>assign:6<br>shared</th><th>gt:7<br>inputs:<br>int:32<br>int:32<br>outputs:<br>enum:2</th><th>add:8<br>inputs:<br>int:64<br>int:64<br>outputs:<br>int:64</th><th>add:9<br>inputs:<br>int:32<br>int:32<br>outputs:<br>int:32</th><th>phi:11</th> <th>annotation</th> </tr>
  <tr class=even>
-  <th>s3(initial)  </th><td>next:<br>51<br>id:8<br></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t1_v1<br>outputs:<br>var:reg_t1_v10<br>id:78<br><hr>inputs:<br>var:reg_t2_v2<br>outputs:<br>var:reg_t2_v11<br>id:80<br><hr>inputs:<br>var:reg_t3_v3<br>outputs:<br>var:reg_t3_v12<br>id:82<br></td><td></td> </tr>
+  <th>s3(initial)  </th><td>next:<br>51<br>id:8<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t1_v1<br>outputs:<br>var:reg_t1_v10<br>id:78<br><hr>inputs:<br>var:reg_t2_v2<br>outputs:<br>var:reg_t2_v11<br>id:80<br><hr>inputs:<br>var:reg_t3_v3<br>outputs:<br>var:reg_t3_v12<br>id:82<br></td><td></td> </tr>
  <tr class=odd>
-  <th>s51  </th><td>next:<br>5<br>id:76<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s51  </th><td>next:<br>5<br>id:76<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s5  </th><td>inputs:<br>const:1<br>next:<br>8<br>14<br>id:1<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s5  </th><td>inputs:<br>const:1<br>next:<br>8<br>14<br>id:1<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s8  </th><td>next:<br>35<br>id:12<br></td><td>outputs:<br>var:r4_main_v13<br>id:2<br></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s8  </th><td>next:<br>35<br>id:12<br></td><td>outputs:<br>var:r4_main_v13<br>id:2<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s12  </th><td>next:<br>3<br>id:16<br></td><td></td><td>inputs:<br>var:reg_t1_v1<br>id:4<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s12  </th><td>next:<br>3<br>id:16<br></td><td></td><td>inputs:<br>var:reg_t1_v1<br>id:4<br></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s14  </th><td>next:<br>14<br>id:75<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s14  </th><td>next:<br>14<br>id:75<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s35  </th><td>next:<br>37<br>id:49<br></td><td></td><td></td><td>inputs:<br>const:0<br>outputs:<br>var:reg_t1_v5<br>id:48<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t2_v6<br>id:51<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t3_v8<br>id:54<br></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s35  </th><td>next:<br>37<br>id:49<br></td><td></td><td></td><td>inputs:<br>const:0<br>outputs:<br>var:reg_t1_v4<br>id:48<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t2_v6<br>id:51<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t3_v9<br>id:54<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s37  </th><td>next:<br>39<br>id:52<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s37  </th><td>next:<br>39<br>id:52<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s39  </th><td>next:<br>40<br>id:55<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s39  </th><td>next:<br>40<br>id:55<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s40  </th><td>next:<br>52<br>id:57<br></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t1_v4<br>var:reg_t1_v5<br>outputs:<br>var:reg_t1_v1<br>id:79<br><hr>inputs:<br>var:reg_t2_v6<br>var:reg_t2_v7<br>outputs:<br>var:reg_t2_v2<br>id:81<br><hr>inputs:<br>var:reg_t3_v8<br>var:reg_t3_v9<br>outputs:<br>var:reg_t3_v3<br>id:83<br></td><td></td> </tr>
+  <th>s40  </th><td>next:<br>52<br>id:57<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t1_v4<br>var:reg_t1_v5<br>outputs:<br>var:reg_t1_v1<br>id:79<br><hr>inputs:<br>var:reg_t2_v6<br>var:reg_t2_v7<br>outputs:<br>var:reg_t2_v2<br>id:81<br><hr>inputs:<br>var:reg_t3_v8<br>var:reg_t3_v9<br>outputs:<br>var:reg_t3_v3<br>id:83<br></td><td></td> </tr>
  <tr class=even>
-  <th>s52  </th><td>next:<br>41<br>id:77<br></td><td></td><td></td><td></td><td>inputs:<br>var:r4_main_v13<br>var:reg_t3_v3<br>outputs:<br>var:reg_t4_v14<br>id:56<br></td><td></td><td></td><td></td> </tr>
+  <th>s52  </th><td>next:<br>41<br>id:77<br></td><td></td><td></td><td></td><td>inputs:<br>var:r4_main_v13<br>var:reg_t3_v3<br>outputs:<br>var:reg_t4_v14<br>id:56<br></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s41  </th><td>inputs:<br>var:reg_t4_v14<br>next:<br>42<br>12<br>id:58<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s41  </th><td>inputs:<br>var:reg_t4_v14<br>next:<br>42<br>12<br>id:58<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s42  </th><td>next:<br>43<br>id:60<br></td><td></td><td></td><td>inputs:<br>var:reg_t1_v1<br>outputs:<br>var:reg_t5_v15<br>id:59<br></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s42  </th><td>next:<br>43<br>id:60<br></td><td></td><td></td><td>inputs:<br>var:reg_t1_v1<br>outputs:<br>var:reg_t5_v15<br>id:59<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s43  </th><td>next:<br>44<br>id:62<br></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>outputs:<br>var:reg_t1_v4<br>id:61<br></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s43  </th><td>next:<br>44<br>id:62<br></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>outputs:<br>var:reg_t1_v5<br>id:61<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s44  </th><td>next:<br>45<br>id:64<br></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>var:reg_t5_v15<br>outputs:<br>var:reg_t6_v16<br>id:63<br></td><td></td><td></td> </tr>
+  <th>s44  </th><td>next:<br>45<br>id:64<br></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>var:reg_t5_v15<br>outputs:<br>var:reg_t6_v16<br>id:63<br></td><td>inputs:<br>var:reg_t3_v3<br>const:1<br>outputs:<br>var:reg_t3_v8<br>id:67<br></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s45  </th><td>next:<br>46<br>id:66<br></td><td></td><td></td><td>inputs:<br>var:reg_t6_v16<br>outputs:<br>var:reg_t2_v7<br>id:65<br></td><td></td><td>inputs:<br>var:reg_t3_v3<br>const:1<br>outputs:<br>var:reg_t3_v9<br>id:67<br></td><td></td><td></td> </tr>
+  <th>s45  </th><td>next:<br>46<br>id:66<br></td><td></td><td></td><td>inputs:<br>var:reg_t6_v16<br>outputs:<br>var:reg_t2_v7<br>id:65<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s46  </th><td>next:<br>40<br>id:68<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s46  </th><td>next:<br>40<br>id:68<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
 </table><br>ssa_assorted_0<hr>
 Registers:<table border=1>
 <tr><th>alloc type</th><th>name</th><th>data type</th><th>annotation</th></tr>
  <tr>  <td>const</td><td>0</td><td>int:32</td><td></td> </tr>
  <tr>  <td>const</td><td>const:1</td><td>enum:2</td><td></td> </tr>
  <tr>  <td>normal</td><td>r4_main</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t4</td><td>enum:2</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t5</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t6</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v1</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v2</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t5</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t6</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v1</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v2</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v3</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v4</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v5</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v6</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v7</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v4</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v5</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v6</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v7</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v8</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v9</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v10</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v11</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v10</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v11</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v12</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>r4_main_v13</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t4_v14</td><td>enum:2</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t5_v15</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t6_v16</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t5_v15</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t6_v16</td><td>int:64</td><td></td> </tr>
 </table>State Machine: 17states<br><table border=1>
  <tr><th></th>
-<th>branch:1</th><th>read_channel:3<br>(param)<br>outputs:<br>int:32</th><th>write_channel:5<br>(result)<br>inputs:<br>int:32</th><th>assign:6<br>shared</th><th>gt:7<br>inputs:<br>int:32<br>int:32<br>outputs:<br>enum:2</th><th>add:8<br>inputs:<br>int:32<br>int:32<br>outputs:<br>int:32</th><th>phi:10</th> <th>annotation</th> </tr>
+<th>branch:1</th><th>read_channel:3<br>(param)<br>outputs:<br>int:32</th><th>write_channel:5<br>(result)<br>inputs:<br>int:64</th><th>assign:6<br>shared</th><th>gt:7<br>inputs:<br>int:32<br>int:32<br>outputs:<br>enum:2</th><th>add:8<br>inputs:<br>int:64<br>int:64<br>outputs:<br>int:64</th><th>add:9<br>inputs:<br>int:32<br>int:32<br>outputs:<br>int:32</th><th>phi:11</th> <th>annotation</th> </tr>
  <tr class=even>
-  <th>s3(initial)  </th><td>next:<br>51<br>id:8<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s3(initial)  </th><td>next:<br>51<br>id:8<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s51  </th><td>next:<br>5<br>id:76<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s51  </th><td>next:<br>5<br>id:76<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s5  </th><td>inputs:<br>const:1<br>next:<br>8<br>14<br>id:1<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s5  </th><td>inputs:<br>const:1<br>next:<br>8<br>14<br>id:1<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s8  </th><td>next:<br>35<br>id:12<br></td><td>outputs:<br>var:r4_main_v13<br>id:2<br></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s8  </th><td>next:<br>35<br>id:12<br></td><td>outputs:<br>var:r4_main_v13<br>id:2<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s12  </th><td>next:<br>3<br>id:16<br></td><td></td><td>inputs:<br>var:reg_t1_v1<br>id:4<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s12  </th><td>next:<br>3<br>id:16<br></td><td></td><td>inputs:<br>var:reg_t1_v1<br>id:4<br></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s14  </th><td>next:<br>14<br>id:75<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s14  </th><td>next:<br>14<br>id:75<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s35  </th><td>next:<br>37<br>id:49<br></td><td></td><td></td><td>inputs:<br>const:0<br>outputs:<br>var:reg_t1_v5<br>id:48<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t2_v6<br>id:51<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t3_v8<br>id:54<br></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s35  </th><td>next:<br>37<br>id:49<br></td><td></td><td></td><td>inputs:<br>const:0<br>outputs:<br>var:reg_t1_v4<br>id:48<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t2_v6<br>id:51<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t3_v9<br>id:54<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s37  </th><td>next:<br>39<br>id:52<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s37  </th><td>next:<br>39<br>id:52<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s39  </th><td>next:<br>40<br>id:55<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s39  </th><td>next:<br>40<br>id:55<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s40  </th><td>next:<br>52<br>id:57<br></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t1_v4<br>var:reg_t1_v5<br>outputs:<br>var:reg_t1_v1<br>id:79<br><hr>inputs:<br>var:reg_t2_v6<br>var:reg_t2_v7<br>outputs:<br>var:reg_t2_v2<br>id:81<br><hr>inputs:<br>var:reg_t3_v8<br>var:reg_t3_v9<br>outputs:<br>var:reg_t3_v3<br>id:83<br></td><td></td> </tr>
+  <th>s40  </th><td>next:<br>52<br>id:57<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t1_v4<br>var:reg_t1_v5<br>outputs:<br>var:reg_t1_v1<br>id:79<br><hr>inputs:<br>var:reg_t2_v6<br>var:reg_t2_v7<br>outputs:<br>var:reg_t2_v2<br>id:81<br><hr>inputs:<br>var:reg_t3_v8<br>var:reg_t3_v9<br>outputs:<br>var:reg_t3_v3<br>id:83<br></td><td></td> </tr>
  <tr class=even>
-  <th>s52  </th><td>next:<br>41<br>id:77<br></td><td></td><td></td><td></td><td>inputs:<br>var:r4_main_v13<br>var:reg_t3_v3<br>outputs:<br>var:reg_t4_v14<br>id:56<br></td><td></td><td></td><td></td> </tr>
+  <th>s52  </th><td>next:<br>41<br>id:77<br></td><td></td><td></td><td></td><td>inputs:<br>var:r4_main_v13<br>var:reg_t3_v3<br>outputs:<br>var:reg_t4_v14<br>id:56<br></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s41  </th><td>inputs:<br>var:reg_t4_v14<br>next:<br>42<br>12<br>id:58<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s41  </th><td>inputs:<br>var:reg_t4_v14<br>next:<br>42<br>12<br>id:58<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s42  </th><td>next:<br>43<br>id:60<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s42  </th><td>next:<br>43<br>id:60<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s43  </th><td>next:<br>44<br>id:62<br></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>outputs:<br>var:reg_t1_v4<br>id:61<br></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s43  </th><td>next:<br>44<br>id:62<br></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>outputs:<br>var:reg_t1_v5<br>id:61<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s44  </th><td>next:<br>45<br>id:64<br></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>var:reg_t1_v1<br>outputs:<br>var:reg_t6_v16<br>id:63<br></td><td></td><td></td> </tr>
+  <th>s44  </th><td>next:<br>45<br>id:64<br></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>var:reg_t1_v1<br>outputs:<br>var:reg_t6_v16<br>id:63<br></td><td>inputs:<br>var:reg_t3_v3<br>const:1<br>outputs:<br>var:reg_t3_v8<br>id:67<br></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s45  </th><td>next:<br>46<br>id:66<br></td><td></td><td></td><td>inputs:<br>var:reg_t6_v16<br>outputs:<br>var:reg_t2_v7<br>id:65<br></td><td></td><td>inputs:<br>var:reg_t3_v3<br>const:1<br>outputs:<br>var:reg_t3_v9<br>id:67<br></td><td></td><td></td> </tr>
+  <th>s45  </th><td>next:<br>46<br>id:66<br></td><td></td><td></td><td>inputs:<br>var:reg_t6_v16<br>outputs:<br>var:reg_t2_v7<br>id:65<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s46  </th><td>next:<br>40<br>id:68<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s46  </th><td>next:<br>40<br>id:68<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
 </table><br>ssa_assorted_1<hr>
 Registers:<table border=1>
 <tr><th>alloc type</th><th>name</th><th>data type</th><th>annotation</th></tr>
  <tr>  <td>const</td><td>0</td><td>int:32</td><td></td> </tr>
  <tr>  <td>const</td><td>const:1</td><td>enum:2</td><td></td> </tr>
  <tr>  <td>normal</td><td>r4_main</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t4</td><td>enum:2</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t5</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t6</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v1</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v2</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t5</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t6</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v1</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v2</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v3</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v4</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v5</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v6</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v7</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v4</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v5</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v6</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v7</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v8</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v9</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v10</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v11</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v10</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v11</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v12</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>r4_main_v13</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t4_v14</td><td>enum:2</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t5_v15</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t6_v16</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t5_v15</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t6_v16</td><td>int:64</td><td></td> </tr>
 </table>State Machine: 17states<br><table border=1>
  <tr><th></th>
-<th>branch:1</th><th>read_channel:3<br>(param)<br>outputs:<br>int:32</th><th>write_channel:5<br>(result)<br>inputs:<br>int:32</th><th>assign:6<br>shared</th><th>gt:7<br>inputs:<br>int:32<br>int:32<br>outputs:<br>enum:2</th><th>add:8<br>inputs:<br>int:32<br>int:32<br>outputs:<br>int:32</th><th>phi:10</th> <th>annotation</th> </tr>
+<th>branch:1</th><th>read_channel:3<br>(param)<br>outputs:<br>int:32</th><th>write_channel:5<br>(result)<br>inputs:<br>int:64</th><th>assign:6<br>shared</th><th>gt:7<br>inputs:<br>int:32<br>int:32<br>outputs:<br>enum:2</th><th>add:8<br>inputs:<br>int:64<br>int:64<br>outputs:<br>int:64</th><th>add:9<br>inputs:<br>int:32<br>int:32<br>outputs:<br>int:32</th><th>phi:11</th> <th>annotation</th> </tr>
  <tr class=even>
-  <th>s3(initial)  </th><td>next:<br>51<br>id:8<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s3(initial)  </th><td>next:<br>51<br>id:8<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s51  </th><td>next:<br>5<br>id:76<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s51  </th><td>next:<br>5<br>id:76<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s5  </th><td>inputs:<br>const:1<br>next:<br>8<br>14<br>id:1<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s5  </th><td>inputs:<br>const:1<br>next:<br>8<br>14<br>id:1<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s8  </th><td>next:<br>35<br>id:12<br></td><td>outputs:<br>var:r4_main_v13<br>id:2<br></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s8  </th><td>next:<br>35<br>id:12<br></td><td>outputs:<br>var:r4_main_v13<br>id:2<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s12  </th><td>next:<br>3<br>id:16<br></td><td></td><td>inputs:<br>var:reg_t1_v1<br>id:4<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s12  </th><td>next:<br>3<br>id:16<br></td><td></td><td>inputs:<br>var:reg_t1_v1<br>id:4<br></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s14  </th><td>next:<br>14<br>id:75<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s14  </th><td>next:<br>14<br>id:75<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s35  </th><td>next:<br>37<br>id:49<br></td><td></td><td></td><td>inputs:<br>const:0<br>outputs:<br>var:reg_t1_v5<br>id:48<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t2_v6<br>id:51<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t3_v8<br>id:54<br></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s35  </th><td>next:<br>37<br>id:49<br></td><td></td><td></td><td>inputs:<br>const:0<br>outputs:<br>var:reg_t1_v4<br>id:48<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t2_v6<br>id:51<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t3_v9<br>id:54<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s37  </th><td>next:<br>39<br>id:52<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s37  </th><td>next:<br>39<br>id:52<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s39  </th><td>next:<br>40<br>id:55<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s39  </th><td>next:<br>40<br>id:55<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s40  </th><td>next:<br>52<br>id:57<br></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t1_v4<br>var:reg_t1_v5<br>outputs:<br>var:reg_t1_v1<br>id:79<br><hr>inputs:<br>var:reg_t2_v6<br>var:reg_t2_v7<br>outputs:<br>var:reg_t2_v2<br>id:81<br><hr>inputs:<br>var:reg_t3_v8<br>var:reg_t3_v9<br>outputs:<br>var:reg_t3_v3<br>id:83<br></td><td></td> </tr>
+  <th>s40  </th><td>next:<br>52<br>id:57<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t1_v4<br>var:reg_t1_v5<br>outputs:<br>var:reg_t1_v1<br>id:79<br><hr>inputs:<br>var:reg_t2_v6<br>var:reg_t2_v7<br>outputs:<br>var:reg_t2_v2<br>id:81<br><hr>inputs:<br>var:reg_t3_v8<br>var:reg_t3_v9<br>outputs:<br>var:reg_t3_v3<br>id:83<br></td><td></td> </tr>
  <tr class=even>
-  <th>s52  </th><td>next:<br>41<br>id:77<br></td><td></td><td></td><td></td><td>inputs:<br>var:r4_main_v13<br>var:reg_t3_v3<br>outputs:<br>var:reg_t4_v14<br>id:56<br></td><td></td><td></td><td></td> </tr>
+  <th>s52  </th><td>next:<br>41<br>id:77<br></td><td></td><td></td><td></td><td>inputs:<br>var:r4_main_v13<br>var:reg_t3_v3<br>outputs:<br>var:reg_t4_v14<br>id:56<br></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s41  </th><td>inputs:<br>var:reg_t4_v14<br>next:<br>42<br>12<br>id:58<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s41  </th><td>inputs:<br>var:reg_t4_v14<br>next:<br>42<br>12<br>id:58<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s42  </th><td>next:<br>43<br>id:60<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s42  </th><td>next:<br>43<br>id:60<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s43  </th><td>next:<br>44<br>id:62<br></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>outputs:<br>var:reg_t1_v4<br>id:61<br></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s43  </th><td>next:<br>44<br>id:62<br></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>outputs:<br>var:reg_t1_v5<br>id:61<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s44  </th><td>next:<br>45<br>id:64<br></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>var:reg_t1_v1<br>outputs:<br>var:reg_t6_v16<br>id:63<br></td><td></td><td></td> </tr>
+  <th>s44  </th><td>next:<br>45<br>id:64<br></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>var:reg_t1_v1<br>outputs:<br>var:reg_t6_v16<br>id:63<br></td><td>inputs:<br>var:reg_t3_v3<br>const:1<br>outputs:<br>var:reg_t3_v8<br>id:67<br></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s45  </th><td>next:<br>46<br>id:66<br></td><td></td><td></td><td>inputs:<br>var:reg_t6_v16<br>outputs:<br>var:reg_t2_v7<br>id:65<br></td><td></td><td>inputs:<br>var:reg_t3_v3<br>const:1<br>outputs:<br>var:reg_t3_v9<br>id:67<br></td><td></td><td></td> </tr>
+  <th>s45  </th><td>next:<br>46<br>id:66<br></td><td></td><td></td><td>inputs:<br>var:reg_t6_v16<br>outputs:<br>var:reg_t2_v7<br>id:65<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s46  </th><td>next:<br>40<br>id:68<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s46  </th><td>next:<br>40<br>id:68<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
 </table><br>ssa_assorted_2<hr>
 Registers:<table border=1>
 <tr><th>alloc type</th><th>name</th><th>data type</th><th>annotation</th></tr>
  <tr>  <td>const</td><td>0</td><td>int:32</td><td></td> </tr>
  <tr>  <td>const</td><td>const:1</td><td>enum:2</td><td></td> </tr>
  <tr>  <td>normal</td><td>r4_main</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t4</td><td>enum:2</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t5</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t6</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v1</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v2</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t5</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t6</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v1</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v2</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v3</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v4</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v5</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v6</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v7</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v4</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v5</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v6</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v7</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v8</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v9</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v10</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v11</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v10</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v11</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v12</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>r4_main_v13</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t4_v14</td><td>enum:2</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t5_v15</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t6_v16</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t5_v15</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t6_v16</td><td>int:64</td><td></td> </tr>
 </table>State Machine: 17states<br><table border=1>
  <tr><th></th>
-<th>branch:1</th><th>read_channel:3<br>(param)<br>outputs:<br>int:32</th><th>write_channel:5<br>(result)<br>inputs:<br>int:32</th><th>assign:6<br>shared</th><th>gt:7<br>inputs:<br>int:32<br>int:32<br>outputs:<br>enum:2</th><th>add:8<br>inputs:<br>int:32<br>int:32<br>outputs:<br>int:32</th><th>phi:10</th> <th>annotation</th> </tr>
+<th>branch:1</th><th>read_channel:3<br>(param)<br>outputs:<br>int:32</th><th>write_channel:5<br>(result)<br>inputs:<br>int:64</th><th>assign:6<br>shared</th><th>gt:7<br>inputs:<br>int:32<br>int:32<br>outputs:<br>enum:2</th><th>add:8<br>inputs:<br>int:64<br>int:64<br>outputs:<br>int:64</th><th>add:9<br>inputs:<br>int:32<br>int:32<br>outputs:<br>int:32</th><th>phi:11</th> <th>annotation</th> </tr>
  <tr class=even>
-  <th>s3(initial)  </th><td>next:<br>51<br>id:8<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s3(initial)  </th><td>next:<br>51<br>id:8<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s51  </th><td>next:<br>5<br>id:76<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s51  </th><td>next:<br>5<br>id:76<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s5  </th><td>inputs:<br>const:1<br>next:<br>8<br>14<br>id:1<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s5  </th><td>inputs:<br>const:1<br>next:<br>8<br>14<br>id:1<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s8  </th><td>next:<br>35<br>id:12<br></td><td>outputs:<br>var:r4_main_v13<br>id:2<br></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s8  </th><td>next:<br>35<br>id:12<br></td><td>outputs:<br>var:r4_main_v13<br>id:2<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s12  </th><td>next:<br>3<br>id:16<br></td><td></td><td>inputs:<br>var:reg_t1_v1<br>id:4<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s12  </th><td>next:<br>3<br>id:16<br></td><td></td><td>inputs:<br>var:reg_t1_v1<br>id:4<br></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s14  </th><td>next:<br>14<br>id:75<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s14  </th><td>next:<br>14<br>id:75<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s35  </th><td>next:<br>37<br>id:49<br></td><td></td><td></td><td>inputs:<br>const:0<br>outputs:<br>var:reg_t1_v5<br>id:48<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t2_v6<br>id:51<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t3_v8<br>id:54<br></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s35  </th><td>next:<br>37<br>id:49<br></td><td></td><td></td><td>inputs:<br>const:0<br>outputs:<br>var:reg_t1_v4<br>id:48<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t2_v6<br>id:51<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t3_v9<br>id:54<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s37  </th><td>next:<br>39<br>id:52<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s37  </th><td>next:<br>39<br>id:52<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s39  </th><td>next:<br>40<br>id:55<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s39  </th><td>next:<br>40<br>id:55<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s40  </th><td>next:<br>52<br>id:57<br></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t1_v4<br>var:reg_t1_v5<br>outputs:<br>var:reg_t1_v1<br>id:79<br><hr>inputs:<br>var:reg_t2_v6<br>var:reg_t2_v7<br>outputs:<br>var:reg_t2_v2<br>id:81<br><hr>inputs:<br>var:reg_t3_v8<br>var:reg_t3_v9<br>outputs:<br>var:reg_t3_v3<br>id:83<br></td><td></td> </tr>
+  <th>s40  </th><td>next:<br>52<br>id:57<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t1_v4<br>var:reg_t1_v5<br>outputs:<br>var:reg_t1_v1<br>id:79<br><hr>inputs:<br>var:reg_t2_v6<br>var:reg_t2_v7<br>outputs:<br>var:reg_t2_v2<br>id:81<br><hr>inputs:<br>var:reg_t3_v8<br>var:reg_t3_v9<br>outputs:<br>var:reg_t3_v3<br>id:83<br></td><td></td> </tr>
  <tr class=even>
-  <th>s52  </th><td>next:<br>41<br>id:77<br></td><td></td><td></td><td></td><td>inputs:<br>var:r4_main_v13<br>var:reg_t3_v3<br>outputs:<br>var:reg_t4_v14<br>id:56<br></td><td></td><td></td><td></td> </tr>
+  <th>s52  </th><td>next:<br>41<br>id:77<br></td><td></td><td></td><td></td><td>inputs:<br>var:r4_main_v13<br>var:reg_t3_v3<br>outputs:<br>var:reg_t4_v14<br>id:56<br></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s41  </th><td>inputs:<br>var:reg_t4_v14<br>next:<br>42<br>12<br>id:58<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s41  </th><td>inputs:<br>var:reg_t4_v14<br>next:<br>42<br>12<br>id:58<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s42  </th><td>next:<br>43<br>id:60<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s42  </th><td>next:<br>43<br>id:60<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s43  </th><td>next:<br>44<br>id:62<br></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>outputs:<br>var:reg_t1_v4<br>id:61<br></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s43  </th><td>next:<br>44<br>id:62<br></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>outputs:<br>var:reg_t1_v5<br>id:61<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s44  </th><td>next:<br>45<br>id:64<br></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>var:reg_t1_v1<br>outputs:<br>var:reg_t6_v16<br>id:63<br></td><td></td><td></td> </tr>
+  <th>s44  </th><td>next:<br>45<br>id:64<br></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>var:reg_t1_v1<br>outputs:<br>var:reg_t6_v16<br>id:63<br></td><td>inputs:<br>var:reg_t3_v3<br>const:1<br>outputs:<br>var:reg_t3_v8<br>id:67<br></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s45  </th><td>next:<br>46<br>id:66<br></td><td></td><td></td><td>inputs:<br>var:reg_t6_v16<br>outputs:<br>var:reg_t2_v7<br>id:65<br></td><td></td><td>inputs:<br>var:reg_t3_v3<br>const:1<br>outputs:<br>var:reg_t3_v9<br>id:67<br></td><td></td><td></td> </tr>
+  <th>s45  </th><td>next:<br>46<br>id:66<br></td><td></td><td></td><td>inputs:<br>var:reg_t6_v16<br>outputs:<br>var:reg_t2_v7<br>id:65<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s46  </th><td>next:<br>40<br>id:68<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s46  </th><td>next:<br>40<br>id:68<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
 </table><br>ssa_assorted_3<hr>
 Registers:<table border=1>
 <tr><th>alloc type</th><th>name</th><th>data type</th><th>annotation</th></tr>
  <tr>  <td>const</td><td>0</td><td>int:32</td><td></td> </tr>
  <tr>  <td>const</td><td>const:1</td><td>enum:2</td><td></td> </tr>
  <tr>  <td>normal</td><td>r4_main</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t4</td><td>enum:2</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t5</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t6</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v1</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v2</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t5</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t6</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v1</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v2</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v3</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v4</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v5</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v6</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v7</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v4</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v5</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v6</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v7</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v8</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v9</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v10</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v11</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v10</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v11</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v12</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>r4_main_v13</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t4_v14</td><td>enum:2</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t5_v15</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t6_v16</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t5_v15</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t6_v16</td><td>int:64</td><td></td> </tr>
 </table>State Machine: 17states<br><table border=1>
  <tr><th></th>
-<th>branch:1</th><th>read_channel:3<br>(param)<br>outputs:<br>int:32</th><th>write_channel:5<br>(result)<br>inputs:<br>int:32</th><th>assign:6<br>shared</th><th>gt:7<br>inputs:<br>int:32<br>int:32<br>outputs:<br>enum:2</th><th>add:8<br>inputs:<br>int:32<br>int:32<br>outputs:<br>int:32</th><th>phi:10</th> <th>annotation</th> </tr>
+<th>branch:1</th><th>read_channel:3<br>(param)<br>outputs:<br>int:32</th><th>write_channel:5<br>(result)<br>inputs:<br>int:64</th><th>assign:6<br>shared</th><th>gt:7<br>inputs:<br>int:32<br>int:32<br>outputs:<br>enum:2</th><th>add:8<br>inputs:<br>int:64<br>int:64<br>outputs:<br>int:64</th><th>add:9<br>inputs:<br>int:32<br>int:32<br>outputs:<br>int:32</th><th>phi:11</th> <th>annotation</th> </tr>
  <tr class=even>
-  <th>s3(initial)  </th><td>next:<br>51<br>id:8<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s3(initial)  </th><td>next:<br>51<br>id:8<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s51  </th><td>next:<br>5<br>id:76<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s51  </th><td>next:<br>5<br>id:76<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s5  </th><td>inputs:<br>const:1<br>next:<br>8<br>14<br>id:1<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s5  </th><td>inputs:<br>const:1<br>next:<br>8<br>14<br>id:1<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s8  </th><td>next:<br>35<br>id:12<br></td><td>outputs:<br>var:r4_main_v13<br>id:2<br></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s8  </th><td>next:<br>35<br>id:12<br></td><td>outputs:<br>var:r4_main_v13<br>id:2<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s12  </th><td>next:<br>3<br>id:16<br></td><td></td><td>inputs:<br>var:reg_t1_v1<br>id:4<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s12  </th><td>next:<br>3<br>id:16<br></td><td></td><td>inputs:<br>var:reg_t1_v1<br>id:4<br></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s14  </th><td>next:<br>14<br>id:75<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s14  </th><td>next:<br>14<br>id:75<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s35  </th><td>next:<br>37<br>id:49<br></td><td></td><td></td><td>inputs:<br>const:0<br>outputs:<br>var:reg_t1_v5<br>id:48<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t2_v6<br>id:51<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t3_v8<br>id:54<br></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s35  </th><td>next:<br>37<br>id:49<br></td><td></td><td></td><td>inputs:<br>const:0<br>outputs:<br>var:reg_t1_v4<br>id:48<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t2_v6<br>id:51<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t3_v9<br>id:54<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s37  </th><td>next:<br>39<br>id:52<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s37  </th><td>next:<br>39<br>id:52<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s39  </th><td>next:<br>40<br>id:55<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s39  </th><td>next:<br>40<br>id:55<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s40  </th><td>next:<br>52<br>id:57<br></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t1_v4<br>var:reg_t1_v5<br>outputs:<br>var:reg_t1_v1<br>id:79<br><hr>inputs:<br>var:reg_t2_v6<br>var:reg_t2_v7<br>outputs:<br>var:reg_t2_v2<br>id:81<br><hr>inputs:<br>var:reg_t3_v8<br>var:reg_t3_v9<br>outputs:<br>var:reg_t3_v3<br>id:83<br></td><td></td> </tr>
+  <th>s40  </th><td>next:<br>52<br>id:57<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t1_v4<br>var:reg_t1_v5<br>outputs:<br>var:reg_t1_v1<br>id:79<br><hr>inputs:<br>var:reg_t2_v6<br>var:reg_t2_v7<br>outputs:<br>var:reg_t2_v2<br>id:81<br><hr>inputs:<br>var:reg_t3_v8<br>var:reg_t3_v9<br>outputs:<br>var:reg_t3_v3<br>id:83<br></td><td></td> </tr>
  <tr class=even>
-  <th>s52  </th><td>next:<br>41<br>id:77<br></td><td></td><td></td><td></td><td>inputs:<br>var:r4_main_v13<br>var:reg_t3_v3<br>outputs:<br>var:reg_t4_v14<br>id:56<br></td><td></td><td></td><td></td> </tr>
+  <th>s52  </th><td>next:<br>41<br>id:77<br></td><td></td><td></td><td></td><td>inputs:<br>var:r4_main_v13<br>var:reg_t3_v3<br>outputs:<br>var:reg_t4_v14<br>id:56<br></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s41  </th><td>inputs:<br>var:reg_t4_v14<br>next:<br>42<br>12<br>id:58<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s41  </th><td>inputs:<br>var:reg_t4_v14<br>next:<br>42<br>12<br>id:58<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s42  </th><td>next:<br>43<br>id:60<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s42  </th><td>next:<br>43<br>id:60<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s43  </th><td>next:<br>44<br>id:62<br></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>outputs:<br>var:reg_t1_v4<br>id:61<br></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s43  </th><td>next:<br>44<br>id:62<br></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>outputs:<br>var:reg_t1_v5<br>id:61<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s44  </th><td>next:<br>45<br>id:64<br></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>var:reg_t1_v1<br>outputs:<br>var:reg_t6_v16<br>id:63<br></td><td></td><td></td> </tr>
+  <th>s44  </th><td>next:<br>45<br>id:64<br></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>var:reg_t1_v1<br>outputs:<br>var:reg_t6_v16<br>id:63<br></td><td>inputs:<br>var:reg_t3_v3<br>const:1<br>outputs:<br>var:reg_t3_v8<br>id:67<br></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s45  </th><td>next:<br>46<br>id:66<br></td><td></td><td></td><td>inputs:<br>var:reg_t6_v16<br>outputs:<br>var:reg_t2_v7<br>id:65<br></td><td></td><td>inputs:<br>var:reg_t3_v3<br>const:1<br>outputs:<br>var:reg_t3_v9<br>id:67<br></td><td></td><td></td> </tr>
+  <th>s45  </th><td>next:<br>46<br>id:66<br></td><td></td><td></td><td>inputs:<br>var:reg_t6_v16<br>outputs:<br>var:reg_t2_v7<br>id:65<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s46  </th><td>next:<br>40<br>id:68<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s46  </th><td>next:<br>40<br>id:68<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
 </table><br>ssa_assorted_4<hr>
 Registers:<table border=1>
 <tr><th>alloc type</th><th>name</th><th>data type</th><th>annotation</th></tr>
  <tr>  <td>const</td><td>0</td><td>int:32</td><td></td> </tr>
  <tr>  <td>const</td><td>const:1</td><td>enum:2</td><td></td> </tr>
  <tr>  <td>normal</td><td>r4_main</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t4</td><td>enum:2</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t5</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t6</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v1</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v2</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t5</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t6</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v1</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v2</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v3</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v4</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v5</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v6</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v7</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v4</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v5</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v6</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v7</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v8</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v9</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v10</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v11</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v10</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v11</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v12</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>r4_main_v13</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t4_v14</td><td>enum:2</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t5_v15</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t6_v16</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t5_v15</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t6_v16</td><td>int:64</td><td></td> </tr>
 </table>State Machine: 17states<br><table border=1>
  <tr><th></th>
-<th>branch:1</th><th>read_channel:3<br>(param)<br>outputs:<br>int:32</th><th>write_channel:5<br>(result)<br>inputs:<br>int:32</th><th>assign:6<br>shared</th><th>gt:7<br>inputs:<br>int:32<br>int:32<br>outputs:<br>enum:2</th><th>add:8<br>inputs:<br>int:32<br>int:32<br>outputs:<br>int:32</th><th>phi:10</th> <th>annotation</th> </tr>
+<th>branch:1</th><th>read_channel:3<br>(param)<br>outputs:<br>int:32</th><th>write_channel:5<br>(result)<br>inputs:<br>int:64</th><th>assign:6<br>shared</th><th>gt:7<br>inputs:<br>int:32<br>int:32<br>outputs:<br>enum:2</th><th>add:8<br>inputs:<br>int:64<br>int:64<br>outputs:<br>int:64</th><th>add:9<br>inputs:<br>int:32<br>int:32<br>outputs:<br>int:32</th><th>phi:11</th> <th>annotation</th> </tr>
  <tr class=even>
-  <th>s3(initial)  </th><td>next:<br>51<br>id:8<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s3(initial)  </th><td>next:<br>51<br>id:8<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s51  </th><td>next:<br>5<br>id:76<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s51  </th><td>next:<br>5<br>id:76<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s5  </th><td>inputs:<br>const:1<br>next:<br>8<br>14<br>id:1<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s5  </th><td>inputs:<br>const:1<br>next:<br>8<br>14<br>id:1<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s8  </th><td>next:<br>35<br>id:12<br></td><td>outputs:<br>var:r4_main_v13<br>id:2<br></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s8  </th><td>next:<br>35<br>id:12<br></td><td>outputs:<br>var:r4_main_v13<br>id:2<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s12  </th><td>next:<br>3<br>id:16<br></td><td></td><td>inputs:<br>var:reg_t1_v1<br>id:4<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s12  </th><td>next:<br>3<br>id:16<br></td><td></td><td>inputs:<br>var:reg_t1_v1<br>id:4<br></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s14  </th><td>next:<br>14<br>id:75<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s14  </th><td>next:<br>14<br>id:75<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s35  </th><td>next:<br>37<br>id:49<br></td><td></td><td></td><td>inputs:<br>const:0<br>outputs:<br>var:reg_t1_v5<br>id:48<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t2_v6<br>id:51<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t3_v8<br>id:54<br></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s35  </th><td>next:<br>37<br>id:49<br></td><td></td><td></td><td>inputs:<br>const:0<br>outputs:<br>var:reg_t1_v4<br>id:48<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t2_v6<br>id:51<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t3_v9<br>id:54<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s37  </th><td>next:<br>39<br>id:52<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s37  </th><td>next:<br>39<br>id:52<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s39  </th><td>next:<br>40<br>id:55<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s39  </th><td>next:<br>40<br>id:55<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s40  </th><td>next:<br>52<br>id:57<br></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t1_v4<br>var:reg_t1_v5<br>outputs:<br>var:reg_t1_v1<br>id:79<br><hr>inputs:<br>var:reg_t2_v6<br>var:reg_t2_v7<br>outputs:<br>var:reg_t2_v2<br>id:81<br><hr>inputs:<br>var:reg_t3_v8<br>var:reg_t3_v9<br>outputs:<br>var:reg_t3_v3<br>id:83<br></td><td></td> </tr>
+  <th>s40  </th><td>next:<br>52<br>id:57<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t1_v4<br>var:reg_t1_v5<br>outputs:<br>var:reg_t1_v1<br>id:79<br><hr>inputs:<br>var:reg_t2_v6<br>var:reg_t2_v7<br>outputs:<br>var:reg_t2_v2<br>id:81<br><hr>inputs:<br>var:reg_t3_v8<br>var:reg_t3_v9<br>outputs:<br>var:reg_t3_v3<br>id:83<br></td><td></td> </tr>
  <tr class=even>
-  <th>s52  </th><td>next:<br>41<br>id:77<br></td><td></td><td></td><td></td><td>inputs:<br>var:r4_main_v13<br>var:reg_t3_v3<br>outputs:<br>var:reg_t4_v14<br>id:56<br></td><td></td><td></td><td></td> </tr>
+  <th>s52  </th><td>next:<br>41<br>id:77<br></td><td></td><td></td><td></td><td>inputs:<br>var:r4_main_v13<br>var:reg_t3_v3<br>outputs:<br>var:reg_t4_v14<br>id:56<br></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s41  </th><td>inputs:<br>var:reg_t4_v14<br>next:<br>42<br>12<br>id:58<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s41  </th><td>inputs:<br>var:reg_t4_v14<br>next:<br>42<br>12<br>id:58<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s42  </th><td>next:<br>43<br>id:60<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s42  </th><td>next:<br>43<br>id:60<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s43  </th><td>next:<br>44<br>id:62<br></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>outputs:<br>var:reg_t1_v4<br>id:61<br></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s43  </th><td>next:<br>44<br>id:62<br></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>outputs:<br>var:reg_t1_v5<br>id:61<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s44  </th><td>next:<br>45<br>id:64<br></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>var:reg_t1_v1<br>outputs:<br>var:reg_t6_v16<br>id:63<br></td><td></td><td></td> </tr>
+  <th>s44  </th><td>next:<br>45<br>id:64<br></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>var:reg_t1_v1<br>outputs:<br>var:reg_t6_v16<br>id:63<br></td><td>inputs:<br>var:reg_t3_v3<br>const:1<br>outputs:<br>var:reg_t3_v8<br>id:67<br></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s45  </th><td>next:<br>46<br>id:66<br></td><td></td><td></td><td>inputs:<br>var:reg_t6_v16<br>outputs:<br>var:reg_t2_v7<br>id:65<br></td><td></td><td>inputs:<br>var:reg_t3_v3<br>const:1<br>outputs:<br>var:reg_t3_v9<br>id:67<br></td><td></td><td></td> </tr>
+  <th>s45  </th><td>next:<br>46<br>id:66<br></td><td></td><td></td><td>inputs:<br>var:reg_t6_v16<br>outputs:<br>var:reg_t2_v7<br>id:65<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s46  </th><td>next:<br>40<br>id:68<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s46  </th><td>next:<br>40<br>id:68<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
 </table><br>ssa_assorted_5<hr>
 Registers:<table border=1>
 <tr><th>alloc type</th><th>name</th><th>data type</th><th>annotation</th></tr>
  <tr>  <td>const</td><td>0</td><td>int:32</td><td></td> </tr>
  <tr>  <td>const</td><td>const:1</td><td>enum:2</td><td></td> </tr>
  <tr>  <td>normal</td><td>r4_main</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t4</td><td>enum:2</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t5</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t6</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v1</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v2</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t5</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t6</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v1</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v2</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v3</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v4</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v5</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v6</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v7</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v4</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v5</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v6</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v7</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v8</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v9</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v10</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v11</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v10</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v11</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v12</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>r4_main_v13</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t4_v14</td><td>enum:2</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t5_v15</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t6_v16</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t5_v15</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t6_v16</td><td>int:64</td><td></td> </tr>
 </table>State Machine: 17states<br><table border=1>
  <tr><th></th>
-<th>branch:1</th><th>read_channel:3<br>(param)<br>outputs:<br>int:32</th><th>write_channel:5<br>(result)<br>inputs:<br>int:32</th><th>assign:6<br>shared</th><th>gt:7<br>inputs:<br>int:32<br>int:32<br>outputs:<br>enum:2</th><th>add:8<br>inputs:<br>int:32<br>int:32<br>outputs:<br>int:32</th><th>phi:10</th> <th>annotation</th> </tr>
+<th>branch:1</th><th>read_channel:3<br>(param)<br>outputs:<br>int:32</th><th>write_channel:5<br>(result)<br>inputs:<br>int:64</th><th>assign:6<br>shared</th><th>gt:7<br>inputs:<br>int:32<br>int:32<br>outputs:<br>enum:2</th><th>add:8<br>inputs:<br>int:64<br>int:64<br>outputs:<br>int:64</th><th>add:9<br>inputs:<br>int:32<br>int:32<br>outputs:<br>int:32</th><th>phi:11</th> <th>annotation</th> </tr>
  <tr class=even>
-  <th>s3(initial)  </th><td>next:<br>51<br>id:8<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s3(initial)  </th><td>next:<br>51<br>id:8<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s51  </th><td>next:<br>5<br>id:76<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s51  </th><td>next:<br>5<br>id:76<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s5  </th><td>inputs:<br>const:1<br>next:<br>8<br>14<br>id:1<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s5  </th><td>inputs:<br>const:1<br>next:<br>8<br>14<br>id:1<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s8  </th><td>next:<br>35<br>id:12<br></td><td>outputs:<br>var:r4_main_v13<br>id:2<br></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s8  </th><td>next:<br>35<br>id:12<br></td><td>outputs:<br>var:r4_main_v13<br>id:2<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s12  </th><td>next:<br>3<br>id:16<br></td><td></td><td>inputs:<br>var:reg_t1_v1<br>id:4<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s12  </th><td>next:<br>3<br>id:16<br></td><td></td><td>inputs:<br>var:reg_t1_v1<br>id:4<br></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s14  </th><td>next:<br>14<br>id:75<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s14  </th><td>next:<br>14<br>id:75<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s35  </th><td>next:<br>37<br>id:49<br></td><td></td><td></td><td>inputs:<br>const:0<br>outputs:<br>var:reg_t1_v5<br>id:48<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t2_v6<br>id:51<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t3_v8<br>id:54<br></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s35  </th><td>next:<br>37<br>id:49<br></td><td></td><td></td><td>inputs:<br>const:0<br>outputs:<br>var:reg_t1_v4<br>id:48<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t2_v6<br>id:51<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t3_v9<br>id:54<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s37  </th><td>next:<br>39<br>id:52<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s37  </th><td>next:<br>39<br>id:52<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s39  </th><td>next:<br>40<br>id:55<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s39  </th><td>next:<br>40<br>id:55<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s40  </th><td>next:<br>52<br>id:57<br></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t1_v4<br>var:reg_t1_v5<br>outputs:<br>var:reg_t1_v1<br>id:79<br><hr>inputs:<br>var:reg_t2_v6<br>var:reg_t2_v7<br>outputs:<br>var:reg_t2_v2<br>id:81<br><hr>inputs:<br>var:reg_t3_v8<br>var:reg_t3_v9<br>outputs:<br>var:reg_t3_v3<br>id:83<br></td><td></td> </tr>
+  <th>s40  </th><td>next:<br>52<br>id:57<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t1_v4<br>var:reg_t1_v5<br>outputs:<br>var:reg_t1_v1<br>id:79<br><hr>inputs:<br>var:reg_t2_v6<br>var:reg_t2_v7<br>outputs:<br>var:reg_t2_v2<br>id:81<br><hr>inputs:<br>var:reg_t3_v8<br>var:reg_t3_v9<br>outputs:<br>var:reg_t3_v3<br>id:83<br></td><td></td> </tr>
  <tr class=even>
-  <th>s52  </th><td>next:<br>41<br>id:77<br></td><td></td><td></td><td></td><td>inputs:<br>var:r4_main_v13<br>var:reg_t3_v3<br>outputs:<br>var:reg_t4_v14<br>id:56<br></td><td></td><td></td><td></td> </tr>
+  <th>s52  </th><td>next:<br>41<br>id:77<br></td><td></td><td></td><td></td><td>inputs:<br>var:r4_main_v13<br>var:reg_t3_v3<br>outputs:<br>var:reg_t4_v14<br>id:56<br></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s41  </th><td>inputs:<br>var:reg_t4_v14<br>next:<br>42<br>12<br>id:58<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s41  </th><td>inputs:<br>var:reg_t4_v14<br>next:<br>42<br>12<br>id:58<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s42  </th><td>next:<br>43<br>id:60<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s42  </th><td>next:<br>43<br>id:60<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s43  </th><td>next:<br>44<br>id:62<br></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>outputs:<br>var:reg_t1_v4<br>id:61<br></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s43  </th><td>next:<br>44<br>id:62<br></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>outputs:<br>var:reg_t1_v5<br>id:61<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s44  </th><td>next:<br>45<br>id:64<br></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>var:reg_t1_v1<br>outputs:<br>var:reg_t6_v16<br>id:63<br></td><td></td><td></td> </tr>
+  <th>s44  </th><td>next:<br>45<br>id:64<br></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>var:reg_t1_v1<br>outputs:<br>var:reg_t6_v16<br>id:63<br></td><td>inputs:<br>var:reg_t3_v3<br>const:1<br>outputs:<br>var:reg_t3_v8<br>id:67<br></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s45  </th><td>next:<br>46<br>id:66<br></td><td></td><td></td><td>inputs:<br>var:reg_t6_v16<br>outputs:<br>var:reg_t2_v7<br>id:65<br></td><td></td><td>inputs:<br>var:reg_t3_v3<br>const:1<br>outputs:<br>var:reg_t3_v9<br>id:67<br></td><td></td><td></td> </tr>
+  <th>s45  </th><td>next:<br>46<br>id:66<br></td><td></td><td></td><td>inputs:<br>var:reg_t6_v16<br>outputs:<br>var:reg_t2_v7<br>id:65<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s46  </th><td>next:<br>40<br>id:68<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s46  </th><td>next:<br>40<br>id:68<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
 </table><br>ssa_assorted_6<hr>
 Registers:<table border=1>
 <tr><th>alloc type</th><th>name</th><th>data type</th><th>annotation</th></tr>
  <tr>  <td>const</td><td>0</td><td>int:32</td><td></td> </tr>
  <tr>  <td>const</td><td>const:1</td><td>enum:2</td><td></td> </tr>
  <tr>  <td>normal</td><td>r4_main</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t4</td><td>enum:2</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t5</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t6</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v1</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v2</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t5</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t6</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v1</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v2</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v3</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v4</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v5</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v6</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v7</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v4</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v5</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v6</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v7</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v8</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v9</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v10</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v11</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v10</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v11</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v12</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>r4_main_v13</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t4_v14</td><td>enum:2</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t5_v15</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t6_v16</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t5_v15</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t6_v16</td><td>int:64</td><td></td> </tr>
 </table>State Machine: 17states<br><table border=1>
  <tr><th></th>
-<th>branch:1</th><th>read_channel:3<br>(param)<br>outputs:<br>int:32</th><th>write_channel:5<br>(result)<br>inputs:<br>int:32</th><th>assign:6<br>shared</th><th>gt:7<br>inputs:<br>int:32<br>int:32<br>outputs:<br>enum:2</th><th>add:8<br>inputs:<br>int:32<br>int:32<br>outputs:<br>int:32</th><th>phi:10</th> <th>annotation</th> </tr>
+<th>branch:1</th><th>read_channel:3<br>(param)<br>outputs:<br>int:32</th><th>write_channel:5<br>(result)<br>inputs:<br>int:64</th><th>assign:6<br>shared</th><th>gt:7<br>inputs:<br>int:32<br>int:32<br>outputs:<br>enum:2</th><th>add:8<br>inputs:<br>int:64<br>int:64<br>outputs:<br>int:64</th><th>add:9<br>inputs:<br>int:32<br>int:32<br>outputs:<br>int:32</th><th>phi:11</th> <th>annotation</th> </tr>
  <tr class=even>
-  <th>s3(initial)  </th><td>next:<br>51<br>id:8<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s3(initial)  </th><td>next:<br>51<br>id:8<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s51  </th><td>next:<br>5<br>id:76<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s51  </th><td>next:<br>5<br>id:76<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s5  </th><td>inputs:<br>const:1<br>next:<br>8<br>14<br>id:1<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s5  </th><td>inputs:<br>const:1<br>next:<br>8<br>14<br>id:1<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s8  </th><td>next:<br>35<br>id:12<br></td><td>outputs:<br>var:r4_main_v13<br>id:2<br></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s8  </th><td>next:<br>35<br>id:12<br></td><td>outputs:<br>var:r4_main_v13<br>id:2<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s12  </th><td>next:<br>3<br>id:16<br></td><td></td><td>inputs:<br>var:reg_t1_v1<br>id:4<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s12  </th><td>next:<br>3<br>id:16<br></td><td></td><td>inputs:<br>var:reg_t1_v1<br>id:4<br></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s14  </th><td>next:<br>14<br>id:75<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s14  </th><td>next:<br>14<br>id:75<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s35  </th><td>next:<br>37<br>id:49<br></td><td></td><td></td><td>inputs:<br>const:0<br>outputs:<br>var:reg_t1_v5<br>id:48<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t2_v6<br>id:51<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t3_v8<br>id:54<br></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s35  </th><td>next:<br>37<br>id:49<br></td><td></td><td></td><td>inputs:<br>const:0<br>outputs:<br>var:reg_t1_v4<br>id:48<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t2_v6<br>id:51<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t3_v9<br>id:54<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s37  </th><td>next:<br>39<br>id:52<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s37  </th><td>next:<br>39<br>id:52<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s39  </th><td>next:<br>40<br>id:55<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s39  </th><td>next:<br>40<br>id:55<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s40  </th><td>next:<br>52<br>id:57<br></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t1_v4<br>var:reg_t1_v5<br>outputs:<br>var:reg_t1_v1<br>id:79<br><hr>inputs:<br>var:reg_t2_v6<br>var:reg_t2_v7<br>outputs:<br>var:reg_t2_v2<br>id:81<br><hr>inputs:<br>var:reg_t3_v8<br>var:reg_t3_v9<br>outputs:<br>var:reg_t3_v3<br>id:83<br></td><td></td> </tr>
+  <th>s40  </th><td>next:<br>52<br>id:57<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t1_v4<br>var:reg_t1_v5<br>outputs:<br>var:reg_t1_v1<br>id:79<br><hr>inputs:<br>var:reg_t2_v6<br>var:reg_t2_v7<br>outputs:<br>var:reg_t2_v2<br>id:81<br><hr>inputs:<br>var:reg_t3_v8<br>var:reg_t3_v9<br>outputs:<br>var:reg_t3_v3<br>id:83<br></td><td></td> </tr>
  <tr class=even>
-  <th>s52  </th><td>next:<br>41<br>id:77<br></td><td></td><td></td><td></td><td>inputs:<br>var:r4_main_v13<br>var:reg_t3_v3<br>outputs:<br>var:reg_t4_v14<br>id:56<br></td><td></td><td></td><td></td> </tr>
+  <th>s52  </th><td>next:<br>41<br>id:77<br></td><td></td><td></td><td></td><td>inputs:<br>var:r4_main_v13<br>var:reg_t3_v3<br>outputs:<br>var:reg_t4_v14<br>id:56<br></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s41  </th><td>inputs:<br>var:reg_t4_v14<br>next:<br>42<br>12<br>id:58<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s41  </th><td>inputs:<br>var:reg_t4_v14<br>next:<br>42<br>12<br>id:58<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s42  </th><td>next:<br>43<br>id:60<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s42  </th><td>next:<br>43<br>id:60<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s43  </th><td>next:<br>44<br>id:62<br></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>outputs:<br>var:reg_t1_v4<br>id:61<br></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s43  </th><td>next:<br>44<br>id:62<br></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>outputs:<br>var:reg_t1_v5<br>id:61<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s44  </th><td>next:<br>45<br>id:64<br></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>var:reg_t1_v1<br>outputs:<br>var:reg_t6_v16<br>id:63<br></td><td></td><td></td> </tr>
+  <th>s44  </th><td>next:<br>45<br>id:64<br></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>var:reg_t1_v1<br>outputs:<br>var:reg_t6_v16<br>id:63<br></td><td>inputs:<br>var:reg_t3_v3<br>const:1<br>outputs:<br>var:reg_t3_v8<br>id:67<br></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s45  </th><td>next:<br>46<br>id:66<br></td><td></td><td></td><td>inputs:<br>var:reg_t6_v16<br>outputs:<br>var:reg_t2_v7<br>id:65<br></td><td></td><td>inputs:<br>var:reg_t3_v3<br>const:1<br>outputs:<br>var:reg_t3_v9<br>id:67<br></td><td></td><td></td> </tr>
+  <th>s45  </th><td>next:<br>46<br>id:66<br></td><td></td><td></td><td>inputs:<br>var:reg_t6_v16<br>outputs:<br>var:reg_t2_v7<br>id:65<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s46  </th><td>next:<br>40<br>id:68<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s46  </th><td>next:<br>40<br>id:68<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
 </table><br>ssa_assorted_7<hr>
 Registers:<table border=1>
 <tr><th>alloc type</th><th>name</th><th>data type</th><th>annotation</th></tr>
  <tr>  <td>const</td><td>0</td><td>int:32</td><td></td> </tr>
  <tr>  <td>const</td><td>const:1</td><td>enum:2</td><td></td> </tr>
  <tr>  <td>normal</td><td>r4_main</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t4</td><td>enum:2</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t5</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t6</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v1</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v2</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t5</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t6</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v1</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v2</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v3</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v4</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v5</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v6</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v7</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v4</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v5</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v6</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v7</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v8</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v9</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t1_v10</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t2_v11</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t1_v10</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t2_v11</td><td>int:64</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t3_v12</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>r4_main_v13</td><td>int:32</td><td></td> </tr>
  <tr>  <td>normal</td><td>reg_t4_v14</td><td>enum:2</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t5_v15</td><td>int:32</td><td></td> </tr>
- <tr>  <td>normal</td><td>reg_t6_v16</td><td>int:32</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t5_v15</td><td>int:64</td><td></td> </tr>
+ <tr>  <td>normal</td><td>reg_t6_v16</td><td>int:64</td><td></td> </tr>
 </table>State Machine: 17states<br><table border=1>
  <tr><th></th>
-<th>branch:1</th><th>read_channel:3<br>(param)<br>outputs:<br>int:32</th><th>write_channel:5<br>(result)<br>inputs:<br>int:32</th><th>assign:6<br>shared</th><th>gt:7<br>inputs:<br>int:32<br>int:32<br>outputs:<br>enum:2</th><th>add:8<br>inputs:<br>int:32<br>int:32<br>outputs:<br>int:32</th><th>phi:10</th> <th>annotation</th> </tr>
+<th>branch:1</th><th>read_channel:3<br>(param)<br>outputs:<br>int:32</th><th>write_channel:5<br>(result)<br>inputs:<br>int:64</th><th>assign:6<br>shared</th><th>gt:7<br>inputs:<br>int:32<br>int:32<br>outputs:<br>enum:2</th><th>add:8<br>inputs:<br>int:64<br>int:64<br>outputs:<br>int:64</th><th>add:9<br>inputs:<br>int:32<br>int:32<br>outputs:<br>int:32</th><th>phi:11</th> <th>annotation</th> </tr>
  <tr class=even>
-  <th>s3(initial)  </th><td>next:<br>51<br>id:8<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s3(initial)  </th><td>next:<br>51<br>id:8<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s51  </th><td>next:<br>5<br>id:76<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s51  </th><td>next:<br>5<br>id:76<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s5  </th><td>inputs:<br>const:1<br>next:<br>8<br>14<br>id:1<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s5  </th><td>inputs:<br>const:1<br>next:<br>8<br>14<br>id:1<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s8  </th><td>next:<br>35<br>id:12<br></td><td>outputs:<br>var:r4_main_v13<br>id:2<br></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s8  </th><td>next:<br>35<br>id:12<br></td><td>outputs:<br>var:r4_main_v13<br>id:2<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s12  </th><td>next:<br>3<br>id:16<br></td><td></td><td>inputs:<br>var:reg_t1_v1<br>id:4<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s12  </th><td>next:<br>3<br>id:16<br></td><td></td><td>inputs:<br>var:reg_t1_v1<br>id:4<br></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s14  </th><td>next:<br>14<br>id:75<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s14  </th><td>next:<br>14<br>id:75<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s35  </th><td>next:<br>37<br>id:49<br></td><td></td><td></td><td>inputs:<br>const:0<br>outputs:<br>var:reg_t1_v5<br>id:48<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t2_v6<br>id:51<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t3_v8<br>id:54<br></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s35  </th><td>next:<br>37<br>id:49<br></td><td></td><td></td><td>inputs:<br>const:0<br>outputs:<br>var:reg_t1_v4<br>id:48<br><hr>inputs:<br>const:1<br>outputs:<br>var:reg_t2_v6<br>id:51<br><hr>inputs:<br>const:0<br>outputs:<br>var:reg_t3_v9<br>id:54<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s37  </th><td>next:<br>39<br>id:52<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s37  </th><td>next:<br>39<br>id:52<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s39  </th><td>next:<br>40<br>id:55<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s39  </th><td>next:<br>40<br>id:55<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s40  </th><td>next:<br>52<br>id:57<br></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t1_v4<br>var:reg_t1_v5<br>outputs:<br>var:reg_t1_v1<br>id:79<br><hr>inputs:<br>var:reg_t2_v6<br>var:reg_t2_v7<br>outputs:<br>var:reg_t2_v2<br>id:81<br><hr>inputs:<br>var:reg_t3_v8<br>var:reg_t3_v9<br>outputs:<br>var:reg_t3_v3<br>id:83<br></td><td></td> </tr>
+  <th>s40  </th><td>next:<br>52<br>id:57<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t1_v4<br>var:reg_t1_v5<br>outputs:<br>var:reg_t1_v1<br>id:79<br><hr>inputs:<br>var:reg_t2_v6<br>var:reg_t2_v7<br>outputs:<br>var:reg_t2_v2<br>id:81<br><hr>inputs:<br>var:reg_t3_v8<br>var:reg_t3_v9<br>outputs:<br>var:reg_t3_v3<br>id:83<br></td><td></td> </tr>
  <tr class=even>
-  <th>s52  </th><td>next:<br>41<br>id:77<br></td><td></td><td></td><td></td><td>inputs:<br>var:r4_main_v13<br>var:reg_t3_v3<br>outputs:<br>var:reg_t4_v14<br>id:56<br></td><td></td><td></td><td></td> </tr>
+  <th>s52  </th><td>next:<br>41<br>id:77<br></td><td></td><td></td><td></td><td>inputs:<br>var:r4_main_v13<br>var:reg_t3_v3<br>outputs:<br>var:reg_t4_v14<br>id:56<br></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s41  </th><td>inputs:<br>var:reg_t4_v14<br>next:<br>42<br>12<br>id:58<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s41  </th><td>inputs:<br>var:reg_t4_v14<br>next:<br>42<br>12<br>id:58<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s42  </th><td>next:<br>43<br>id:60<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s42  </th><td>next:<br>43<br>id:60<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s43  </th><td>next:<br>44<br>id:62<br></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>outputs:<br>var:reg_t1_v4<br>id:61<br></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s43  </th><td>next:<br>44<br>id:62<br></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>outputs:<br>var:reg_t1_v5<br>id:61<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s44  </th><td>next:<br>45<br>id:64<br></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>var:reg_t1_v1<br>outputs:<br>var:reg_t6_v16<br>id:63<br></td><td></td><td></td> </tr>
+  <th>s44  </th><td>next:<br>45<br>id:64<br></td><td></td><td></td><td></td><td></td><td>inputs:<br>var:reg_t2_v2<br>var:reg_t1_v1<br>outputs:<br>var:reg_t6_v16<br>id:63<br></td><td>inputs:<br>var:reg_t3_v3<br>const:1<br>outputs:<br>var:reg_t3_v8<br>id:67<br></td><td></td><td></td> </tr>
  <tr class=odd>
-  <th>s45  </th><td>next:<br>46<br>id:66<br></td><td></td><td></td><td>inputs:<br>var:reg_t6_v16<br>outputs:<br>var:reg_t2_v7<br>id:65<br></td><td></td><td>inputs:<br>var:reg_t3_v3<br>const:1<br>outputs:<br>var:reg_t3_v9<br>id:67<br></td><td></td><td></td> </tr>
+  <th>s45  </th><td>next:<br>46<br>id:66<br></td><td></td><td></td><td>inputs:<br>var:reg_t6_v16<br>outputs:<br>var:reg_t2_v7<br>id:65<br></td><td></td><td></td><td></td><td></td><td></td> </tr>
  <tr class=even>
-  <th>s46  </th><td>next:<br>40<br>id:68<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
+  <th>s46  </th><td>next:<br>40<br>id:68<br></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td><td></td> </tr>
 </table></body></html>
