@@ -19,6 +19,7 @@ module fib_test;
          @(posedge clk);
 	 fib_param_data <= #1 n;
 	 fib_param_en   <= #1 1;
+         fib_result_ack <= #1 0;
          timeout        = 1000;
          begin: param_loop
             forever begin
@@ -35,7 +36,6 @@ module fib_test;
                timeout = timeout - 1;
             end 
 	 end
-         fib_result_ack <= #1 1;
          timeout        = 1000;
          begin: result_loop
             forever begin
@@ -45,17 +45,18 @@ module fib_test;
                       $display("fib_result = %d expected but %d found.", expected_result, fib_result_data);
                   else
                       $display("fib_result = %d ok", fib_result_data);
+                  fib_result_ack <= #1 1;
+                  @(posedge clk);
                   fib_result_ack <= #1 0;
                   disable result_loop;
                end
                if (timeout == 0) begin
                   $display("fib_result_en is timeout.");
-                  fib_result_ack <= #1 0;
                   disable result_loop;
                end
                timeout = timeout - 1;
             end
-         end
+         end // block: result_loop
       end
    endtask
 
