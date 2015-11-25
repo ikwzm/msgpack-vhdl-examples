@@ -2,7 +2,7 @@
 --!     @file    fib_interface.vhd
 --!     @brief   Fib Interface Module
 --!     @version 0.1.0
---!     @date    2015/11/23
+--!     @date    2015/11/25
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
@@ -214,7 +214,7 @@ begin
         end if;
     end process;
     fib_n_en  <= '1' when (fib_run = '0' and fib_go = '1') else '0';
-    fib_o_ack <= '1' when (fib_run = '1') else '0';
+    fib_o_ack <= '1' when (fib_run = '1' and fib_o_en = '1') else '0';
     fib_busy  <= '1' when (fib_run = '0' and fib_go = '1' and fib_n_ack = '1') or
                           (fib_run = '1' and fib_o_en = '0') else '0';
 end RTL;
