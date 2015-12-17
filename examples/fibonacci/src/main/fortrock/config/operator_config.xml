@@ -1,0 +1,393 @@
+<config>
+  <ip_core>
+    <!-- clk,ceなどを除くInput/Outputは定義順序は接続順序と揃える -->
+    <add_int>
+      <use_ip_core>  true  </use_ip_core>
+      <latency>      1      </latency>
+      <module_name>  Add  </module_name>
+      <instance_name> add    </instance_name>
+      <num_module>   1      </num_module>
+
+      <io>
+        <info>
+          <port_name> a </port_name>
+          <bit_width> 32 </bit_width>
+          <type> input </type>
+        </info>
+        <info>
+          <port_name> b </port_name>
+          <bit_width> 32 </bit_width>
+          <type> input </type>
+        </info>
+        <info>
+          <port_name> clk </port_name>
+          <bit_width> 1 </bit_width>
+          <type> clock </type>
+        </info>
+        <info>
+          <port_name> ce </port_name>
+          <bit_width> 1 </bit_width>
+          <type> clock_enable </type>
+        </info>
+        <info>
+          <port_name> s </port_name>
+          <bit_width> 32 </bit_width>
+          <type> output </type>
+        </info>
+      </io>
+    </add_int>
+
+    <fadd>
+      <use_ip_core> false </use_ip_core>
+      <latency> 11 </latency>
+      <module_name> fadd5 </module_name>
+      <instance_name> fadd </instance_name>
+      <num_module> 1 </num_module>
+
+      <io>
+        <info>
+          <port_name> a </port_name>
+          <bit_width> 32 </bit_width>
+          <type> input </type>
+        </info>
+        <info>
+          <port_name> b </port_name>
+          <bit_width> 32 </bit_width>
+          <type> input </type>
+        </info>
+        <info>
+          <port_name> clk </port_name>
+          <bit_width> 1 </bit_width>
+          <type> clock </type>
+        </info>
+        <info>
+          <port_name> result </port_name>
+          <bit_width> 32 </bit_width>
+          <type> output </type>
+        </info>
+      </io>
+    </fadd>
+
+    <sub_int>
+      <use_ip_core>  false  </use_ip_core>
+      <latency>      1      </latency>
+      <module_name>  Sub  </module_name>
+      <instance_name> sub    </instance_name>
+      <num_module>   1      </num_module>
+
+      <io>
+        <info>
+          <port_name> a </port_name>
+          <bit_width> 32 </bit_width>
+          <type> input </type>
+        </info>
+        <info>
+          <port_name> b </port_name>
+          <bit_width> 32 </bit_width>
+          <type> input </type>
+        </info>
+        <info>
+          <port_name> clk </port_name>
+          <bit_width> 1 </bit_width>
+          <type> clock </type>
+        </info>
+        <info>
+          <port_name> ce </port_name>
+          <bit_width> 1 </bit_width>
+          <type> clock_enable </type>
+        </info>
+        <info>
+          <port_name> s </port_name>
+          <bit_width> 32 </bit_width>
+          <type> output </type>
+        </info>
+      </io>
+    </sub_int>
+
+    <fsub>
+      <use_ip_core> false </use_ip_core>
+      <latency> 12 </latency>
+      <module_name> fsub </module_name>
+      <instance_name> fsub </instance_name>
+      <num_module> 1 </num_module>
+
+      <io>
+        <info>
+          <port_name> a </port_name>
+          <bit_width> 32 </bit_width>
+          <type> input </type>
+        </info>
+        <info>
+          <port_name> b </port_name>
+          <bit_width> 32 </bit_width>
+          <type> input </type>
+        </info>
+        <info>
+          <port_name> clk </port_name>
+          <bit_width> 1 </bit_width>
+          <type> clock </type>
+        </info>
+        <info>
+          <port_name> result </port_name>
+          <bit_width> 32 </bit_width>
+          <type> output </type>
+        </info>
+      </io>
+    </fsub>
+
+    <mul>
+      <use_ip_core>  true      </use_ip_core>
+      <latency>      1          </latency>
+      <module_name>  multiplier </module_name>
+      <instance_name> mul        </instance_name>
+      <num_module>   1          </num_module>
+
+      <io>
+        <info>
+          <port_name> a </port_name>
+          <bit_width> 32</bit_width>
+          <type> input </type>
+        </info>
+        <info>
+          <port_name> b </port_name>
+          <bit_width> 32 </bit_width>
+          <type> input </type>
+        </info>
+        <info>
+          <port_name> clk </port_name>
+          <bit_width> 1 </bit_width>
+          <type> clock </type>
+        </info>
+        <info>
+          <port_name> ce </port_name>
+          <bit_widt> 1 </bit_widt>
+          <type> clock_enable </type>
+        </info>
+
+        <info>
+          <port_name> p </port_name>
+          <bit_width> 32 </bit_width>
+          <type> output </type>
+        </info>
+      </io>
+    </mul>
+
+    <fmul>
+      <use_ip_core>   false  </use_ip_core>
+      <latency>       8    </latency>
+      <module_name>   fmul </module_name>
+      <instance_name> fmul </instance_name>
+      <num_module>    1    </num_module>
+
+      <io>
+        <info>
+          <port_name> a </port_name>
+          <bit_width> 32</bit_width>
+          <type> input </type>
+        </info>
+        <info>
+          <port_name> b </port_name>
+          <bit_width> 32 </bit_width>
+          <type> input </type>
+        </info>
+        <info>
+          <port_name> clk </port_name>
+          <bit_width> 1 </bit_width>
+          <type> clock </type>
+        </info>
+
+        <info>
+          <port_name> result </port_name>
+          <bit_width> 32 </bit_width>
+          <type> output </type>
+        </info>
+      </io>
+    </fmul>
+
+    <s_div>
+      <use_ip_core>  true    </use_ip_core>
+      <latency>      36      </latency>
+      <module_name>  Divider </module_name>
+      <instance_name> div     </instance_name>
+      <num_module>   1       </num_module>
+
+      <io>
+        <info>
+          <port_name> dividend </port_name>
+          <bit_width> 32 </bit_width>
+          <type> input </type>
+        </info>
+        <info>
+          <port_name> divisor </port_name>
+          <bit_width> 32 </bit_width>
+          <type> input </type>
+        </info>
+        <info>
+          <port_name> clk </port_name>
+          <bit_width> 1 </bit_width>
+          <type> clock </type>
+        </info>
+        <info>
+          <port_name> quotient </port_name>
+          <bit_width> 32 </bit_width>
+          <type> output </type>
+        </info>
+        <info>
+          <port_name> fractional </port_name>
+          <bit_width> 32 </bit_width>
+          <type> output </type>
+        </info>
+        <info>
+          <port_name> rfd </port_name>
+          <bit_width> 1 </bit_width>
+          <type> output </type>
+        </info>
+      </io>
+    </s_div>
+
+    <fdiv>
+      <use_ip_core>   false </use_ip_core>
+      <latency>       28   </latency>
+      <module_name>   fdiv </module_name>
+      <instance_name> fdiv </instance_name>
+      <num_module>    1    </num_module>
+
+      <io>
+        <info>
+          <port_name> a </port_name>
+          <bit_width> 32</bit_width>
+          <type> input </type>
+        </info>
+        <info>
+          <port_name> b </port_name>
+          <bit_width> 32 </bit_width>
+          <type> input </type>
+        </info>
+        <info>
+          <port_name> clk </port_name>
+          <bit_width> 1 </bit_width>
+          <type> clock </type>
+        </info>
+
+        <info>
+          <port_name> result </port_name>
+          <bit_width> 32 </bit_width>
+          <type> output </type>
+        </info>
+      </io>
+    </fdiv>
+
+    <s_rem>
+      <use_ip_core> true    </use_ip_core>
+      <latency>      36      </latency>
+      <module_name>  Divider </module_name>
+      <instance_name> divrem  </instance_name>
+      <num_module>   1 </num_module>
+
+      <io>
+        <info>
+          <port_name> dividend </port_name>
+          <bit_width> 32 </bit_width>
+          <type> input </type>
+        </info>
+        <info>
+          <port_name> divisor </port_name>
+          <bit_width> 32 </bit_width>
+          <type> input </type>
+        </info>
+        <info>
+          <port_name> clk </port_name>
+          <bit_width> 1 </bit_width>
+          <type> clock </type>
+        </info>
+        <info>
+          <port_name> quotient </port_name>
+          <bit_width> 32 </bit_width>
+          <type> output </type>
+        </info>
+        <info>
+          <port_name> fractional </port_name>
+          <bit_width> 32 </bit_width>
+          <type> output </type>
+        </info>
+        <info>
+          <port_name> rfd </port_name>
+          <bit_width> 1 </bit_width>
+          <type> output </type>
+        </info>
+      </io>
+    </s_rem>
+
+    <frem>
+      <use_ip_core>   false </use_ip_core>
+      <latency>       28   </latency>
+      <module_name>   frem </module_name>
+      <instance_name> frem </instance_name>
+      <num_module>    1    </num_module>
+
+      <io>
+        <info>
+          <port_name> a </port_name>
+          <bit_width> 32</bit_width>
+          <type> input </type>
+        </info>
+        <info>
+          <port_name> b </port_name>
+          <bit_width> 32 </bit_width>
+          <type> input </type>
+        </info>
+        <info>
+          <port_name> clk </port_name>
+          <bit_width> 1 </bit_width>
+          <type> clock </type>
+        </info>
+
+        <info>
+          <port_name> result </port_name>
+          <bit_width> 32 </bit_width>
+          <type> output </type>
+        </info>
+      </io>
+    </frem>
+
+    <fcmp>
+      <use_ip_core>  false </use_ip_core>
+      <latency>       2   </latency>
+      <module_name>   fcmp </module_name>
+      <instance_name> fcmp </instance_name>
+      <num_module>    1    </num_module>
+
+      <io>
+        <info>
+          <port_name> a </port_name>
+          <bit_width> 32</bit_width>
+          <type> input </type>
+        </info>
+        <info>
+          <port_name> b </port_name>
+          <bit_width> 32 </bit_width>
+          <type> input </type>
+        </info>
+        <info>
+          <port_name> clk </port_name>
+          <bit_width> 1 </bit_width>
+          <type> clock </type>
+        </info>
+
+        <info>
+          <port_name> result </port_name>
+          <bit_width> 4 </bit_width>
+          <type> output </type>
+        </info>
+      </io>
+    </fcmp>
+  </ip_core>
+
+  <!-- RAMの情報 -->
+  <ram>
+    <module_name>   ram </module_name>
+    <num_read_port>  2  </num_read_port>
+    <num_write_port> 2  </num_write_port>
+  </ram>
+
+</config>
