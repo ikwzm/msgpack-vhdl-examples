@@ -177,7 +177,10 @@ module fib
                   3'h1:
                     begin
                       r_tmp1 <= (r_tmp  >  p_0);
-                      r_sys_current_state <= (r_tmp1 ) ? l_4_lr_ph : l_5;
+                    end
+                  3'h2:
+                    begin
+                      r_sys_current_state <= (r_tmp1) ? l_4_lr_ph : l_5;
                       r_sys_prev_state <= r_sys_current_state;
                       r_sys_step <= 0;
                     end
@@ -204,27 +207,33 @@ module fib
                     begin
                       r_tmp3 <= w_phi_r_tmp3;
                       r_tmp4 <= w_phi_r_tmp4;
+                      r_tmp5 <= w_phi_r_tmp5;
                     end
                   3'h1:
-                    begin
-                      r_tmp5 <= w_phi_r_tmp5;
-                      r_add0_a <= r_tmp4;
-                      r_add0_b <= p_1;
-                    end
-                  3'h2:
                     begin
                       r_add0_a <= r_tmp3;
                       r_add0_b <= r_tmp5;
                     end
+                  3'h2:
+                    begin
+                      r_add0_a <= r_tmp4;
+                      r_add0_b <= p_1;
+                    end
                   3'h3:
                     begin
-                      r_tmp7 <= w_add0_s;
+                      r_tmp6 <= w_add0_s;
                     end
                   3'h4:
                     begin
-                      r_tmp6 <= w_add0_s;
+                      r_tmp7 <= w_add0_s;
+                    end
+                  3'h5:
+                    begin
                       r_tmp8 <= (r_tmp2  >  r_tmp7);
-                      r_sys_current_state <= (r_tmp8 ) ? l_4 : l_5;
+                    end
+                  3'h6:
+                    begin
+                      r_sys_current_state <= (r_tmp8) ? l_4 : l_5;
                       r_sys_prev_state <= r_sys_current_state;
                       r_sys_step <= 0;
                     end
@@ -241,9 +250,6 @@ module fib
                   3'h1:
                     begin
                       o_r_o <= r__lcssa;
-                    end
-                  3'h2:
-                    begin
                       r_sys_current_state <= l_finish_state;
                       r_sys_step <= 0;
                     end
