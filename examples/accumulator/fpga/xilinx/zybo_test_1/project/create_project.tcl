@@ -25,9 +25,9 @@ if       {[info exists board_part ] && [string equal $board_part  "" ] == 0} {
     puts "ERROR: Please set board_part or device_part."
     return 1
 }
-set_property "default_lib"        "xil_defaultlib" [get_projects $project_name]
-set_property "simulator_language" "Mixed"          [get_projects $project_name]
-set_property "target_language"    "VHDL"           [get_projects $project_name]
+set_property "default_lib"        "xil_defaultlib" [current_project]
+set_property "simulator_language" "Mixed"          [current_project]
+set_property "target_language"    "VHDL"           [current_project]
 #
 # Create fileset "sources_1"
 #
