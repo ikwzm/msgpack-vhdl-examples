@@ -1,12 +1,3 @@
-
-################################################################
-# This is a generated script based on design: design_1
-#
-# Though there are limitations about the generated script,
-# the main purpose of this utility is to make learning
-# IP Integrator Tcl commands easier.
-################################################################
-
 ################################################################
 # Check if script is running in correct Vivado version.
 ################################################################
@@ -137,9 +128,30 @@ proc create_root_design { parentCell } {
   current_bd_instance $parentObj
 
 
-  # Create interface ports
-  set DDR [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:ddrx_rtl:1.0 DDR ]
-  set FIXED_IO [ create_bd_intf_port -mode Master -vlnv xilinx.com:display_processing_system7:fixedio_rtl:1.0 FIXED_IO ]
+  # Create instance: processing_system7_0, and set properties
+  if { [string equal "2014.2"  [version -short] ] == 1 } {
+     set processing_system7_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:processing_system7:5.4 processing_system7_0 ]
+  } else {
+     set processing_system7_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:processing_system7:5.5 processing_system7_0 ]
+  }
+  if { [string equal [get_property "board_part" [current_project]] ""] == 0 } {
+     apply_bd_automation -rule "xilinx.com:bd_rule:processing_system7" -config {make_external "FIXED_IO, DDR" apply_board_preset "1" Master "Disable" Slave "Disable" } $processing_system7_0
+     set_property -dict [ list CONFIG.PCW_IRQ_F2P_INTR {1} CONFIG.PCW_USE_FABRIC_INTERRUPT {1} CONFIG.PCW_FPGA0_PERIPHERAL_FREQMHZ {125.0} ] $processing_system7_0
+  } elseif { [llength [info global "import_board_preset"]] > 0 } {
+     global import_board_preset
+     if { [file exists $import_board_preset] == 0 } {
+        puts "ERROR: Can not Read board preset file = $import_board_preset."
+        return 1
+     }
+     set DDR [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:ddrx_rtl:1.0 DDR ]
+     set FIXED_IO [ create_bd_intf_port -mode Master -vlnv xilinx.com:display_processing_system7:fixedio_rtl:1.0 FIXED_IO ]
+     set_property -dict [ list CONFIG.PCW_IMPORT_BOARD_PRESET $import_board_preset CONFIG.PCW_IRQ_F2P_INTR {1} CONFIG.PCW_USE_FABRIC_INTERRUPT {1} CONFIG.PCW_FPGA0_PERIPHERAL_FREQMHZ {125.0} ] $processing_system7_0
+     connect_bd_intf_net -intf_net processing_system7_0_DDR      [get_bd_intf_ports DDR]      [get_bd_intf_pins processing_system7_0/DDR]
+     connect_bd_intf_net -intf_net processing_system7_0_FIXED_IO [get_bd_intf_ports FIXED_IO] [get_bd_intf_pins processing_system7_0/FIXED_IO]
+  } else {
+     puts "ERROR: Can not Configuration processing_system7."
+     return 1
+  }
 
   # Create ports
   set LED [ create_bd_port -dir O -from 3 -to 0 LED ]
@@ -161,31 +173,11 @@ proc create_root_design { parentCell } {
   # Create instance: proc_sys_reset_0, and set properties
   set proc_sys_reset_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:proc_sys_reset:5.0 proc_sys_reset_0 ]
 
-  # 
-  set import_board_preset [file join [file dirname [info script]] "ZYBO_zynq_def.xml"]
-
-  # Create instance: processing_system7_0, and set properties
-  if { [string equal "2014.2"  [version -short] ] == 1 } {
-    set processing_system7_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:processing_system7:5.4 processing_system7_0 ]
-    set_property -dict [ list CONFIG.PCW_IMPORT_BOARD_PRESET $import_board_preset CONFIG.PCW_IRQ_F2P_INTR {1} CONFIG.PCW_USE_FABRIC_INTERRUPT {1} CONFIG.PCW_FPGA0_PERIPHERAL_FREQMHZ {100.0} ] $processing_system7_0
-  }
-  if { [string match "2014.[34]*" [version -short] ] == 1 } {
-    set processing_system7_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:processing_system7:5.5 processing_system7_0 ]
-    set_property -dict [ list CONFIG.PCW_IMPORT_BOARD_PRESET $import_board_preset CONFIG.PCW_IRQ_F2P_INTR {1} CONFIG.PCW_USE_FABRIC_INTERRUPT {1} CONFIG.PCW_FPGA0_PERIPHERAL_FREQMHZ {100.0} ] $processing_system7_0
-  }
-  if { [string match "2015.[1234]*" [version -short] ] == 1 } {
-    set processing_system7_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:processing_system7:5.5 processing_system7_0 ]
-    set_property -dict [ list CONFIG.PCW_IMPORT_BOARD_PRESET $import_board_preset CONFIG.PCW_IRQ_F2P_INTR {1} CONFIG.PCW_USE_FABRIC_INTERRUPT {1} CONFIG.PCW_FPGA0_PERIPHERAL_FREQMHZ {100.0} ] $processing_system7_0
-  }
-
-
   # Create interface connections
   connect_bd_intf_net -intf_net PTTY_AXI4_0_TXD [get_bd_intf_pins PTTY_AXI4_0/TXD] [get_bd_intf_pins RPC_SERVER_0/I]
   connect_bd_intf_net -intf_net axi_interconnect_csr_M00_AXI [get_bd_intf_pins LED4_AXI_0/CSR] [get_bd_intf_pins axi_interconnect_csr/M00_AXI]
   connect_bd_intf_net -intf_net axi_interconnect_csr_M01_AXI [get_bd_intf_pins PTTY_AXI4_0/CSR] [get_bd_intf_pins axi_interconnect_csr/M01_AXI]
   connect_bd_intf_net -intf_net PTTY_AXI4_0_RXD [get_bd_intf_pins PTTY_AXI4_0/RXD] [get_bd_intf_pins RPC_SERVER_0/O]
-  connect_bd_intf_net -intf_net processing_system7_0_DDR [get_bd_intf_ports DDR] [get_bd_intf_pins processing_system7_0/DDR]
-  connect_bd_intf_net -intf_net processing_system7_0_FIXED_IO [get_bd_intf_ports FIXED_IO] [get_bd_intf_pins processing_system7_0/FIXED_IO]
   connect_bd_intf_net -intf_net processing_system7_0_M_AXI_GP0 [get_bd_intf_pins axi_interconnect_csr/S00_AXI] [get_bd_intf_pins processing_system7_0/M_AXI_GP0]
 
   # Create port connections
