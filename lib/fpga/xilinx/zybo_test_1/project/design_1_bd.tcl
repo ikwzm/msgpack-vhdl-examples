@@ -136,21 +136,18 @@ proc create_root_design { parentCell } {
   }
   if { [string equal [get_property "board_part" [current_project]] ""] == 0 } {
      apply_bd_automation -rule "xilinx.com:bd_rule:processing_system7" -config {make_external "FIXED_IO, DDR" apply_board_preset "1" Master "Disable" Slave "Disable" } $processing_system7_0
-     set_property -dict [ list CONFIG.PCW_IRQ_F2P_INTR {1} CONFIG.PCW_USE_FABRIC_INTERRUPT {1} CONFIG.PCW_FPGA0_PERIPHERAL_FREQMHZ {125.0} ] $processing_system7_0
-  } elseif { [llength [info global "import_board_preset"]] > 0 } {
-     global import_board_preset
+     set_property -dict [ list CONFIG.PCW_IRQ_F2P_INTR {1} CONFIG.PCW_USE_FABRIC_INTERRUPT {1} CONFIG.PCW_FPGA0_PERIPHERAL_FREQMHZ {100.0} ] $processing_system7_0
+  } else {
+     set import_board_preset [file join [file dirname [info script]] "ZYBO_zynq_def.xml"]
      if { [file exists $import_board_preset] == 0 } {
         puts "ERROR: Can not Read board preset file = $import_board_preset."
         return 1
      }
      set DDR [ create_bd_intf_port -mode Master -vlnv xilinx.com:interface:ddrx_rtl:1.0 DDR ]
      set FIXED_IO [ create_bd_intf_port -mode Master -vlnv xilinx.com:display_processing_system7:fixedio_rtl:1.0 FIXED_IO ]
-     set_property -dict [ list CONFIG.PCW_IMPORT_BOARD_PRESET $import_board_preset CONFIG.PCW_IRQ_F2P_INTR {1} CONFIG.PCW_USE_FABRIC_INTERRUPT {1} CONFIG.PCW_FPGA0_PERIPHERAL_FREQMHZ {125.0} ] $processing_system7_0
+     set_property -dict [ list CONFIG.PCW_IMPORT_BOARD_PRESET $import_board_preset CONFIG.PCW_IRQ_F2P_INTR {1} CONFIG.PCW_USE_FABRIC_INTERRUPT {1} CONFIG.PCW_FPGA0_PERIPHERAL_FREQMHZ {100.0} ] $processing_system7_0
      connect_bd_intf_net -intf_net processing_system7_0_DDR      [get_bd_intf_ports DDR]      [get_bd_intf_pins processing_system7_0/DDR]
      connect_bd_intf_net -intf_net processing_system7_0_FIXED_IO [get_bd_intf_ports FIXED_IO] [get_bd_intf_pins processing_system7_0/FIXED_IO]
-  } else {
-     puts "ERROR: Can not Configuration processing_system7."
-     return 1
   }
 
   # Create ports
@@ -164,7 +161,8 @@ proc create_root_design { parentCell } {
   set_property -dict [ list CONFIG.RXD_BYTES {4} CONFIG.TXD_BYTES {4} ] [get_bd_cells PTTY_AXI4_0 ]
 
   # Create instance: RPC_SERVER_0, and set properties
-  set RPC_SERVER_0 [ create_bd_cell -type ip -vlnv ikwzm:msgpack:Accumulator_Server:1.0 RPC_SERVER_0 ]
+  global RPC_SERVER_NAME
+  set RPC_SERVER_0 [ create_bd_cell -type ip -vlnv $RPC_SERVER_NAME RPC_SERVER_0 ]
   set_property -dict [ list CONFIG.I_BYTES {4} CONFIG.O_BYTES {4} ] [get_bd_cells RPC_SERVER_0 ]
 
   # Create instance: axi_interconnect_csr, and set properties
