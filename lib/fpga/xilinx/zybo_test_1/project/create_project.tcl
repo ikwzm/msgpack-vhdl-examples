@@ -58,6 +58,7 @@ if {[string equal [get_filesets -quiet sim_1] ""]} {
 #
 set synth_1_flow     "Vivado Synthesis 2015"
 set synth_1_strategy "Vivado Synthesis Defaults"
+set synth_1_strategy "Flow_PerfOptimized_High"
 if {[string equal [get_runs -quiet synth_1] ""]} {
     create_run -name synth_1 -flow $synth_1_flow -strategy $synth_1_strategy -constrset constrs_1
 } else {
@@ -70,6 +71,7 @@ current_run -synthesis [get_runs synth_1]
 #
 set impl_1_flow      "Vivado Implementation 2015"
 set impl_1_strategy  "Vivado Implementation Defaults"
+set impl_1_strategy  "Performance_Explore"
 if {[string equal [get_runs -quiet impl_1] ""]} {
     create_run -name impl_1 -flow $impl_1_flow -strategy $impl_1_strategy -constrset constrs_1 -parent_run synth_1
 } else {
