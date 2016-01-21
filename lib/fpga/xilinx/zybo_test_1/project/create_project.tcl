@@ -8,7 +8,7 @@ set     script_directory    [file dirname [info script]]
 set     board_part          [get_board_parts -quiet -latest_file_version "*zybo*"]
 set     device_part         "xc7z010clg400-1"
 set     design_bd_tcl_file  [file join $script_directory "design_1_bd.tcl"  ]
-set     design_pin_xdc_file [file join $script_directory "design_1_pin.xdc" ]
+lappend constrs_file_list   [file join $script_directory "design_1_pin.xdc" ]
 lappend ip_repo_path_list   [file join $script_directory ".." ".." ".." ".." ".." "PTTY_AXI" "target" "xilinx" "ip"]
 lappend ip_repo_path_list   [file join $script_directory ".." ".." ".." ".." ".." "LED_AXI"  "target" "xilinx" "ip"]
 #
@@ -58,7 +58,6 @@ if {[string equal [get_filesets -quiet sim_1] ""]} {
 #
 set synth_1_flow     "Vivado Synthesis 2015"
 set synth_1_strategy "Vivado Synthesis Defaults"
-set synth_1_strategy "Flow_PerfOptimized_High"
 if {[string equal [get_runs -quiet synth_1] ""]} {
     create_run -name synth_1 -flow $synth_1_flow -strategy $synth_1_strategy -constrset constrs_1
 } else {
@@ -71,7 +70,6 @@ current_run -synthesis [get_runs synth_1]
 #
 set impl_1_flow      "Vivado Implementation 2015"
 set impl_1_strategy  "Vivado Implementation Defaults"
-set impl_1_strategy  "Performance_Explore"
 if {[string equal [get_runs -quiet impl_1] ""]} {
     create_run -name impl_1 -flow $impl_1_flow -strategy $impl_1_strategy -constrset constrs_1 -parent_run synth_1
 } else {
@@ -106,14 +104,8 @@ if {[info exists design_bd_tcl_file]} {
     make_wrapper -files [get_files $design_bd_name.bd] -top -import
 }
 #
-# Import timing files
+# Import Constraint files
 #
-if {[info exists design_timing_xdc_file]} {
-    add_files    -fileset constrs_1 -norecurse $design_timing_xdc_file
-}
-#
-# Import pin files
-#
-if {[info exists design_pin_xdc_file]} {
-    add_files    -fileset constrs_1 -norecurse $design_pin_xdc_file
+if {[info exists constrs_file_list] && [llength $constrs_file_list] > 0 } {
+    add_files    -fileset constrs_1 -norecurse $constrs_file_list
 }
