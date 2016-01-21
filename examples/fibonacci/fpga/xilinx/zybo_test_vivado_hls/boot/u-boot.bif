@@ -1,6 +1,6 @@
 the_ROM_image:
 {
-	[bootloader]../project/project.sdk/fsbl/Debug/fsbl.elf
-	../project/project.runs/impl_1/design_1_wrapper.bit
-	../../../../../../lib/obj/zybo/u-boot.elf
+  [bootloader]../project/project.sdk/fsbl/Debug/fsbl.elf
+ ../project/project.runs/impl_1/design_1_wrapper.bit
+ ../../../../../../lib/fpga/xilinx/zybo_test_1/boot/u-boot.elf
 }
