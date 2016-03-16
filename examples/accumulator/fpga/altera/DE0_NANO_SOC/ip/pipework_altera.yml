@@ -1,0 +1,17 @@
+- Library:
+    Name     :  PipeWork
+    Print    :  false
+    Output   :  pipework_altera.qip
+    Format   :  'set_global_assignment -name VHDL_FILE -library #{library_name} [file join $::quartus(qip_path) \"#{file_name}\"]'
+    Use      :  ["SDPRAM(ALTERA_AUTO_SELECT)", "QUEUE_ARBITER(INTEGER_ARCH)"]
+    PathList :  
+        - "../../../../../../PipeWork/src/"
+
+- Library:
+    Name     :  work
+    Print    :  false
+    PathList :
+        - "./ikwzm_pipework_led8_axi_0.1/"
+        - "./ikwzm_pipework_ptty_axi4_0.1/"
+    Top      : ["LED8_AXI", "PTTY_AXI4"]
+    
