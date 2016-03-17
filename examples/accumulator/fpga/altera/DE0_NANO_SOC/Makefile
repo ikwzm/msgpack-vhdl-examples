@@ -562,7 +562,8 @@ $(DEVICE_TREE_SOURCE): %.dts: %.sopcinfo $(DTS.EXTRA_DEPS)
 
 
 # Device Tree Blob (dtb)
-DEVICE_TREE_BLOB := $(patsubst %.sopcinfo,%.dtb,$(QSYS_SOPCINFO))
+# DEVICE_TREE_BLOB := $(patsubst %.sopcinfo,%.dtb,$(QSYS_SOPCINFO))
+DEVICE_TREE_BLOB := socfpga.dtb
 
 HELP_TARGETS += dtb
 dtb.HELP := Generate a device tree blob for this qsys design
@@ -574,8 +575,8 @@ ifeq ($(HAVE_QSYS),1)
 $(DEVICE_TREE_BLOB): $(QSYS_STAMP)
 endif
 
-$(DEVICE_TREE_BLOB): %.dtb: %.sopcinfo $(DTS.EXTRA_DEPS)
-	$(call dts.sopc2dts,$<,$@,--type dtb)
+# $(DEVICE_TREE_BLOB): %.dtb: %.sopcinfo $(DTS.EXTRA_DEPS)
+# 	$(call dts.sopc2dts,$<,$@,--type dtb)
 
 SCRUB_CLEAN_FILES += $(DEVICE_TREE_SOURCE) $(DEVICE_TREE_BLOB)
 
