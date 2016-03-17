@@ -235,7 +235,7 @@ endif # QUARTUS_ENABLE_PIN_ASSIGNMENTS_APPLY == 1
 ######
 
 $(QUARTUS_STAMP): $(QUARTUS_DEPS)
-	# quartus_stp $(QUARTUS_BASE)
+	quartus_stp $(QUARTUS_BASE)
 	quartus_sh --flow compile $(QUARTUS_QPF)
 	$(stamp_target)
 
