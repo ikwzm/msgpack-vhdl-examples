@@ -196,7 +196,7 @@ QUARTUS_MISC_SOURCE := $(wildcard *.stp *.sdc)
 QUARTUS_PIN_ASSIGNMENTS_STAMP := $(call get_stamp_target,quartus_pin_assignments)
 QUARTUS_DEPS += $(QUARTUS_QPF) $(QUARTUS_QSF) $(QUARTUS_HDL_SOURCE) $(QUARTUS_MISC_SOURCE) $(QSYS_STAMP) $(QSYS_QIP) $(QUARTUS_PIN_ASSIGNMENTS_STAMP)
 
-QUARTUS_SOF := /$(QUARTUS_BASE).sof
+QUARTUS_SOF := $(QUARTUS_BASE).sof
 QUARTUS_STAMP := $(call get_stamp_target,quartus)
 
 .PHONY: quartus_compile
