@@ -3,8 +3,18 @@ Synthesijerで作ったモジュールをMessagePack-RPCで制御する(Altera S
 
 ##はじめに
 
-[Synthesijerで作ったモジュールをMessagePack-RPCで制御する(アーキテクチャ編)](http://qiita.com/ikwzm/items/6cb623b057a687ff4a8e)の続きです。
-今回は、[前回](http://qiita.com/ikwzm/items/6cb623b057a687ff4a8e)作った Accumulator と MessagePack-RPC サーバーを Altera の SoC に実装した例を説明します。
+Synthesijerで作ったモジュールをMessagePack-RPCで制御する一連の記事
+
+ - [アーキテクチャ編](http://qiita.com/ikwzm/items/6cb623b057a687ff4a8e)
+ - [IP-Package編](http://qiita.com/ikwzm/items/924fc3fd59bdf7da55a2)
+ - [ZYNQ論理合成編](http://qiita.com/ikwzm/items/0254f1d49602095b5cde)
+ - [TTYドライバ編](http://qiita.com/ikwzm/items/533b905f7d1eb2e6c4d5)
+ - [MessagePack-Ruby編](http://qiita.com/ikwzm/items/f742e2c9b5d9642d8857)
+
+は、Xilinx 社のFPGA(ZYNQ)を対象にしてきましたが、この度ひょんな事から Altera の SoC が載ったボード(DE0-Nano-SoC)を入手したので、こちらにも実装してみました。
+
+[アーキテクチャ編](http://qiita.com/ikwzm/items/6cb623b057a687ff4a8e)と[TTYドライバ編](http://qiita.com/ikwzm/items/533b905f7d1eb2e6c4d5)以降はZYNQの時と同じですので、そちらを参照してください。
+この記事では Altera SoC 用に論理合成＆配置配線を行い、preloader、U-boot、Device Tree Blob を作って Linux を起動するまでを説明します。
 
 ##開発環境
 
@@ -47,15 +57,9 @@ shell% git submodule update
 shell% git checkout accumulator_de0_nano_soc
 shell% cd examples/accumulator/fpga/altera/DE0_NANO_SOC
 ````
-###プロジェクトを作る
-
-このブランチにはすでに Quartus 用のプロジェクト(DE0_NANO_SOC.qpf)およびQsysファイル(soc_system.qsys)を用意しています。
-ただし、最初から用意しているこの Quartus 用のプロジェクト(DE0_NANO_SOC.qpf) は HPS のピン設定がまだされていません。ピンの設定をするには、一度 Qsys を実行して HDL ファイルと Tcl ファイルを生成した後、Qsys が生成した Tcl ファイルを実行する必要があります。Tcl ファイルを実行してピンアサインを行うには、一度 make quartus_compile を実行して論理合成と配置配線を行います。
-
-
 ###IPを用意する
 
-このブランチではすでに examples/accumulator/fpga/altera/DE0_NANO_SOC/ip に各種 IP を用意しています。
+このブランチではすでに examples/accumulator/fpga/altera/DE0_NANO_SOC/ip に以下の各種 IP を用意しています。
 
   - accumulator_server : 前回作ったMessagePack-RPC-Server + Accumulator を Qsys から使えるように IP 化したものです。
   - ikwzm_pipework_led8_axi_0.1 : ZYNQのLED制御用IP [LED_AXI (https://github.com/ikwzm/LED_AXI)](https://github.com/ikwzm/LED_AXI)/target/altera/ip/ikwzm_pipework_led8_axi_0.1 のコピーです。
@@ -63,6 +67,14 @@ shell% cd examples/accumulator/fpga/altera/DE0_NANO_SOC
   - msgpack_altera.qip msgpack_altera.vhd :  MessagePack-VHDL ライブラリ の使うものだけをアーカイブした VHDL のソースコードです。
   - pipework_altera.qip pipework_altera.vhd : PipeWork ライブラリ の使うものだけをアーカイブした VHDL のソースコードです。
 
+###デザインを用意する
+
+このブランチではすでに、トップレベルのRTL(DE0_NANO_SOC.v)と、HPSと各種IPを接続した Qsysファイル(soc_system.qsys)を用意しています。
+
+###プロジェクトを作る
+
+このブランチにはすでに Quartus 用のプロジェクト(DE0_NANO_SOC.qpfとDE0_NANO_SOC.qsf)を用意しています。
+ただし、最初から用意しているこの Quartus 用のプロジェクト(DE0_NANO_SOC.qpf) は HPS のピン設定がまだされていません。ピンの設定をするには、一度 Qsys を実行して HDL ファイルと Tcl ファイルを生成した後、Qsys が生成した Tcl ファイルを実行する必要がありますこの作業は、一度 make quartus_compile または make sof を実行することで、自動的に行います。
 
 ##デザインフロー
 
@@ -168,8 +180,12 @@ shell% dtc -I dtb -O dts -o socfpga.dts $(LINUX_SRC)/arch/arm/boot/socfpga_cyclo
 
 PTTYのエントリは、zptty@0xFF202000 です。ここにレジスタのアドレスと範囲、割り込み番号、デバイスのマイナー番号を指定します。
 このプロジェクトでは、PTTYのレジスタアドレスは0xFF202000-0xFF202FFFにアサインしています。
-interrupts= の２番目のパラメータの0x28(十進数で40)が割り込み番号を指定しています。PTTYの割り込みはHPS部のFPGA_IRQ0に接続しています。「Cyclone V Hard Processor System Technical Reference Manual」によれば、FPGA_IRQ0は汎用割り込みコントローラー(GIC)内の共有ペリフェラル割り込み(SPI)の72番を通じて割り込みがかかります。このパラメータには72から32引いた値を設定するようです。
-interrupts=の１番目のパラメータはGIC内部の割り込みの種類を指定します。GIC内部には共有ペリフェラル割り込み(SPI)の他にCPUプライベートペリフェラル割り込み(PPI)とソフトウェア生成割り込み(SGI)があります。共有ペリフェラル割り込み(SPI)を使う場合は0を指定します。
+Qsys によって PTTY レジスタのアドレスは HPS の Lightweight HPS2FPGA の 0x00002000-0x00002FFF にアサインしています。
+CPU からみた Lightweight HPS2FPGA は 0xFF200000-0xFF3FFFFF にマッピングされているので、CPUからみた PTTY のレジスタの開始アドレスは 0xFF202000(=0xFF200000+0x00002000) になります。
+
+interrupts= の２番目のパラメータの0x28(十進数で40)が割り込み番号を指定しています。
+Qsys によって PTTY の割り込みは HPS の FPGA_IRQ0 に接続しています。「Cyclone V Hard Processor System Technical Reference Manual」によれば、FPGA_IRQ0 は汎用割り込みコントローラー(GIC)内の共有ペリフェラル割り込み(SPI)の72番を通じて割り込みがかかります。このパラメータには72から32引いた値を設定するようです。
+interrupts=の１番目のパラメータはGIC内部の割り込みの種類を指定します。GIC 内部には共有ペリフェラル割り込み(SPI)の他にCPUプライベートペリフェラル割り込み(PPI)とソフトウェア生成割り込み(SGI)があります。共有ペリフェラル割り込み(SPI)を使う場合は0を指定します。
 interrupts=の３番目のパラメータは割り込み信号がエッジトリガーかレベルトリガーかを指定します。1を指定するとエッジトリガー、4を指定するとレベルトリガーになります。
 
 デバイスツリーの詳細はその他の文献を参照してください。正直、かなり判りにくいです。
