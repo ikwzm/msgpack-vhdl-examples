@@ -1,0 +1,1 @@
+set_global_assignment -name VHDL_FILE -library PIPEWORK [file join $::quartus(qip_path) "pipework_altera.vhd"]
