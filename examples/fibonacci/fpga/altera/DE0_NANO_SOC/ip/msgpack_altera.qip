@@ -1,0 +1,1 @@
+set_global_assignment -name VHDL_FILE -library MSGPACK [file join $::quartus(qip_path) "msgpack_altera.vhd"]
