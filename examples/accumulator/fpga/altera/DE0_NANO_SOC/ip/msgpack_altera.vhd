@@ -1,7 +1,7 @@
 -----------------------------------------------------------------------------------
 --!     @file    msgpack_object.vhd
 --!     @brief   MessagePack Object Code Package :
---!     @version 0.1.2
+--!     @version 0.2.0
 --!     @date    2016/3/16
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
@@ -1105,13 +1105,13 @@ end MsgPack_Object;
 -----------------------------------------------------------------------------------
 --!     @file    kvmap/msgpack_kvmap_components.vhd                              --
 --!     @brief   MessagaPack Component Library Description                       --
---!     @version 0.1.0                                                           --
---!     @date    2015/10/26                                                      --
+--!     @version 0.2.0                                                           --
+--!     @date    2016/06/24                                                      --
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>                     --
 -----------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------
 --                                                                               --
---      Copyright (C) 2015 Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>           --
+--      Copyright (C) 2016 Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>           --
 --      All rights reserved.                                                     --
 --                                                                               --
 --      Redistribution and use in source and binary forms, with or without       --
@@ -1302,16 +1302,17 @@ component MsgPack_KVMap_Dispatcher
     );
 end component;
 -----------------------------------------------------------------------------------
---! @brief MsgPack_KVMap_Decode_Get_Stream_Parameter                             --
+--! @brief MsgPack_KVMap_Store_Boolean_Register                                  --
 -----------------------------------------------------------------------------------
-component MsgPack_KVMap_Decode_Get_Stream_Parameter
+component MsgPack_KVMap_Store_Boolean_Register
     -------------------------------------------------------------------------------
     -- Generic Parameters
     -------------------------------------------------------------------------------
     generic (
+        KEY             :  STRING;
         CODE_WIDTH      :  positive := 1;
-        SIZE_BITS       :  positive := 32;  
-        SIZE_MAX        :  positive := 1
+        MATCH_PHASE     :  positive := 8;
+        QUEUE_SIZE      :  integer  := 0
     );
     port (
     -------------------------------------------------------------------------------
@@ -1321,7 +1322,7 @@ component MsgPack_KVMap_Decode_Get_Stream_Parameter
         RST             : in  std_logic;
         CLR             : in  std_logic;
     -------------------------------------------------------------------------------
-    -- Object Code Input Interface
+    -- MessagePack Object Code Input Interface
     -------------------------------------------------------------------------------
         I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
         I_LAST          : in  std_logic;
@@ -1330,17 +1331,130 @@ component MsgPack_KVMap_Decode_Get_Stream_Parameter
         I_DONE          : out std_logic;
         I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
     -------------------------------------------------------------------------------
-    -- 
+    -- MessagePack Key Match Interface
     -------------------------------------------------------------------------------
-        START           : out std_logic;
-        SIZE            : out std_logic_vector(SIZE_BITS -1 downto 0);
-        BUSY            : in  std_logic
+        MATCH_REQ       : in  std_logic_vector(MATCH_PHASE-1 downto 0);
+        MATCH_CODE      : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        MATCH_OK        : out std_logic;
+        MATCH_NOT       : out std_logic;
+        MATCH_SHIFT     : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Value Output Interface
+    -------------------------------------------------------------------------------
+        VALUE           : out std_logic;
+        LAST            : out std_logic;
+        VALID           : out std_logic;
+        READY           : in  std_logic
     );
 end component;
 -----------------------------------------------------------------------------------
---! @brief MsgPack_KVMap_Set_Integer                                             --
+--! @brief MsgPack_KVMap_Store_Boolean_Array                                     --
 -----------------------------------------------------------------------------------
-component MsgPack_KVMap_Set_Integer
+component MsgPack_KVMap_Store_Boolean_Array
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        KEY             :  STRING;
+        CODE_WIDTH      :  positive := 1;
+        MATCH_PHASE     :  positive := 8;
+        DATA_BITS       :  positive := 1;
+        ADDR_BITS       :  positive := 8;
+        SIZE_BITS       :  positive := MsgPack_Object.CODE_DATA_BITS
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- MessagePack Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- MessagePack Key Match Interface
+    -------------------------------------------------------------------------------
+        MATCH_REQ       : in  std_logic_vector(MATCH_PHASE-1 downto 0);
+        MATCH_CODE      : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        MATCH_OK        : out std_logic;
+        MATCH_NOT       : out std_logic;
+        MATCH_SHIFT     : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Boolean Value Data and Address Output
+    -------------------------------------------------------------------------------
+        START           : out std_logic;
+        BUSY            : out std_logic;
+        SIZE            : out std_logic_vector(SIZE_BITS-1 downto 0);
+        ADDR            : out std_logic_vector(ADDR_BITS-1 downto 0);
+        DATA            : out std_logic_vector(DATA_BITS-1 downto 0);
+        STRB            : out std_logic_vector(DATA_BITS-1 downto 0);
+        LAST            : out std_logic;
+        VALID           : out std_logic;
+        READY           : in  std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_KVMap_Store_Boolean_Stream                                    --
+-----------------------------------------------------------------------------------
+component MsgPack_KVMap_Store_Boolean_Stream
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        KEY             :  STRING;
+        CODE_WIDTH      :  positive := 1;
+        MATCH_PHASE     :  positive := 8;
+        DATA_BITS       :  positive := 1;
+        SIZE_BITS       :  positive := MsgPack_Object.CODE_DATA_BITS
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- MessagePack Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- MessagePack Key Match Interface
+    -------------------------------------------------------------------------------
+        MATCH_REQ       : in  std_logic_vector        (MATCH_PHASE-1 downto 0);
+        MATCH_CODE      : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        MATCH_OK        : out std_logic;
+        MATCH_NOT       : out std_logic;
+        MATCH_SHIFT     : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Boolean Value Data and Address Output
+    -------------------------------------------------------------------------------
+        START           : out std_logic;
+        BUSY            : out std_logic;
+        SIZE            : out std_logic_vector(SIZE_BITS-1 downto 0);
+        DATA            : out std_logic_vector(DATA_BITS-1 downto 0);
+        STRB            : out std_logic_vector(DATA_BITS-1 downto 0);
+        LAST            : out std_logic;
+        VALID           : out std_logic;
+        READY           : in  std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_KVMap_Store_Integer_Register                                  --
+-----------------------------------------------------------------------------------
+component MsgPack_KVMap_Store_Integer_Register
     -------------------------------------------------------------------------------
     -- Generic Parameters
     -------------------------------------------------------------------------------
@@ -1389,9 +1503,9 @@ component MsgPack_KVMap_Set_Integer
     );
 end component;
 -----------------------------------------------------------------------------------
---! @brief MsgPack_KVMap_Set_Integer_Memory                                      --
+--! @brief MsgPack_KVMap_Store_Integer_Array                                     --
 -----------------------------------------------------------------------------------
-component MsgPack_KVMap_Set_Integer_Memory
+component MsgPack_KVMap_Store_Integer_Array
     -------------------------------------------------------------------------------
     -- Generic Parameters
     -------------------------------------------------------------------------------
@@ -1400,6 +1514,63 @@ component MsgPack_KVMap_Set_Integer_Memory
         CODE_WIDTH      :  positive := 1;
         MATCH_PHASE     :  positive := 8;
         ADDR_BITS       :  integer  := 8;
+        SIZE_BITS       :  integer  := MsgPack_Object.CODE_DATA_BITS;
+        VALUE_BITS      :  integer range 1 to 64;
+        VALUE_SIGN      :  boolean  := FALSE;
+        QUEUE_SIZE      :  integer  := 0;
+        CHECK_RANGE     :  boolean  := TRUE ;
+        ENABLE64        :  boolean  := TRUE
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- MessagePack Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- MessagePack Key Match Interface
+    -------------------------------------------------------------------------------
+        MATCH_REQ       : in  std_logic_vector(MATCH_PHASE-1 downto 0);
+        MATCH_CODE      : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        MATCH_OK        : out std_logic;
+        MATCH_NOT       : out std_logic;
+        MATCH_SHIFT     : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Integer Value Data and Address Output
+    -------------------------------------------------------------------------------
+        START           : out std_logic;
+        BUSY            : out std_logic;
+        SIZE            : out std_logic_vector( SIZE_BITS-1 downto 0);
+        ADDR            : out std_logic_vector( ADDR_BITS-1 downto 0);
+        VALUE           : out std_logic_vector(VALUE_BITS-1 downto 0);
+        SIGN            : out std_logic;
+        LAST            : out std_logic;
+        VALID           : out std_logic;
+        READY           : in  std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_KVMap_Store_Integer_Stream                                    --
+-----------------------------------------------------------------------------------
+component MsgPack_KVMap_Store_Integer_Stream
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        KEY             :  STRING;
+        CODE_WIDTH      :  positive := 1;
+        MATCH_PHASE     :  positive := 8;
+        SIZE_BITS       :  integer  := MsgPack_Object.CODE_DATA_BITS;
         VALUE_BITS      :  integer range 1 to 64;
         VALUE_SIGN      :  boolean  := FALSE;
         QUEUE_SIZE      :  integer  := 0;
@@ -1433,18 +1604,128 @@ component MsgPack_KVMap_Set_Integer_Memory
     -------------------------------------------------------------------------------
     -- Integer Value Data and Address Output
     -------------------------------------------------------------------------------
+        START           : out std_logic;
+        BUSY            : out std_logic;
+        SIZE            : out std_logic_vector( SIZE_BITS-1 downto 0);
         VALUE           : out std_logic_vector(VALUE_BITS-1 downto 0);
         SIGN            : out std_logic;
         LAST            : out std_logic;
-        ADDR            : out std_logic_vector( ADDR_BITS-1 downto 0);
         VALID           : out std_logic;
         READY           : in  std_logic
     );
 end component;
 -----------------------------------------------------------------------------------
---! @brief MsgPack_KVMap_Set_Value                                               --
+--! @brief MsgPack_KVMap_Store_Binary_Array                                      --
 -----------------------------------------------------------------------------------
-component MsgPack_KVMap_Set_Value
+component MsgPack_KVMap_Store_Binary_Array
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        KEY             :  STRING;
+        CODE_WIDTH      :  positive := 1;
+        MATCH_PHASE     :  positive := 8;
+        ADDR_BITS       :  integer  := 8;
+        SIZE_BITS       :  integer  := MsgPack_Object.CODE_DATA_BITS;
+        DATA_BITS       :  positive := 8;
+        DECODE_BINARY   :  boolean  := TRUE;
+        DECODE_STRING   :  boolean  := FALSE
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- MessagePack Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH -1 downto 0);
+    -------------------------------------------------------------------------------
+    -- MessagePack Key Match Interface
+    -------------------------------------------------------------------------------
+        MATCH_REQ       : in  std_logic_vector(MATCH_PHASE-1 downto 0);
+        MATCH_CODE      : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        MATCH_OK        : out std_logic;
+        MATCH_NOT       : out std_logic;
+        MATCH_SHIFT     : out std_logic_vector(CODE_WIDTH -1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Binary/String Data Output
+    -------------------------------------------------------------------------------
+        START           : out std_logic;
+        BUSY            : out std_logic;
+        SIZE            : out std_logic_vector(SIZE_BITS  -1 downto 0);
+        ADDR            : out std_logic_vector(ADDR_BITS  -1 downto 0);
+        DATA            : out std_logic_vector(DATA_BITS  -1 downto 0);
+        STRB            : out std_logic_vector(DATA_BITS/8-1 downto 0);
+        LAST            : out std_logic;
+        VALID           : out std_logic;
+        READY           : in  std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_KVMap_Store_Binary_Stream                                     --
+-----------------------------------------------------------------------------------
+component MsgPack_KVMap_Store_Binary_Stream
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        KEY             :  STRING;
+        CODE_WIDTH      :  positive := 1;
+        MATCH_PHASE     :  positive := 8;
+        SIZE_BITS       :  integer  := MsgPack_Object.CODE_DATA_BITS;
+        DATA_BITS       :  positive := 8;
+        DECODE_BINARY   :  boolean  := TRUE;
+        DECODE_STRING   :  boolean  := FALSE
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- MessagePack Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH -1 downto 0);
+    -------------------------------------------------------------------------------
+    -- MessagePack Key Match Interface
+    -------------------------------------------------------------------------------
+        MATCH_REQ       : in  std_logic_vector(MATCH_PHASE-1 downto 0);
+        MATCH_CODE      : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        MATCH_OK        : out std_logic;
+        MATCH_NOT       : out std_logic;
+        MATCH_SHIFT     : out std_logic_vector(CODE_WIDTH -1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Binary/String Data Output
+    -------------------------------------------------------------------------------
+        START           : out std_logic;
+        BUSY            : out std_logic;
+        SIZE            : out std_logic_vector(SIZE_BITS  -1 downto 0);
+        DATA            : out std_logic_vector(DATA_BITS  -1 downto 0);
+        STRB            : out std_logic_vector(DATA_BITS/8-1 downto 0);
+        LAST            : out std_logic;
+        VALID           : out std_logic;
+        READY           : in  std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_KVMap_Store_Map_Value                                         --
+-----------------------------------------------------------------------------------
+component MsgPack_KVMap_Store_Map_Value
     -------------------------------------------------------------------------------
     -- Generic Parameters
     -------------------------------------------------------------------------------
@@ -1509,9 +1790,9 @@ component MsgPack_KVMap_Set_Value
     );
 end component;
 -----------------------------------------------------------------------------------
---! @brief MsgPack_KVMap_Set_Map_Value                                           --
+--! @brief MsgPack_KVMap_Store                                                   --
 -----------------------------------------------------------------------------------
-component MsgPack_KVMap_Set_Map_Value
+component MsgPack_KVMap_Store
     -------------------------------------------------------------------------------
     -- Generic Parameters
     -------------------------------------------------------------------------------
@@ -1557,9 +1838,187 @@ component MsgPack_KVMap_Set_Map_Value
     );
 end component;
 -----------------------------------------------------------------------------------
---! @brief MsgPack_KVMap_Get_Integer                                             --
+--! @brief MsgPack_KVMap_Query_Boolean_Register                                  --
 -----------------------------------------------------------------------------------
-component MsgPack_KVMap_Get_Integer
+component MsgPack_KVMap_Query_Boolean_Register
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        KEY             :  STRING;
+        CODE_WIDTH      :  positive := 1;
+        MATCH_PHASE     :  positive := 8
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Object Code Output Interface
+    -------------------------------------------------------------------------------
+        O_CODE          : out MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        O_LAST          : out std_logic;
+        O_ERROR         : out std_logic;
+        O_VALID         : out std_logic;
+        O_READY         : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- MessagePack Key Match Interface
+    -------------------------------------------------------------------------------
+        MATCH_REQ       : in  std_logic_vector        (MATCH_PHASE-1 downto 0);
+        MATCH_CODE      : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        MATCH_OK        : out std_logic;
+        MATCH_NOT       : out std_logic;
+        MATCH_SHIFT     : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- 
+    -------------------------------------------------------------------------------
+        VALUE           : in  std_logic;
+        VALID           : in  std_logic;
+        READY           : out std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_KVMap_Query_Boolean_Array                                     --
+-----------------------------------------------------------------------------------
+component MsgPack_KVMap_Query_Boolean_Array
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        KEY             :  STRING;
+        CODE_WIDTH      :  positive := 1;
+        MATCH_PHASE     :  positive := 8;
+        DATA_BITS       :  positive := 1;
+        ADDR_BITS       :  positive := 32;
+        SIZE_BITS       :  positive := MsgPack_Object.CODE_DATA_BITS
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Default(when parameter == nil) Query Size 
+    -------------------------------------------------------------------------------
+        DEFAULT_SIZE    : in  std_logic_vector( SIZE_BITS-1 downto 0) := (others => '1');
+    -------------------------------------------------------------------------------
+    -- Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Object Code Output Interface
+    -------------------------------------------------------------------------------
+        O_CODE          : out MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        O_LAST          : out std_logic;
+        O_ERROR         : out std_logic;
+        O_VALID         : out std_logic;
+        O_READY         : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- MessagePack Key Match Interface
+    -------------------------------------------------------------------------------
+        MATCH_REQ       : in  std_logic_vector        (MATCH_PHASE-1 downto 0);
+        MATCH_CODE      : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        MATCH_OK        : out std_logic;
+        MATCH_NOT       : out std_logic;
+        MATCH_SHIFT     : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Boolean Value Input Interface
+    -------------------------------------------------------------------------------
+        START           : out std_logic;
+        BUSY            : out std_logic;
+        SIZE            : out std_logic_vector(SIZE_BITS-1 downto 0);
+        ADDR            : out std_logic_vector(ADDR_BITS-1 downto 0);
+        DATA            : in  std_logic_vector(DATA_BITS-1 downto 0);
+        VALID           : in  std_logic;
+        READY           : out std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_KVMap_Query_Boolean_Stream                                    --
+-----------------------------------------------------------------------------------
+component MsgPack_KVMap_Query_Boolean_Stream
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        KEY             :  STRING;
+        CODE_WIDTH      :  positive := 1;
+        MATCH_PHASE     :  positive := 8;
+        DATA_BITS       :  positive := 1;
+        SIZE_BITS       :  positive := MsgPack_Object.CODE_DATA_BITS
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Default(when parameter == nil) Query Size 
+    -------------------------------------------------------------------------------
+        DEFAULT_SIZE    : in  std_logic_vector( SIZE_BITS-1 downto 0) := (others => '1');
+    -------------------------------------------------------------------------------
+    -- Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Object Code Output Interface
+    -------------------------------------------------------------------------------
+        O_CODE          : out MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        O_LAST          : out std_logic;
+        O_ERROR         : out std_logic;
+        O_VALID         : out std_logic;
+        O_READY         : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- MessagePack Key Match Interface
+    -------------------------------------------------------------------------------
+        MATCH_REQ       : in  std_logic_vector        (MATCH_PHASE-1 downto 0);
+        MATCH_CODE      : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        MATCH_OK        : out std_logic;
+        MATCH_NOT       : out std_logic;
+        MATCH_SHIFT     : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Boolean Value Input Interface
+    -------------------------------------------------------------------------------
+        START           : out std_logic;
+        BUSY            : out std_logic;
+        SIZE            : out std_logic_vector(SIZE_BITS-1 downto 0);
+        DATA            : in  std_logic_vector(DATA_BITS-1 downto 0);
+        STRB            : in  std_logic_vector(DATA_BITS-1 downto 0);
+        LAST            : in  std_logic;
+        VALID           : in  std_logic;
+        READY           : out std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_KVMap_Query_Integer_Register                                  --
+-----------------------------------------------------------------------------------
+component MsgPack_KVMap_Query_Integer_Register
     -------------------------------------------------------------------------------
     -- Generic Parameters
     -------------------------------------------------------------------------------
@@ -1611,9 +2070,9 @@ component MsgPack_KVMap_Get_Integer
     );
 end component;
 -----------------------------------------------------------------------------------
---! @brief MsgPack_KVMap_Get_Integer_Memory                                      --
+--! @brief MsgPack_KVMap_Query_Integer_Array                                     --
 -----------------------------------------------------------------------------------
-component MsgPack_KVMap_Get_Integer_Memory
+component MsgPack_KVMap_Query_Integer_Array
     -------------------------------------------------------------------------------
     -- Generic Parameters
     -------------------------------------------------------------------------------
@@ -1622,8 +2081,8 @@ component MsgPack_KVMap_Get_Integer_Memory
         CODE_WIDTH      :  positive := 1;
         MATCH_PHASE     :  positive := 8;
         ADDR_BITS       :  positive := 32;
-        SIZE_BITS       :  positive := 32;  
-        VALUE_BITS      :  integer range 1 to 64;
+        SIZE_BITS       :  integer range 1 to 32 := 32;
+        VALUE_BITS      :  integer range 1 to 64 := 32;
         VALUE_SIGN      :  boolean  := FALSE
     );
     port (
@@ -1633,6 +2092,10 @@ component MsgPack_KVMap_Get_Integer_Memory
         CLK             : in  std_logic; 
         RST             : in  std_logic;
         CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Default(when parameter == nil) Query Size 
+    -------------------------------------------------------------------------------
+        DEFAULT_SIZE    : in  std_logic_vector( SIZE_BITS-1 downto 0) := (others => '1');
     -------------------------------------------------------------------------------
     -- Object Code Input Interface
     -------------------------------------------------------------------------------
@@ -1661,6 +2124,9 @@ component MsgPack_KVMap_Get_Integer_Memory
     -------------------------------------------------------------------------------
     -- Integer Value Input Interface
     -------------------------------------------------------------------------------
+        START           : out std_logic;
+        BUSY            : out std_logic;
+        SIZE            : out std_logic_vector( SIZE_BITS-1 downto 0);
         ADDR            : out std_logic_vector( ADDR_BITS-1 downto 0);
         VALUE           : in  std_logic_vector(VALUE_BITS-1 downto 0);
         VALID           : in  std_logic;
@@ -1668,9 +2134,203 @@ component MsgPack_KVMap_Get_Integer_Memory
     );
 end component;
 -----------------------------------------------------------------------------------
---! @brief MsgPack_KVMap_Get_Value                                               --
+--! @brief MsgPack_KVMap_Query_Integer_Stream                                    --
 -----------------------------------------------------------------------------------
-component MsgPack_KVMap_Get_Value
+component MsgPack_KVMap_Query_Integer_Stream
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        KEY             :  STRING;
+        CODE_WIDTH      :  positive := 1;
+        MATCH_PHASE     :  positive := 8;
+        SIZE_BITS       :  integer range 1 to 32 := 32;
+        VALUE_BITS      :  integer range 1 to 64 := 32;
+        VALUE_SIGN      :  boolean  := FALSE
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Default(when parameter == nil) Query Size 
+    -------------------------------------------------------------------------------
+        DEFAULT_SIZE    : in  std_logic_vector( SIZE_BITS-1 downto 0) := (others => '1');
+    -------------------------------------------------------------------------------
+    -- Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Object Code Output Interface
+    -------------------------------------------------------------------------------
+        O_CODE          : out MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        O_LAST          : out std_logic;
+        O_ERROR         : out std_logic;
+        O_VALID         : out std_logic;
+        O_READY         : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- MessagePack Key Match Interface
+    -------------------------------------------------------------------------------
+        MATCH_REQ       : in  std_logic_vector        (MATCH_PHASE-1 downto 0);
+        MATCH_CODE      : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        MATCH_OK        : out std_logic;
+        MATCH_NOT       : out std_logic;
+        MATCH_SHIFT     : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Integer Value Input Interface
+    -------------------------------------------------------------------------------
+        START           : out std_logic;
+        BUSY            : out std_logic;
+        SIZE            : out std_logic_vector( SIZE_BITS-1 downto 0);
+        VALUE           : in  std_logic_vector(VALUE_BITS-1 downto 0);
+        VALID           : in  std_logic;
+        READY           : out std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_KVMap_Query_Binary_Array                                      --
+-----------------------------------------------------------------------------------
+component MsgPack_KVMap_Query_Binary_Array
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        KEY             :  STRING;
+        CODE_WIDTH      :  positive := 1;
+        MATCH_PHASE     :  positive := 8;
+        DATA_BITS       :  positive := 1;
+        ADDR_BITS       :  positive := 32;
+        SIZE_BITS       :  integer range 1 to 32 := 32;
+        ENCODE_BINARY   :  boolean  := TRUE;
+        ENCODE_STRING   :  boolean  := FALSE
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Default(when parameter == nil) Query Size 
+    -------------------------------------------------------------------------------
+        DEFAULT_SIZE    : in  std_logic_vector(SIZE_BITS  -1 downto 0) := (others => '1');
+    -------------------------------------------------------------------------------
+    -- MessagePack Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH -1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Object Code Output Interface
+    -------------------------------------------------------------------------------
+        O_CODE          : out MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        O_LAST          : out std_logic;
+        O_ERROR         : out std_logic;
+        O_VALID         : out std_logic;
+        O_READY         : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- MessagePack Key Match Interface
+    -------------------------------------------------------------------------------
+        MATCH_REQ       : in  std_logic_vector(MATCH_PHASE-1 downto 0);
+        MATCH_CODE      : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        MATCH_OK        : out std_logic;
+        MATCH_NOT       : out std_logic;
+        MATCH_SHIFT     : out std_logic_vector(CODE_WIDTH -1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Binary/String Data Stream Input Interface
+    -------------------------------------------------------------------------------
+        START           : out std_logic;
+        BUSY            : out std_logic;
+        SIZE            : out std_logic_vector(SIZE_BITS  -1 downto 0);
+        ADDR            : out std_logic_vector(ADDR_BITS  -1 downto 0);
+        STRB            : out std_logic_vector(DATA_BITS/8-1 downto 0);
+        LAST            : out std_logic;
+        DATA            : in  std_logic_vector(DATA_BITS  -1 downto 0);
+        VALID           : in  std_logic;
+        READY           : out std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_KVMap_Query_Binary_Stream                                     --
+-----------------------------------------------------------------------------------
+component MsgPack_KVMap_Query_Binary_Stream
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        KEY             :  STRING;
+        CODE_WIDTH      :  positive := 1;
+        MATCH_PHASE     :  positive := 8;
+        DATA_BITS       :  positive := 1;
+        SIZE_BITS       :  integer range 1 to 32 := 32;
+        ENCODE_BINARY   :  boolean  := TRUE;
+        ENCODE_STRING   :  boolean  := FALSE
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Default(when parameter == nil) Query Size 
+    -------------------------------------------------------------------------------
+        DEFAULT_SIZE    : in  std_logic_vector(SIZE_BITS  -1 downto 0) := (others => '1');
+    -------------------------------------------------------------------------------
+    -- MessagePack Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH -1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Object Code Output Interface
+    -------------------------------------------------------------------------------
+        O_CODE          : out MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        O_LAST          : out std_logic;
+        O_ERROR         : out std_logic;
+        O_VALID         : out std_logic;
+        O_READY         : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- MessagePack Key Match Interface
+    -------------------------------------------------------------------------------
+        MATCH_REQ       : in  std_logic_vector(MATCH_PHASE-1 downto 0);
+        MATCH_CODE      : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        MATCH_OK        : out std_logic;
+        MATCH_NOT       : out std_logic;
+        MATCH_SHIFT     : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Binary/String Data Stream Input Interface
+    -------------------------------------------------------------------------------
+        START           : out std_logic;
+        BUSY            : out std_logic;
+        SIZE            : out std_logic_vector(SIZE_BITS  -1 downto 0);
+        DATA            : in  std_logic_vector(DATA_BITS  -1 downto 0);
+        STRB            : in  std_logic_vector(DATA_BITS/8-1 downto 0);
+        LAST            : in  std_logic;
+        VALID           : in  std_logic;
+        READY           : out std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_KVMap_Query_Map_Value                                         --
+-----------------------------------------------------------------------------------
+component MsgPack_KVMap_Query_Map_Value
     -------------------------------------------------------------------------------
     -- Generic Parameters
     -------------------------------------------------------------------------------
@@ -1751,9 +2411,9 @@ component MsgPack_KVMap_Get_Value
     );
 end component;
 -----------------------------------------------------------------------------------
---! @brief MsgPack_KVMap_Get_Map_Value                                           --
+--! @brief MsgPack_KVMap_Query                                                   --
 -----------------------------------------------------------------------------------
-component MsgPack_KVMap_Get_Map_Value
+component MsgPack_KVMap_Query
     -------------------------------------------------------------------------------
     -- Generic Parameters
     -------------------------------------------------------------------------------
@@ -1818,8 +2478,8 @@ end MsgPack_KVMap_Components;
 -----------------------------------------------------------------------------------
 --!     @file    msgpack_kvmap_key_match_aggregator.vhd
 --!     @brief   MessagePack-KVMap(Key Value Map) Key Match Aggregator Module :
---!     @version 0.1.0
---!     @date    2015/10/19
+--!     @version 0.2.0
+--!     @date    2015/11/9
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
@@ -2105,13 +2765,13 @@ end RTL;
 -----------------------------------------------------------------------------------
 --!     @file    pipework/pipework_components.vhd                                --
 --!     @brief   MessagaPack Component Library Description                       --
---!     @version 0.1.0                                                           --
---!     @date    2015/10/25                                                      --
+--!     @version 0.2.0                                                           --
+--!     @date    2016/05/20                                                      --
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>                     --
 -----------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------
 --                                                                               --
---      Copyright (C) 2015 Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>           --
+--      Copyright (C) 2016 Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>           --
 --      All rights reserved.                                                     --
 --                                                                               --
 --      Redistribution and use in source and binary forms, with or without       --
@@ -2680,6 +3340,315 @@ component QUEUE_ARBITER
     );
 end component;
 end PipeWork_Components;
+-----------------------------------------------------------------------------------
+--!     @file    queue_register.vhd
+--!     @brief   QUEUE REGISTER MODULE :
+--!              フリップフロップベースの比較的浅いキュー.
+--!     @version 1.5.0
+--!     @date    2013/4/2
+--!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
+-----------------------------------------------------------------------------------
+--
+--      Copyright (C) 2012,2013 Ichiro Kawazome
+--      All rights reserved.
+--
+--      Redistribution and use in source and binary forms, with or without
+--      modification, are permitted provided that the following conditions
+--      are met:
+--
+--        1. Redistributions of source code must retain the above copyright
+--           notice, this list of conditions and the following disclaimer.
+--
+--        2. Redistributions in binary form must reproduce the above copyright
+--           notice, this list of conditions and the following disclaimer in
+--           the documentation and/or other materials provided with the
+--           distribution.
+--
+--      THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+--      "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+--      LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+--      A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+--      OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+--      SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+--      LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+--      DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+--      THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
+--      (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+--      OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+--
+-----------------------------------------------------------------------------------
+library ieee;
+use     ieee.std_logic_1164.all;
+-----------------------------------------------------------------------------------
+--! @brief   QUEUE REGISTER
+--!          フリップフロップベースの比較的浅いキュー.
+--!        * フリップフロップを使っているのでキューの段数が大きいと
+--!          それなりに回路規模が大きくなることに注意.
+-----------------------------------------------------------------------------------
+entity  QUEUE_REGISTER is
+    -------------------------------------------------------------------------------
+    -- ジェネリック変数
+    -------------------------------------------------------------------------------
+    generic (
+        QUEUE_SIZE  : --! @brief QUEUE SIZE :
+                      --! キューの大きさをワード数で指定する.
+                      integer := 1;
+        DATA_BITS   : --! @brief DATA BITS :
+                      --! データ(I_DATA/O_DATA/Q_DATA)のビット幅を指定する.
+                      integer :=  32;
+        LOWPOWER    : --! @brief LOW POWER MODE :
+                      --! キューのレジスタに不必要なロードを行わないことにより、
+                      --! レジスタが不必要にトグルすることを防いで消費電力を
+                      --! 下げるようにする.
+                      --! ただし、回路が若干増える.
+                      integer range 0 to 1 := 1
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- クロック&リセット信号
+    -------------------------------------------------------------------------------
+        CLK         : --! @brief CLOCK :
+                      --! クロック信号
+                      in  std_logic; 
+        RST         : --! @brief ASYNCRONOUSE RESET :
+                      --! 非同期リセット信号.アクティブハイ.
+                      in  std_logic;
+        CLR         : --! @brief SYNCRONOUSE RESET :
+                      --! 同期リセット信号.アクティブハイ.
+                      in  std_logic;
+    -------------------------------------------------------------------------------
+    -- 入力側
+    -------------------------------------------------------------------------------
+        I_DATA      : --! @brief INPUT DATA  :
+                      --! 入力データ信号.
+                      in  std_logic_vector(DATA_BITS-1 downto 0);
+        I_VAL       : --! @brief INPUT DATA VALID :
+                      --! 入力データ有効信号.
+                      in  std_logic;
+        I_RDY       : --! @brief INPUT READY :
+                      --! 入力可能信号.
+                      --! キューが空いていて、入力データを受け付けることが可能で
+                      --! あることを示す信号.
+                      out std_logic;
+    -------------------------------------------------------------------------------
+    -- 出力側
+    -------------------------------------------------------------------------------
+        O_DATA      : --! @brief OUTPUT DATA :
+                      --! 出力データ.
+                      out std_logic_vector(DATA_BITS-1 downto 0);
+        O_VAL       : --! @brief OUTPUT DATA VALID :
+                      --! キューレジスタに有効なデータが入っている事を示すフラグ.
+                      --! * キューレジスタは1〜QUEUE_SIZEまであるが、対応する位置の
+                      --!   フラグが'1'ならば有効なデータが入っている事を示す.
+                      --! * この出力信号の範囲が1からではなく0から始まっている事に
+                      --!   注意. これはQUEUE_SIZE=0の場合に対応するため.
+                      --!   QUEUE_SIZE>0の場合は、O_VAL(0)はO_VAL(1)と同じ.
+                      out std_logic_vector(QUEUE_SIZE  downto 0);
+        Q_DATA      : --! @brief OUTPUT REGISTERD DATA :
+                      --! レジスタ出力の出力データ.
+                      --! 出力データ(O_DATA)をクロックで叩いたもの.
+                      out std_logic_vector(DATA_BITS-1 downto 0);
+        Q_VAL       : --! @brief OUTPUT REGISTERD DATA VALID :
+                      --! キューレジスタに有効なデータが入っている事を示すフラグ.
+                      --! O_VALをクロックで叩いたもの.
+                      --! * キューレジスタは1〜QUEUE_SIZEまであるが、対応する位置の
+                      --!   フラグが'1'ならば有効なデータが入っている事を示す.
+                      --! * この出力信号の範囲が1からではなく0から始まっている事に
+                      --!   注意. これはQUEUE_SIZE=0の場合に対応するため.
+                      --!   QUEUE_SIZE>0の場合は、Q_VAL(0)はQ_VAL(1)と同じ.
+                      out std_logic_vector(QUEUE_SIZE  downto 0);
+        Q_RDY       : --! @brief OUTPUT READY :
+                      --! 出力可能信号.
+                      in  std_logic
+    );
+end QUEUE_REGISTER;
+-----------------------------------------------------------------------------------
+-- アーキテクチャ本体
+-----------------------------------------------------------------------------------
+library ieee;
+use     ieee.std_logic_1164.all;
+architecture RTL of QUEUE_REGISTER is
+begin
+    -------------------------------------------------------------------------------
+    --  QUEUE_SIZE=0の場合はなにもしない
+    -------------------------------------------------------------------------------
+    QUEUE_SIZE_EQ_0: if (QUEUE_SIZE = 0) generate
+        O_DATA   <= I_DATA;
+        Q_DATA   <= I_DATA;
+        O_VAL(0) <= I_VAL;
+        Q_VAL(0) <= I_VAL;
+        I_RDY    <= Q_RDY;
+    end generate;
+    -------------------------------------------------------------------------------
+    -- QUEUE_SIZE>0の場合
+    -------------------------------------------------------------------------------
+    QUEUE_SIZE_GT_0: if (QUEUE_SIZE > 0) generate
+        subtype  QUEUE_DATA_TYPE   is std_logic_vector(DATA_BITS-1 downto 0);
+        constant QUEUE_DATA_NULL    : std_logic_vector(DATA_BITS-1 downto 0) := (others => '0');
+        type     QUEUE_DATA_VECTOR is array (natural range <>) of QUEUE_DATA_TYPE;
+        constant FIRST_OF_QUEUE     : integer := 1;
+        constant LAST_OF_QUEUE      : integer := QUEUE_SIZE;
+        signal   next_queue_data    : QUEUE_DATA_VECTOR(LAST_OF_QUEUE downto FIRST_OF_QUEUE);
+        signal   curr_queue_data    : QUEUE_DATA_VECTOR(LAST_OF_QUEUE downto FIRST_OF_QUEUE);
+        signal   queue_data_load    : std_logic_vector (LAST_OF_QUEUE downto FIRST_OF_QUEUE);
+        signal   next_queue_valid   : std_logic_vector (LAST_OF_QUEUE downto FIRST_OF_QUEUE);
+        signal   curr_queue_valid   : std_logic_vector (LAST_OF_QUEUE downto FIRST_OF_QUEUE);
+    begin
+        ---------------------------------------------------------------------------
+        -- next_queue_valid : 次のクロックでのキューの状態を示すフラグ.
+        -- queue_data_load  : 次のクロックでcurr_queue_dataにnext_queue_dataの値を
+        --                    ロードすることを示すフラグ.
+        ---------------------------------------------------------------------------
+        process (I_VAL, Q_RDY, curr_queue_valid) begin
+            for i in FIRST_OF_QUEUE to LAST_OF_QUEUE loop
+                -------------------------------------------------------------------
+                -- 自分のキューにデータが格納されている場合...
+                -------------------------------------------------------------------
+                if (curr_queue_valid(i) = '1') then
+                    ---------------------------------------------------------------
+                    -- もし自分のキューにデータが格納されていて、
+                    -- かつ自分がキューの最後ならば、
+                    -- Q_RDY='1'で自分のキューをクリアする.
+                    ---------------------------------------------------------------
+                    if (i = LAST_OF_QUEUE) then
+                        if (Q_RDY = '1') then
+                            next_queue_valid(i) <= '0';
+                        else
+                            next_queue_valid(i) <= '1';
+                        end if;
+                        queue_data_load(i) <= '0';
+                    ---------------------------------------------------------------
+                    -- もし自分のキューにデータが格納されていて、
+                    -- かつ自分がキューの最後でなくて、
+                    -- かつ後ろのキューにデータが入っているならば、
+                    -- Q_RDY='1'で後ろのキューのデータを自分のキューに格納する.
+                    ---------------------------------------------------------------
+                    elsif (curr_queue_valid(i+1) = '1') then
+                        next_queue_valid(i) <= '1';
+                        if (Q_RDY = '1') then
+                            queue_data_load(i) <= '1';
+                        else
+                            queue_data_load(i) <= '0';
+                        end if;
+                    ---------------------------------------------------------------
+                    -- もし自分のキューにデータが格納されていて、
+                    -- かつ自分がキューの最後でなくて、
+                    -- かつ後ろのキューにデータが入っていないならば、
+                    -- I_VAL='0' かつ Q_RDY='1'ならば自分のキューをクリアする. 
+                    -- I_VAL='1' かつ Q_RDY='1'ならばI_DATAを自分のキューに格納する.
+                    ---------------------------------------------------------------
+                    else
+                        if (I_VAL = '0' and Q_RDY = '1') then
+                            next_queue_valid(i) <= '0';
+                        else
+                            next_queue_valid(i) <= '1';
+                        end if;
+                        if (LOWPOWER > 0 and I_VAL = '1' and Q_RDY = '1') or
+                           (LOWPOWER = 0                 and Q_RDY = '1') then
+                            queue_data_load(i)  <= '1';
+                        else
+                            queue_data_load(i)  <= '0';
+                        end if;
+                    end if;
+                -------------------------------------------------------------------
+                -- 自分のところにデータが格納されていない場合...
+                -------------------------------------------------------------------
+                else -- if (curr_queue_valid(i) = '0') then
+                    ---------------------------------------------------------------
+                    -- もし自分のキューにデータが格納されてなくて、
+                    -- かつ自分がキューの先頭ならば、
+                    -- I_VAL='1'で自分のキューにデータを格納する.
+                    ---------------------------------------------------------------
+                    if    (i = FIRST_OF_QUEUE) then
+                        if (I_VAL = '1') then
+                            next_queue_valid(i) <= '1';
+                            queue_data_load(i)  <= '1';
+                        else
+                            next_queue_valid(i) <= '0';
+                            queue_data_load(i)  <= '0';
+                        end if;
+                    ---------------------------------------------------------------
+                    -- もし自分のキューにデータが格納されてなくて、
+                    -- かつ自分がキューの先頭なくて、
+                    -- かつ前のキューにデータが格納されているならば、
+                    -- I_VAL='1'かつQ_RDY='0'で自分のキューにデータを格納する.
+                    ---------------------------------------------------------------
+                    elsif (curr_queue_valid(i-1) = '1') then
+                        if (I_VAL = '1' and Q_RDY = '0') then
+                            next_queue_valid(i) <= '1';
+                        else
+                            next_queue_valid(i) <= '0';
+                        end if;
+                        if (LOWPOWER = 0) or
+                           (LOWPOWER > 0 and I_VAL = '1' and Q_RDY = '0') then
+                            queue_data_load(i)  <= '1';
+                        else
+                            queue_data_load(i)  <= '0';
+                        end if;
+                    ---------------------------------------------------------------
+                    -- もし自分のキューにデータが格納されてなくて、
+                    -- かつ自分がキューの先頭なくて、
+                    -- かつ前のキューにデータが格納されていないならば、
+                    -- キューは空のまま.
+                    ---------------------------------------------------------------
+                    else
+                            next_queue_valid(i) <= '0';
+                            queue_data_load(i)  <= '0';
+                    end if;
+                end if;
+            end loop;
+        end process;
+        ---------------------------------------------------------------------------
+        -- next_queue_data  : 次のクロックでキューに格納されるデータ.
+        ---------------------------------------------------------------------------
+        process (I_DATA, queue_data_load, curr_queue_data, curr_queue_valid) begin
+            for i in FIRST_OF_QUEUE to LAST_OF_QUEUE loop
+                if (queue_data_load(i) = '1') then
+                    if    (i = LAST_OF_QUEUE) then
+                        next_queue_data(i) <= I_DATA;
+                    elsif (curr_queue_valid(i+1) = '1') then
+                        next_queue_data(i) <= curr_queue_data(i+1);
+                    else
+                        next_queue_data(i) <= I_DATA;
+                    end if;
+                else
+                        next_queue_data(i) <= curr_queue_data(i);
+                end if;
+            end loop;
+        end process;
+        ---------------------------------------------------------------------------
+        -- curr_queue_data  : 現在、キューに格納されているデータ.
+        -- curr_queue_valid : 現在、キューにデータが格納されていることを示すフラグ.
+        -- I_RDY            : キューにデータが格納することが出来ることを示すフラグ.
+        ---------------------------------------------------------------------------
+        process (CLK, RST) begin
+            if     (RST = '1') then
+                   curr_queue_data  <= (others => QUEUE_DATA_NULL);
+                   curr_queue_valid <= (others => '0');
+                   I_RDY            <= '0';
+            elsif  (CLK'event and CLK = '1') then
+               if (CLR = '1') then
+                   curr_queue_data  <= (others => QUEUE_DATA_NULL);
+                   curr_queue_valid <= (others => '0');
+                   I_RDY            <= '0';
+               else
+                   curr_queue_data  <= next_queue_data;
+                   curr_queue_valid <= next_queue_valid;
+                   I_RDY            <= not next_queue_valid(LAST_OF_QUEUE);
+               end if;
+            end if;
+        end process;
+        ---------------------------------------------------------------------------
+        -- 各種出力信号
+        ---------------------------------------------------------------------------
+        O_DATA                     <= next_queue_data (FIRST_OF_QUEUE);
+        Q_DATA                     <= curr_queue_data (FIRST_OF_QUEUE);
+        O_VAL(0)                   <= next_queue_valid(FIRST_OF_QUEUE);
+        O_VAL(QUEUE_SIZE downto 1) <= next_queue_valid;
+        Q_VAL(0)                   <= curr_queue_valid(FIRST_OF_QUEUE);
+        Q_VAL(QUEUE_SIZE downto 1) <= curr_queue_valid;
+    end generate;
+end RTL;
 -----------------------------------------------------------------------------------
 --!     @file    reducer.vhd
 --!     @brief   REDUCER MODULE :
@@ -3588,8 +4557,8 @@ end RTL;
 -----------------------------------------------------------------------------------
 --!     @file    msgpack_kvmap_dispatcher.vhd
 --!     @brief   MessagePack-KVMap(Key Value Map) Set/Get Dispatcher Module :
---!     @version 0.1.0
---!     @date    2015/10/25
+--!     @version 0.2.0
+--!     @date    2015/11/9
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
@@ -3756,7 +4725,7 @@ begin
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
-    process (curr_state, key_match_state, key_match_select) begin
+    process (curr_state, key_match_state) begin
         case curr_state is
             when MATCH_KEY_STATE =>
                 case key_match_state is
@@ -3919,8 +4888,8 @@ end RTL;
 -----------------------------------------------------------------------------------
 --!     @file    msgpack_object_code_reducer.vhd
 --!     @brief   MessagePack Object Code Reducer :
---!     @version 0.1.0
---!     @date    2015/10/19
+--!     @version 0.2.0
+--!     @date    2015/11/9
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
@@ -4095,13 +5064,13 @@ end RTL;
 -----------------------------------------------------------------------------------
 --!     @file    object/msgpack_object_components.vhd                            --
 --!     @brief   MessagaPack Component Library Description                       --
---!     @version 0.1.0                                                           --
---!     @date    2015/10/26                                                      --
+--!     @version 0.2.0                                                           --
+--!     @date    2016/06/24                                                      --
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>                     --
 -----------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------
 --                                                                               --
---      Copyright (C) 2015 Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>           --
+--      Copyright (C) 2016 Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>           --
 --      All rights reserved.                                                     --
 --                                                                               --
 --      Redistribution and use in source and binary forms, with or without       --
@@ -4333,7 +5302,67 @@ component MsgPack_Object_Decode_Array
     -- Generic Parameters
     -------------------------------------------------------------------------------
     generic (
-        CODE_WIDTH      :  positive := 1
+        CODE_WIDTH      :  positive := 1;
+        SIZE_BITS       :  integer  := MsgPack_Object.CODE_DATA_BITS
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Control/Status Signals
+    -------------------------------------------------------------------------------
+        ENABLE          : in  std_logic := '1';
+        BUSY            : out std_logic;
+        READY           : out std_logic;
+    -------------------------------------------------------------------------------
+    -- MessagePack Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- 
+    -------------------------------------------------------------------------------
+        ARRAY_START     : out std_logic;
+        ARRAY_SIZE      : out std_logic_vector(SIZE_BITS-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- 
+    -------------------------------------------------------------------------------
+        ENTRY_START     : out std_logic;
+        ENTRY_BUSY      : out std_logic;
+        ENTRY_LAST      : out std_logic;
+        ENTRY_SIZE      : out std_logic_vector(SIZE_BITS-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- 
+    -------------------------------------------------------------------------------
+        VALUE_START     : out std_logic;
+        VALUE_VALID     : out std_logic;
+        VALUE_CODE      : out MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        VALUE_LAST      : out std_logic;
+        VALUE_ERROR     : in  std_logic;
+        VALUE_DONE      : in  std_logic;
+        VALUE_SHIFT     : in  std_logic_vector(CODE_WIDTH-1 downto 0)
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Decode_Binary_Core                                     --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Decode_Binary_Core
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        SIZE_BITS       :  integer  := MsgPack_Object.CODE_DATA_BITS;
+        DECODE_BINARY   :  boolean  := TRUE;
+        DECODE_STRING   :  boolean  := FALSE
     );
     port (
     -------------------------------------------------------------------------------
@@ -4352,21 +5381,106 @@ component MsgPack_Object_Decode_Array
         I_DONE          : out std_logic;
         I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
     -------------------------------------------------------------------------------
-    -- 
+    -- Integer Value Output Interface
     -------------------------------------------------------------------------------
-        ARRAY_START     : out std_logic;
-        ARRAY_SIZE      : out std_logic_vector(31 downto 0);
-        ARRAY_LAST      : out std_logic;
+        O_ENABLE        : out std_logic;
+        O_START         : out std_logic;
+        O_BUSY          : out std_logic;
+        O_SIZE          : out std_logic_vector(SIZE_BITS-1 downto 0);
+        O_DATA          : out std_logic_vector(MsgPack_Object.CODE_DATA_BITS*CODE_WIDTH-1 downto 0);
+        O_STRB          : out std_logic_vector(MsgPack_Object.CODE_STRB_BITS*CODE_WIDTH-1 downto 0);
+        O_LAST          : out std_logic;
+        O_VALID         : out std_logic;
+        O_READY         : in  std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Decode_Binary_Array                                    --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Decode_Binary_Array
     -------------------------------------------------------------------------------
-    -- 
+    -- Generic Parameters
     -------------------------------------------------------------------------------
-        VALUE_START     : out std_logic;
-        VALUE_VALID     : out std_logic;
-        VALUE_CODE      : out MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
-        VALUE_LAST      : out std_logic;
-        VALUE_ERROR     : in  std_logic;
-        VALUE_DONE      : in  std_logic;
-        VALUE_SHIFT     : in  std_logic_vector(CODE_WIDTH-1 downto 0)
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        DATA_BITS       :  positive := 4;
+        ADDR_BITS       :  integer  := 8;
+        SIZE_BITS       :  integer  := MsgPack_Object.CODE_DATA_BITS;
+        DECODE_BINARY   :  boolean  := TRUE;
+        DECODE_STRING   :  boolean  := FALSE
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- MessagePack Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_ADDR          : in  std_logic_vector(ADDR_BITS  -1 downto 0);
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH -1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Binary/String Data Output Interface
+    -------------------------------------------------------------------------------
+        O_START         : out std_logic;
+        O_BUSY          : out std_logic;
+        O_SIZE          : out std_logic_vector(SIZE_BITS  -1 downto 0);
+        O_ADDR          : out std_logic_vector(ADDR_BITS  -1 downto 0);
+        O_DATA          : out std_logic_vector(DATA_BITS  -1 downto 0);
+        O_STRB          : out std_logic_vector(DATA_BITS/8-1 downto 0);
+        O_LAST          : out std_logic;
+        O_VALID         : out std_logic;
+        O_READY         : in  std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Decode_Binary_Stream                                   --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Decode_Binary_Stream
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        DATA_BITS       :  positive := 4;
+        SIZE_BITS       :  integer  := MsgPack_Object.CODE_DATA_BITS;
+        DECODE_BINARY   :  boolean  := TRUE;
+        DECODE_STRING   :  boolean  := FALSE
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- MessagePack Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH -1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Binary/String Data Output Interface
+    -------------------------------------------------------------------------------
+        O_START         : out std_logic;
+        O_BUSY          : out std_logic;
+        O_SIZE          : out std_logic_vector(SIZE_BITS  -1 downto 0);
+        O_DATA          : out std_logic_vector(DATA_BITS  -1 downto 0);
+        O_STRB          : out std_logic_vector(DATA_BITS/8-1 downto 0);
+        O_LAST          : out std_logic;
+        O_VALID         : out std_logic;
+        O_READY         : in  std_logic
     );
 end component;
 -----------------------------------------------------------------------------------
@@ -4386,6 +5500,12 @@ component MsgPack_Object_Decode_Map
         CLK             : in  std_logic; 
         RST             : in  std_logic;
         CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Control/Status Signals
+    -------------------------------------------------------------------------------
+        ENABLE          : in  std_logic := '1';
+        BUSY            : out std_logic;
+        READY           : out std_logic;
     -------------------------------------------------------------------------------
     -- MessagePack Object Code Input Interface
     -------------------------------------------------------------------------------
@@ -4422,6 +5542,126 @@ component MsgPack_Object_Decode_Map
         VALUE_ERROR     : in  std_logic;
         VALUE_DONE      : in  std_logic;
         VALUE_SHIFT     : in  std_logic_vector(CODE_WIDTH-1 downto 0)
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Decode_Boolean                                         --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Decode_Boolean
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- MessagePack Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Integer Value Output Interface
+    -------------------------------------------------------------------------------
+        O_VALUE         : out std_logic;
+        O_LAST          : out std_logic;
+        O_VALID         : out std_logic;
+        O_READY         : in  std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Decode_Boolean_Array                                   --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Decode_Boolean_Array
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        DATA_BITS       :  positive := 1;
+        ADDR_BITS       :  positive := 8;
+        SIZE_BITS       :  positive := 32
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- MessagePack Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_ADDR          : in  std_logic_vector( ADDR_BITS-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Boolean Value Data and Address Output
+    -------------------------------------------------------------------------------
+        O_START         : out std_logic;
+        O_BUSY          : out std_logic;
+        O_SIZE          : out std_logic_vector(SIZE_BITS-1 downto 0);
+        O_ADDR          : out std_logic_vector(ADDR_BITS-1 downto 0);
+        O_DATA          : out std_logic_vector(DATA_BITS-1 downto 0);
+        O_STRB          : out std_logic_vector(DATA_BITS-1 downto 0);
+        O_LAST          : out std_logic;
+        O_VALID         : out std_logic;
+        O_READY         : in  std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Decode_Boolean_Stream                                  --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Decode_Boolean_Stream
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        DATA_BITS       :  positive := 1;
+        SIZE_BITS       :  positive := 32
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- MessagePack Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Boolean Value Data and Address Output
+    -------------------------------------------------------------------------------
+        O_START         : out std_logic;
+        O_BUSY          : out std_logic;
+        O_SIZE          : out std_logic_vector(SIZE_BITS-1 downto 0);
+        O_DATA          : out std_logic_vector(DATA_BITS-1 downto 0);
+        O_STRB          : out std_logic_vector(DATA_BITS-1 downto 0);
+        O_LAST          : out std_logic;
+        O_VALID         : out std_logic;
+        O_READY         : in  std_logic
     );
 end component;
 -----------------------------------------------------------------------------------
@@ -4466,57 +5706,16 @@ component MsgPack_Object_Decode_Integer
     );
 end component;
 -----------------------------------------------------------------------------------
---! @brief MsgPack_Object_Decode_Integer_Stream                                  --
+--! @brief MsgPack_Object_Decode_Integer_Array                                   --
 -----------------------------------------------------------------------------------
-component MsgPack_Object_Decode_Integer_Stream
-    -------------------------------------------------------------------------------
-    -- Generic Parameters
-    -------------------------------------------------------------------------------
-    generic (
-        CODE_WIDTH      :  positive := 1;
-        VALUE_BITS      :  integer range 1 to 64;
-        VALUE_SIGN      :  boolean  := FALSE;
-        QUEUE_SIZE      :  integer  := 0;
-        CHECK_RANGE     :  boolean  := TRUE ;
-        ENABLE64        :  boolean  := TRUE
-    );
-    port (
-    -------------------------------------------------------------------------------
-    -- Clock and Reset Signals
-    -------------------------------------------------------------------------------
-        CLK             : in  std_logic; 
-        RST             : in  std_logic;
-        CLR             : in  std_logic;
-    -------------------------------------------------------------------------------
-    -- MessagePack Object Code Input Interface
-    -------------------------------------------------------------------------------
-        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
-        I_LAST          : in  std_logic;
-        I_VALID         : in  std_logic;
-        I_ERROR         : out std_logic;
-        I_DONE          : out std_logic;
-        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
-    -------------------------------------------------------------------------------
-    -- Integer Value Data and Address Output
-    -------------------------------------------------------------------------------
-        O_START         : out std_logic;
-        O_VALUE         : out std_logic_vector(VALUE_BITS-1 downto 0);
-        O_SIGN          : out std_logic;
-        O_LAST          : out std_logic;
-        O_VALID         : out std_logic;
-        O_READY         : in  std_logic
-    );
-end component;
------------------------------------------------------------------------------------
---! @brief MsgPack_Object_Decode_Integer_Memory                                  --
------------------------------------------------------------------------------------
-component MsgPack_Object_Decode_Integer_Memory
+component MsgPack_Object_Decode_Integer_Array
     -------------------------------------------------------------------------------
     -- Generic Parameters
     -------------------------------------------------------------------------------
     generic (
         CODE_WIDTH      :  positive := 1;
         ADDR_BITS       :  positive := 8;
+        SIZE_BITS       :  integer  := MsgPack_Object.CODE_DATA_BITS;
         VALUE_BITS      :  integer range 1 to 64;
         VALUE_SIGN      :  boolean  := FALSE;
         QUEUE_SIZE      :  integer  := 0;
@@ -4544,8 +5743,55 @@ component MsgPack_Object_Decode_Integer_Memory
     -- Integer Value Data and Address Output
     -------------------------------------------------------------------------------
         O_START         : out std_logic;
-        O_VALUE         : out std_logic_vector(VALUE_BITS-1 downto 0);
+        O_BUSY          : out std_logic;
+        O_SIZE          : out std_logic_vector( SIZE_BITS-1 downto 0);
         O_ADDR          : out std_logic_vector( ADDR_BITS-1 downto 0);
+        O_VALUE         : out std_logic_vector(VALUE_BITS-1 downto 0);
+        O_SIGN          : out std_logic;
+        O_LAST          : out std_logic;
+        O_VALID         : out std_logic;
+        O_READY         : in  std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Decode_Integer_Stream                                  --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Decode_Integer_Stream
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        SIZE_BITS       :  integer  := MsgPack_Object.CODE_DATA_BITS;
+        VALUE_BITS      :  integer range 1 to 64;
+        VALUE_SIGN      :  boolean  := FALSE;
+        QUEUE_SIZE      :  integer  := 0;
+        CHECK_RANGE     :  boolean  := TRUE ;
+        ENABLE64        :  boolean  := TRUE
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- MessagePack Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Integer Value Data and Address Output
+    -------------------------------------------------------------------------------
+        O_START         : out std_logic;
+        O_BUSY          : out std_logic;
+        O_SIZE          : out std_logic_vector( SIZE_BITS-1 downto 0);
+        O_VALUE         : out std_logic_vector(VALUE_BITS-1 downto 0);
         O_SIGN          : out std_logic;
         O_LAST          : out std_logic;
         O_VALID         : out std_logic;
@@ -4575,6 +5821,8 @@ component MsgPack_Object_Encode_Array
     -------------------------------------------------------------------------------
         START           : in  std_logic;
         SIZE            : in  std_logic_vector(SIZE_BITS-1 downto 0);
+        BUSY            : out std_logic;
+        READY           : out std_logic;
     -------------------------------------------------------------------------------
     -- Value Object Encode Input Interface
     -------------------------------------------------------------------------------
@@ -4616,6 +5864,8 @@ component MsgPack_Object_Encode_Map
     -------------------------------------------------------------------------------
         START           : in  std_logic;
         SIZE            : in  std_logic_vector(SIZE_BITS-1 downto 0);
+        BUSY            : out std_logic;
+        READY           : out std_logic;
     -------------------------------------------------------------------------------
     -- Key Object Encode Input Interface
     -------------------------------------------------------------------------------
@@ -4643,6 +5893,248 @@ component MsgPack_Object_Encode_Map
     );
 end component;
 -----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Encode_Binary_Array                                    --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Encode_Binary_Array
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        DATA_BITS       :  positive := 1;
+        ADDR_BITS       :  positive := 1;
+        SIZE_BITS       :  positive := 32;
+        ENCODE_BINARY   :  boolean  := TRUE;
+        ENCODE_STRING   :  boolean  := FALSE
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- 
+    -------------------------------------------------------------------------------
+        START           : in  std_logic;
+        ADDR            : in  std_logic_vector(ADDR_BITS  -1 downto 0);
+        SIZE            : in  std_logic_vector(SIZE_BITS  -1 downto 0);
+        BUSY            : out std_logic;
+        READY           : out std_logic;
+    -------------------------------------------------------------------------------
+    -- Object Code Output Interface
+    -------------------------------------------------------------------------------
+        O_CODE          : out MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        O_LAST          : out std_logic;
+        O_ERROR         : out std_logic;
+        O_VALID         : out std_logic;
+        O_READY         : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Binary/String Data Stream Input Interface
+    -------------------------------------------------------------------------------
+        I_START         : out std_logic;
+        I_BUSY          : out std_logic;
+        I_SIZE          : out std_logic_vector(SIZE_BITS  -1 downto 0);
+        I_ADDR          : out std_logic_vector(ADDR_BITS  -1 downto 0);
+        I_STRB          : out std_logic_vector(DATA_BITS/8-1 downto 0);
+        I_LAST          : out std_logic;
+        I_DATA          : in  std_logic_vector(DATA_BITS  -1 downto 0);
+        I_VALID         : in  std_logic;
+        I_READY         : out std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Encode_Binary_Stream                                   --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Encode_Binary_Stream
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        DATA_BITS       :  positive := 32;
+        SIZE_BITS       :  positive := 32;
+        ENCODE_BINARY   :  boolean  := TRUE;
+        ENCODE_STRING   :  boolean  := FALSE;
+        I_JUSTIFIED     :  boolean  := TRUE;
+        I_BUFFERED      :  boolean  := FALSE
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- 
+    -------------------------------------------------------------------------------
+        START           : in  std_logic;
+        SIZE            : in  std_logic_vector(SIZE_BITS  -1 downto 0);
+        BUSY            : out std_logic;
+        READY           : out std_logic;
+    -------------------------------------------------------------------------------
+    -- Object Code Output Interface
+    -------------------------------------------------------------------------------
+        O_CODE          : out MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        O_LAST          : out std_logic;
+        O_ERROR         : out std_logic;
+        O_VALID         : out std_logic;
+        O_READY         : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Binary/String Data Stream Input Interface
+    -------------------------------------------------------------------------------
+        I_START         : out std_logic;
+        I_BUSY          : out std_logic;
+        I_SIZE          : out std_logic_vector(SIZE_BITS  -1 downto 0);
+        I_DATA          : in  std_logic_vector(DATA_BITS  -1 downto 0);
+        I_STRB          : in  std_logic_vector(DATA_BITS/8-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_READY         : out std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Encode_Boolean                                         --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Encode_Boolean
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        QUEUE_SIZE      :  integer  := 0
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Control and Status Signals 
+    -------------------------------------------------------------------------------
+        START           : in  std_logic := '1';
+        BUSY            : out std_logic;
+        READY           : out std_logic;
+    -------------------------------------------------------------------------------
+    -- Object Code Output Interface
+    -------------------------------------------------------------------------------
+        O_CODE          : out MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        O_LAST          : out std_logic;
+        O_ERROR         : out std_logic;
+        O_VALID         : out std_logic;
+        O_READY         : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Integer Value Input
+    -------------------------------------------------------------------------------
+        I_VALUE         : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_READY         : out std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Encode_Boolean_Array                                   --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Encode_Boolean_Array
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        DATA_BITS       :  positive := 1;
+        ADDR_BITS       :  positive := 32;
+        SIZE_BITS       :  positive := 32
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- 
+    -------------------------------------------------------------------------------
+        START           : in  std_logic;
+        ADDR            : in  std_logic_vector(ADDR_BITS-1 downto 0);
+        SIZE            : in  std_logic_vector(SIZE_BITS-1 downto 0);
+        BUSY            : out std_logic;
+        READY           : out std_logic;
+    -------------------------------------------------------------------------------
+    -- Boolean Value Input Interface
+    -------------------------------------------------------------------------------
+        I_START         : out std_logic;
+        I_BUSY          : out std_logic;
+        I_SIZE          : out std_logic_vector(SIZE_BITS-1 downto 0);
+        I_ADDR          : out std_logic_vector(ADDR_BITS-1 downto 0);
+        I_STRB          : out std_logic_vector(DATA_BITS-1 downto 0);
+        I_LAST          : out std_logic;
+        I_DATA          : in  std_logic_vector(DATA_BITS-1 downto 0);
+        I_VALID         : in  std_logic;
+        I_READY         : out std_logic;
+    -------------------------------------------------------------------------------
+    -- Array Object Encode Output Interface
+    -------------------------------------------------------------------------------
+        O_CODE          : out MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        O_LAST          : out std_logic;
+        O_ERROR         : out std_logic;
+        O_VALID         : out std_logic;
+        O_READY         : in  std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Encode_Boolean_Stream                                  --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Encode_Boolean_Stream
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        DATA_BITS       :  positive := 1;
+        SIZE_BITS       :  positive := 32;
+        I_JUSTIFIED     :  boolean  := TRUE;
+        I_BUFFERED      :  boolean  := FALSE
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- 
+    -------------------------------------------------------------------------------
+        START           : in  std_logic;
+        SIZE            : in  std_logic_vector(SIZE_BITS  -1 downto 0);
+        BUSY            : out std_logic;
+        READY           : out std_logic;
+    -------------------------------------------------------------------------------
+    -- Object Code Output Interface
+    -------------------------------------------------------------------------------
+        O_CODE          : out MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        O_LAST          : out std_logic;
+        O_ERROR         : out std_logic;
+        O_VALID         : out std_logic;
+        O_READY         : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Boolean/String Data Stream Input Interface
+    -------------------------------------------------------------------------------
+        I_START         : out std_logic;
+        I_BUSY          : out std_logic;
+        I_SIZE          : out std_logic_vector(SIZE_BITS-1 downto 0);
+        I_DATA          : in  std_logic_vector(DATA_BITS-1 downto 0);
+        I_STRB          : in  std_logic_vector(DATA_BITS-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_READY         : out std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
 --! @brief MsgPack_Object_Encode_Integer                                         --
 -----------------------------------------------------------------------------------
 component MsgPack_Object_Encode_Integer
@@ -4667,6 +6159,7 @@ component MsgPack_Object_Encode_Integer
     -------------------------------------------------------------------------------
         START           : in  std_logic := '1';
         BUSY            : out std_logic;
+        READY           : out std_logic;
     -------------------------------------------------------------------------------
     -- Object Code Output Interface
     -------------------------------------------------------------------------------
@@ -4681,6 +6174,56 @@ component MsgPack_Object_Encode_Integer
         I_VALUE         : in  std_logic_vector(VALUE_BITS-1 downto 0);
         I_VALID         : in  std_logic;
         I_READY         : out std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Encode_Integer_Array                                   --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Encode_Integer_Array
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        ADDR_BITS       :  positive := 32;
+        SIZE_BITS       :  positive := 32;
+        VALUE_BITS      :  integer range 1 to 64;
+        VALUE_SIGN      :  boolean  := FALSE;
+        QUEUE_SIZE      :  integer  := 0
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- 
+    -------------------------------------------------------------------------------
+        START           : in  std_logic;
+        ADDR            : in  std_logic_vector( ADDR_BITS-1 downto 0);
+        SIZE            : in  std_logic_vector( SIZE_BITS-1 downto 0);
+        BUSY            : out std_logic;
+        READY           : out std_logic;
+    -------------------------------------------------------------------------------
+    -- Integer Value Input Interface
+    -------------------------------------------------------------------------------
+        I_START         : out std_logic;
+        I_BUSY          : out std_logic;
+        I_SIZE          : out std_logic_vector( SIZE_BITS-1 downto 0);
+        I_ADDR          : out std_logic_vector( ADDR_BITS-1 downto 0);
+        I_VALUE         : in  std_logic_vector(VALUE_BITS-1 downto 0);
+        I_VALID         : in  std_logic;
+        I_READY         : out std_logic;
+    -------------------------------------------------------------------------------
+    -- Array Object Encode Output Interface
+    -------------------------------------------------------------------------------
+        O_CODE          : out MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        O_LAST          : out std_logic;
+        O_ERROR         : out std_logic;
+        O_VALID         : out std_logic;
+        O_READY         : in  std_logic
     );
 end component;
 -----------------------------------------------------------------------------------
@@ -4710,55 +6253,13 @@ component MsgPack_Object_Encode_Integer_Stream
         START           : in  std_logic;
         SIZE            : in  std_logic_vector( SIZE_BITS-1 downto 0);
         BUSY            : out std_logic;
+        READY           : out std_logic;
     -------------------------------------------------------------------------------
     -- Integer Value Input Interface
     -------------------------------------------------------------------------------
-        I_VALUE         : in  std_logic_vector(VALUE_BITS-1 downto 0);
-        I_VALID         : in  std_logic;
-        I_READY         : out std_logic;
-    -------------------------------------------------------------------------------
-    -- Array Object Encode Output Interface
-    -------------------------------------------------------------------------------
-        O_CODE          : out MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
-        O_LAST          : out std_logic;
-        O_ERROR         : out std_logic;
-        O_VALID         : out std_logic;
-        O_READY         : in  std_logic
-    );
-end component;
------------------------------------------------------------------------------------
---! @brief MsgPack_Object_Encode_Integer_Memory                                  --
------------------------------------------------------------------------------------
-component MsgPack_Object_Encode_Integer_Memory
-    -------------------------------------------------------------------------------
-    -- Generic Parameters
-    -------------------------------------------------------------------------------
-    generic (
-        CODE_WIDTH      :  positive := 1;
-        ADDR_BITS       :  positive := 32;
-        SIZE_BITS       :  positive := 32;
-        VALUE_BITS      :  integer range 1 to 64;
-        VALUE_SIGN      :  boolean  := FALSE;
-        QUEUE_SIZE      :  integer  := 0
-    );
-    port (
-    -------------------------------------------------------------------------------
-    -- Clock and Reset Signals
-    -------------------------------------------------------------------------------
-        CLK             : in  std_logic; 
-        RST             : in  std_logic;
-        CLR             : in  std_logic;
-    -------------------------------------------------------------------------------
-    -- 
-    -------------------------------------------------------------------------------
-        START           : in  std_logic;
-        ADDR            : in  std_logic_vector( ADDR_BITS-1 downto 0);
-        SIZE            : in  std_logic_vector( SIZE_BITS-1 downto 0);
-        BUSY            : out std_logic;
-    -------------------------------------------------------------------------------
-    -- Integer Value Input Interface
-    -------------------------------------------------------------------------------
-        I_ADDR          : out std_logic_vector( ADDR_BITS-1 downto 0);
+        I_START         : out std_logic;
+        I_BUSY          : out std_logic;
+        I_SIZE          : out std_logic_vector( SIZE_BITS-1 downto 0);
         I_VALUE         : in  std_logic_vector(VALUE_BITS-1 downto 0);
         I_VALID         : in  std_logic;
         I_READY         : out std_logic;
@@ -4872,12 +6373,1289 @@ component MsgPack_Object_Match_Aggregator
         MATCH_STATE     : out MsgPack_Object.Match_State_Type
     );
 end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Store_Array                                            --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Store_Array
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        ADDR_BITS       :  integer  := 8
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Key Value Map Object Decode Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(          CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Value Object Decode Output Interface
+    -------------------------------------------------------------------------------
+        VALUE_START     : out std_logic;
+        VALUE_ADDR      : out std_logic_vector(           ADDR_BITS-1 downto 0);
+        VALUE_VALID     : out std_logic;
+        VALUE_CODE      : out MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        VALUE_LAST      : out std_logic;
+        VALUE_ERROR     : in  std_logic;
+        VALUE_DONE      : in  std_logic;
+        VALUE_SHIFT     : in  std_logic_vector(          CODE_WIDTH-1 downto 0)
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Store_Boolean_Register                                 --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Store_Boolean_Register
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- MessagePack Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Value Output Interface
+    -------------------------------------------------------------------------------
+        VALUE           : out std_logic;
+        LAST            : out std_logic;
+        VALID           : out std_logic;
+        READY           : in  std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Store_Boolean_Array                                    --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Store_Boolean_Array
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        DATA_BITS       :  positive := 1;
+        ADDR_BITS       :  positive := 8;
+        SIZE_BITS       :  positive := MsgPack_Object.CODE_DATA_BITS
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- MessagePack Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Boolean Value Data and Address Output
+    -------------------------------------------------------------------------------
+        START           : out std_logic;
+        BUSY            : out std_logic;
+        SIZE            : out std_logic_vector(SIZE_BITS-1 downto 0);
+        ADDR            : out std_logic_vector(ADDR_BITS-1 downto 0);
+        DATA            : out std_logic_vector(DATA_BITS-1 downto 0);
+        STRB            : out std_logic_vector(DATA_BITS-1 downto 0);
+        LAST            : out std_logic;
+        VALID           : out std_logic;
+        READY           : in  std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Store_Boolean_Stream                                   --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Store_Boolean_Stream
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        DATA_BITS       :  positive := 1;
+        SIZE_BITS       :  positive := MsgPack_Object.CODE_DATA_BITS
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- MessagePack Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Boolean Value Data and Address Output
+    -------------------------------------------------------------------------------
+        START           : out std_logic;
+        BUSY            : out std_logic;
+        SIZE            : out std_logic_vector(SIZE_BITS-1 downto 0);
+        DATA            : out std_logic_vector(DATA_BITS-1 downto 0);
+        STRB            : out std_logic_vector(DATA_BITS-1 downto 0);
+        LAST            : out std_logic;
+        VALID           : out std_logic;
+        READY           : in  std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Store_Integer_Register                                 --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Store_Integer_Register
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        VALUE_BITS      :  integer range 1 to 64;
+        VALUE_SIGN      :  boolean  := FALSE;
+        CHECK_RANGE     :  boolean  := TRUE ;
+        ENABLE64        :  boolean  := TRUE
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- MessagePack Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Value Output Interface
+    -------------------------------------------------------------------------------
+        VALUE           : out std_logic_vector(VALUE_BITS-1 downto 0);
+        SIGN            : out std_logic;
+        LAST            : out std_logic;
+        VALID           : out std_logic;
+        READY           : in  std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Store_Integer_Array                                    --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Store_Integer_Array
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        ADDR_BITS       :  integer  := 8;
+        SIZE_BITS       :  integer  := MsgPack_Object.CODE_DATA_BITS;
+        VALUE_BITS      :  integer range 1 to 64;
+        VALUE_SIGN      :  boolean  := FALSE;
+        CHECK_RANGE     :  boolean  := TRUE ;
+        ENABLE64        :  boolean  := TRUE
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- MessagePack Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Integer Value Data and Address Output
+    -------------------------------------------------------------------------------
+        START           : out std_logic;
+        BUSY            : out std_logic;
+        SIZE            : out std_logic_vector( SIZE_BITS-1 downto 0);
+        ADDR            : out std_logic_vector( ADDR_BITS-1 downto 0);
+        VALUE           : out std_logic_vector(VALUE_BITS-1 downto 0);
+        SIGN            : out std_logic;
+        LAST            : out std_logic;
+        VALID           : out std_logic;
+        READY           : in  std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Store_Integer_Stream                                   --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Store_Integer_Stream
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        SIZE_BITS       :  integer  := MsgPack_Object.CODE_DATA_BITS;
+        VALUE_BITS      :  integer range 1 to 64;
+        VALUE_SIGN      :  boolean  := FALSE;
+        CHECK_RANGE     :  boolean  := TRUE ;
+        ENABLE64        :  boolean  := TRUE
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- MessagePack Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Integer Value Data and Address Output
+    -------------------------------------------------------------------------------
+        START           : out std_logic;
+        BUSY            : out std_logic;
+        SIZE            : out std_logic_vector( SIZE_BITS-1 downto 0);
+        VALUE           : out std_logic_vector(VALUE_BITS-1 downto 0);
+        SIGN            : out std_logic;
+        LAST            : out std_logic;
+        VALID           : out std_logic;
+        READY           : in  std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Store_Binary_Array                                     --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Store_Binary_Array
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        DATA_BITS       :  positive := 4;
+        ADDR_BITS       :  integer  := 8;
+        SIZE_BITS       :  integer  := MsgPack_Object.CODE_DATA_BITS;
+        DECODE_BINARY   :  boolean  := TRUE;
+        DECODE_STRING   :  boolean  := FALSE
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- MessagePack Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Integer Value Data and Address Output
+    -------------------------------------------------------------------------------
+        START           : out std_logic;
+        BUSY            : out std_logic;
+        SIZE            : out std_logic_vector(SIZE_BITS  -1 downto 0);
+        ADDR            : out std_logic_vector(ADDR_BITS  -1 downto 0);
+        DATA            : out std_logic_vector(DATA_BITS  -1 downto 0);
+        STRB            : out std_logic_vector(DATA_BITS/8-1 downto 0);
+        LAST            : out std_logic;
+        VALID           : out std_logic;
+        READY           : in  std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Store_Binary_Stream                                    --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Store_Binary_Stream
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        DATA_BITS       :  positive := 4;
+        SIZE_BITS       :  integer  := MsgPack_Object.CODE_DATA_BITS;
+        DECODE_BINARY   :  boolean  := TRUE;
+        DECODE_STRING   :  boolean  := FALSE
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- MessagePack Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH -1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Binary/String Data Output
+    -------------------------------------------------------------------------------
+        START           : out std_logic;
+        BUSY            : out std_logic;
+        SIZE            : out std_logic_vector(SIZE_BITS  -1 downto 0);
+        DATA            : out std_logic_vector(DATA_BITS  -1 downto 0);
+        STRB            : out std_logic_vector(DATA_BITS/8-1 downto 0);
+        LAST            : out std_logic;
+        VALID           : out std_logic;
+        READY           : in  std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Query_Stream_Parameter                                 --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Query_Stream_Parameter
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        SIZE_BITS       :  integer range 1 to 32 := 32
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Default(when parameter == nil) Query Size 
+    -------------------------------------------------------------------------------
+        DEFAULT_SIZE    : in  std_logic_vector(SIZE_BITS -1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- 
+    -------------------------------------------------------------------------------
+        ENABLE          : in  std_logic;
+        START           : out std_logic;
+        SIZE            : out std_logic_vector(SIZE_BITS -1 downto 0)
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Query_Boolean_Register                                 --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Query_Boolean_Register
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Object Code Output Interface
+    -------------------------------------------------------------------------------
+        O_CODE          : out MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        O_LAST          : out std_logic;
+        O_ERROR         : out std_logic;
+        O_VALID         : out std_logic;
+        O_READY         : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- 
+    -------------------------------------------------------------------------------
+        VALUE           : in  std_logic;
+        VALID           : in  std_logic;
+        READY           : out std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Query_Boolean_Array                                    --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Query_Boolean_Array
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        DATA_BITS       :  positive := 1;
+        ADDR_BITS       :  positive := 32;
+        SIZE_BITS       :  positive := MsgPack_Object.CODE_DATA_BITS
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Default(when parameter == nil) Query Size 
+    -------------------------------------------------------------------------------
+        DEFAULT_SIZE    : in  std_logic_vector( SIZE_BITS-1 downto 0) := (others => '1');
+    -------------------------------------------------------------------------------
+    -- Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Object Code Output Interface
+    -------------------------------------------------------------------------------
+        O_CODE          : out MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        O_LAST          : out std_logic;
+        O_ERROR         : out std_logic;
+        O_VALID         : out std_logic;
+        O_READY         : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Boolean Value Input Interface
+    -------------------------------------------------------------------------------
+        START           : out std_logic;
+        BUSY            : out std_logic;
+        SIZE            : out std_logic_vector(SIZE_BITS-1 downto 0);
+        ADDR            : out std_logic_vector(ADDR_BITS-1 downto 0);
+        DATA            : in  std_logic_vector(DATA_BITS-1 downto 0);
+        VALID           : in  std_logic;
+        READY           : out std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Query_Boolean_Stream                                   --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Query_Boolean_Stream
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        DATA_BITS       :  positive := 1;
+        SIZE_BITS       :  positive := MsgPack_Object.CODE_DATA_BITS
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Default(when parameter == nil) Query Size 
+    -------------------------------------------------------------------------------
+        DEFAULT_SIZE    : in  std_logic_vector(SIZE_BITS-1 downto 0) := (others => '1');
+    -------------------------------------------------------------------------------
+    -- Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Object Code Output Interface
+    -------------------------------------------------------------------------------
+        O_CODE          : out MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        O_LAST          : out std_logic;
+        O_ERROR         : out std_logic;
+        O_VALID         : out std_logic;
+        O_READY         : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Boolean Value Input Interface
+    -------------------------------------------------------------------------------
+        START           : out std_logic;
+        BUSY            : out std_logic;
+        SIZE            : out std_logic_vector(SIZE_BITS-1 downto 0);
+        DATA            : in  std_logic_vector(DATA_BITS-1 downto 0);
+        STRB            : in  std_logic_vector(DATA_BITS-1 downto 0);
+        LAST            : in  std_logic;
+        VALID           : in  std_logic;
+        READY           : out std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Query_Integer_Register                                 --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Query_Integer_Register
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        VALUE_BITS      :  integer range 1 to 64 := 32;
+        VALUE_SIGN      :  boolean  := FALSE
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Object Code Output Interface
+    -------------------------------------------------------------------------------
+        O_CODE          : out MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        O_LAST          : out std_logic;
+        O_ERROR         : out std_logic;
+        O_VALID         : out std_logic;
+        O_READY         : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- 
+    -------------------------------------------------------------------------------
+        VALUE           : in  std_logic_vector(VALUE_BITS-1 downto 0);
+        VALID           : in  std_logic;
+        READY           : out std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Query_Integer_Array                                    --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Query_Integer_Array
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        ADDR_BITS       :  positive := 32;
+        SIZE_BITS       :  integer range 1 to 32 := 32;
+        VALUE_BITS      :  integer range 1 to 64 := 32;
+        VALUE_SIGN      :  boolean  := FALSE
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Default(when parameter == nil) Query Size 
+    -------------------------------------------------------------------------------
+        DEFAULT_SIZE    : in  std_logic_vector( SIZE_BITS-1 downto 0) := (others => '1');
+    -------------------------------------------------------------------------------
+    -- Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Object Code Output Interface
+    -------------------------------------------------------------------------------
+        O_CODE          : out MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        O_LAST          : out std_logic;
+        O_ERROR         : out std_logic;
+        O_VALID         : out std_logic;
+        O_READY         : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Integer Value Input Interface
+    -------------------------------------------------------------------------------
+        START           : out std_logic;
+        BUSY            : out std_logic;
+        SIZE            : out std_logic_vector( SIZE_BITS-1 downto 0);
+        ADDR            : out std_logic_vector( ADDR_BITS-1 downto 0);
+        VALUE           : in  std_logic_vector(VALUE_BITS-1 downto 0);
+        VALID           : in  std_logic;
+        READY           : out std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Query_Integer_Stream                                   --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Query_Integer_Stream
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        SIZE_BITS       :  integer range 1 to 32 := 32;
+        VALUE_BITS      :  integer range 1 to 64 := 32;
+        VALUE_SIGN      :  boolean  := FALSE
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Default(when parameter == nil) Query Size 
+    -------------------------------------------------------------------------------
+        DEFAULT_SIZE    : in  std_logic_vector(SIZE_BITS-1 downto 0) := (others => '1');
+    -------------------------------------------------------------------------------
+    -- Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Object Code Output Interface
+    -------------------------------------------------------------------------------
+        O_CODE          : out MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        O_LAST          : out std_logic;
+        O_ERROR         : out std_logic;
+        O_VALID         : out std_logic;
+        O_READY         : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Integer Value Input Interface
+    -------------------------------------------------------------------------------
+        START           : out std_logic;
+        BUSY            : out std_logic;
+        SIZE            : out std_logic_vector( SIZE_BITS-1 downto 0);
+        VALUE           : in  std_logic_vector(VALUE_BITS-1 downto 0);
+        VALID           : in  std_logic;
+        READY           : out std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Query_Binary_Array                                     --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Query_Binary_Array
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        DATA_BITS       :  positive := 32;
+        ADDR_BITS       :  positive := 32;
+        SIZE_BITS       :  integer range 1 to 32 := 32;
+        ENCODE_BINARY   :  boolean  := TRUE;
+        ENCODE_STRING   :  boolean  := FALSE
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Default(when parameter == nil) Query Size 
+    -------------------------------------------------------------------------------
+        DEFAULT_SIZE    : in  std_logic_vector(SIZE_BITS  -1 downto 0) := (others => '1');
+    -------------------------------------------------------------------------------
+    -- MessagePack Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH -1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Object Code Output Interface
+    -------------------------------------------------------------------------------
+        O_CODE          : out MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        O_LAST          : out std_logic;
+        O_ERROR         : out std_logic;
+        O_VALID         : out std_logic;
+        O_READY         : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Binary/String Data Stream Input Interface
+    -------------------------------------------------------------------------------
+        START           : out std_logic;
+        BUSY            : out std_logic;
+        SIZE            : out std_logic_vector(SIZE_BITS  -1 downto 0);
+        ADDR            : out std_logic_vector(ADDR_BITS  -1 downto 0);
+        STRB            : out std_logic_vector(DATA_BITS/8-1 downto 0);
+        LAST            : out std_logic;
+        DATA            : in  std_logic_vector(DATA_BITS  -1 downto 0);
+        VALID           : in  std_logic;
+        READY           : out std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Query_Binary_Stream                                    --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Query_Binary_Stream
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        DATA_BITS       :  positive := 32;
+        SIZE_BITS       :  integer range 1 to 32 := 32;
+        ENCODE_BINARY   :  boolean  := TRUE;
+        ENCODE_STRING   :  boolean  := FALSE
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Default(when parameter == nil) Query Size 
+    -------------------------------------------------------------------------------
+        DEFAULT_SIZE    : in  std_logic_vector(SIZE_BITS  -1 downto 0) := (others => '1');
+    -------------------------------------------------------------------------------
+    -- MessagePack Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH -1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Object Code Output Interface
+    -------------------------------------------------------------------------------
+        O_CODE          : out MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        O_LAST          : out std_logic;
+        O_ERROR         : out std_logic;
+        O_VALID         : out std_logic;
+        O_READY         : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Binary/String Data Stream Input Interface
+    -------------------------------------------------------------------------------
+        START           : out std_logic;
+        BUSY            : out std_logic;
+        SIZE            : out std_logic_vector(SIZE_BITS  -1 downto 0);
+        DATA            : in  std_logic_vector(DATA_BITS  -1 downto 0);
+        STRB            : in  std_logic_vector(DATA_BITS/8-1 downto 0);
+        LAST            : in  std_logic;
+        VALID           : in  std_logic;
+        READY           : out std_logic
+    );
+end component;
+-----------------------------------------------------------------------------------
+--! @brief MsgPack_Object_Query_Array                                            --
+-----------------------------------------------------------------------------------
+component MsgPack_Object_Query_Array
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        ADDR_BITS       :  integer  := 8
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Key Array Object Decode Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(          CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Key Value Map Encode Output Interface
+    -------------------------------------------------------------------------------
+        O_CODE          : out MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        O_VALID         : out std_logic;
+        O_LAST          : out std_logic;
+        O_ERROR         : out std_logic;
+        O_READY         : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Parameter Object Decode Output Interface
+    -------------------------------------------------------------------------------
+        PARAM_START     : out std_logic;
+        PARAM_ADDR      : out std_logic_vector(           ADDR_BITS-1 downto 0);
+        PARAM_VALID     : out std_logic;
+        PARAM_CODE      : out MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        PARAM_LAST      : out std_logic;
+        PARAM_ERROR     : in  std_logic;
+        PARAM_DONE      : in  std_logic;
+        PARAM_SHIFT     : in  std_logic_vector(          CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Value Object Encode Input Interface
+    -------------------------------------------------------------------------------
+        VALUE_VALID     : in  std_logic;
+        VALUE_CODE      : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        VALUE_LAST      : in  std_logic;
+        VALUE_ERROR     : in  std_logic;
+        VALUE_READY     : out std_logic
+    );
+end component;
 end MsgPack_Object_Components;
+-----------------------------------------------------------------------------------
+--!     @file    msgpack_object_decode_integer.vhd
+--!     @brief   MessagePack Object decode to integer
+--!     @version 0.2.0
+--!     @date    2015/11/9
+--!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
+-----------------------------------------------------------------------------------
+--
+--      Copyright (C) 2015 Ichiro Kawazome
+--      All rights reserved.
+--
+--      Redistribution and use in source and binary forms, with or without
+--      modification, are permitted provided that the following conditions
+--      are met:
+--
+--        1. Redistributions of source code must retain the above copyright
+--           notice, this list of conditions and the following disclaimer.
+--
+--        2. Redistributions in binary form must reproduce the above copyright
+--           notice, this list of conditions and the following disclaimer in
+--           the documentation and/or other materials provided with the
+--           distribution.
+--
+--      THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+--      "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+--      LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+--      A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+--      OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+--      SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+--      LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+--      DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+--      THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
+--      (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+--      OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+--
+-----------------------------------------------------------------------------------
+library ieee;
+use     ieee.std_logic_1164.all;
+library MsgPack;
+use     MsgPack.MsgPack_Object;
+entity  MsgPack_Object_Decode_Integer is
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        VALUE_BITS      :  integer range 1 to 64;
+        VALUE_SIGN      :  boolean  := FALSE;
+        QUEUE_SIZE      :  integer  := 0;
+        CHECK_RANGE     :  boolean  := TRUE ;
+        ENABLE64        :  boolean  := TRUE 
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- MessagePack Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Integer Value Output Interface
+    -------------------------------------------------------------------------------
+        O_VALUE         : out std_logic_vector(VALUE_BITS-1 downto 0);
+        O_SIGN          : out std_logic;
+        O_LAST          : out std_logic;
+        O_VALID         : out std_logic;
+        O_READY         : in  std_logic
+    );
+end  MsgPack_Object_Decode_Integer;
+-----------------------------------------------------------------------------------
+-- 
+-----------------------------------------------------------------------------------
+library ieee;
+use     ieee.std_logic_1164.all;
+use     ieee.numeric_std.all;
+library MsgPack;
+use     MsgPack.MsgPack_Object;
+use     MsgPack.PipeWork_Components.QUEUE_REGISTER;
+architecture RTL of MsgPack_Object_Decode_Integer is
+    signal   ii_sign     :  std_logic;
+    signal   ii_value    :  std_logic_vector(63 downto 0);
+    signal   ii_valid    :  std_logic_vector( 1 downto 0);
+    signal   ii_shift    :  std_logic_vector( 1 downto 0);
+    signal   ii_ready    :  std_logic;
+    signal   done        :  boolean;
+    signal   type_error  :  boolean;
+    signal   range_error :  boolean;
+begin
+    -------------------------------------------------------------------------------
+    --
+    -------------------------------------------------------------------------------
+    SHORT_VEC: if (CODE_WIDTH  < 2) generate
+        type      STATE_TYPE    is (IDLE_STATE, INT64_STATE, UINT64_STATE);
+        signal    curr_state    :  STATE_TYPE;
+        signal    next_state    :  STATE_TYPE;
+        signal    upper_value   :  std_logic_vector(31 downto 0);
+    begin
+        ---------------------------------------------------------------------------
+        --
+        ---------------------------------------------------------------------------
+        process (I_VALID, I_CODE, curr_state, ii_ready) begin
+            if (I_VALID = '1' and I_CODE(0).valid = '1' and ii_ready = '1') then
+                if     (ENABLE64   = TRUE) and
+                       (curr_state = INT64_STATE) then
+                    if (I_CODE(0).complete = '1') and
+                       (I_CODE(0).class    = MsgPack_Object.CLASS_INT ) then
+                        type_error <= FALSE;
+                        done       <= TRUE;
+                        ii_valid   <= "11";
+                        ii_shift   <= "01";
+                        next_state <= IDLE_STATE;
+                    else
+                        type_error <= TRUE;
+                        done       <= TRUE;
+                        ii_valid   <= "00";
+                        ii_shift   <= "00";
+                        next_state <= IDLE_STATE;
+                    end if;
+                elsif  (ENABLE64   = TRUE) and
+                       (curr_state = UINT64_STATE) then
+                    if (I_CODE(0).complete = '1') and
+                       (I_CODE(0).class    = MsgPack_Object.CLASS_UINT) then
+                        type_error <= FALSE;
+                        done       <= TRUE;
+                        ii_valid   <= "11";
+                        ii_shift   <= "01";
+                        next_state <= IDLE_STATE;
+                    else
+                        type_error <= TRUE;
+                        done       <= TRUE;
+                        ii_valid   <= "00";
+                        ii_shift   <= "00";
+                        next_state <= IDLE_STATE;
+                    end if;
+                elsif (I_CODE(0).complete = '0') then
+                    if    (ENABLE64 = TRUE) and
+                          (I_CODE(0).class = MsgPack_Object.CLASS_INT) then
+                        type_error <= FALSE;
+                        done       <= FALSE;
+                        ii_valid   <= "00";
+                        ii_shift   <= "01";
+                        next_state <= INT64_STATE;
+                    elsif (ENABLE64 = TRUE) and
+                          (I_CODE(0).class = MsgPack_Object.CLASS_UINT) then
+                        type_error <= FALSE;
+                        done       <= FALSE;
+                        ii_valid   <= "00";
+                        ii_shift   <= "01";
+                        next_state <= UINT64_STATE;
+                    else
+                        type_error <= TRUE;
+                        done       <= TRUE;
+                        ii_valid   <= "00";
+                        ii_shift   <= "00";
+                        next_state <= IDLE_STATE;
+                    end if;
+                else
+                    if    (I_CODE(0).class = MsgPack_Object.CLASS_INT ) or
+                          (I_CODE(0).class = MsgPack_Object.CLASS_UINT) then
+                        type_error <= FALSE;
+                        done       <= TRUE;
+                        ii_valid   <= "01";
+                        ii_shift   <= "01";
+                        next_state <= IDLE_STATE;
+                    else
+                        type_error <= TRUE;
+                        done       <= TRUE;
+                        ii_valid   <= "00";
+                        ii_shift   <= "00";
+                        next_state <= IDLE_STATE;
+                    end if;
+                end if;
+            else
+                        type_error <= FALSE;
+                        done       <= FALSE;
+                        ii_valid   <= "00";
+                        ii_shift   <= "00";
+                        next_state <= curr_state;
+            end if;
+        end process;
+        ---------------------------------------------------------------------------
+        --
+        ---------------------------------------------------------------------------
+        process (curr_state, I_CODE, upper_value) begin
+            if   (ENABLE64 = TRUE) and
+                 ((curr_state = INT64_STATE ) or
+                  (curr_state = UINT64_STATE)) then
+                ii_value(31 downto  0) <= I_CODE(0).data;
+                ii_value(63 downto 32) <= upper_value;
+            elsif (I_CODE(0).class = MsgPack_Object.CLASS_INT) and
+                  (I_CODE(0).data(31) = '1') then
+                ii_value(31 downto  0) <= I_CODE(0).data;
+                ii_value(63 downto 32) <= (63 downto 32 => '1');
+            else
+                ii_value(31 downto  0) <= I_CODE(0).data;
+                ii_value(63 downto 32) <= (63 downto 32 => '0');
+            end if;
+        end process;
+        ---------------------------------------------------------------------------
+        --
+        ---------------------------------------------------------------------------
+        process (CLK, RST) begin
+            if (RST = '1') then
+                    curr_state  <= IDLE_STATE;
+                    upper_value <= (others => '0');
+            elsif (CLK'event and CLK = '1') then
+                if (CLR = '1') then
+                    curr_state  <= IDLE_STATE;
+                    upper_value <= (others => '0');
+                else
+                    curr_state  <= next_state;
+                    if (next_state /= IDLE_STATE) then
+                        upper_value <= I_CODE(0).data;
+                    end if;
+                end if;
+            end if;
+        end process;
+        ii_sign <= '1' when (curr_state = IDLE_STATE and I_CODE(0).class = MsgPack_Object.CLASS_INT) or
+                            (curr_state = INT64_STATE) else '0';
+    end generate;
+    -------------------------------------------------------------------------------
+    --
+    -------------------------------------------------------------------------------
+    LONG_VEC:  if (CODE_WIDTH >= 2) generate
+    begin
+        ---------------------------------------------------------------------------
+        --
+        ---------------------------------------------------------------------------
+        process (I_VALID, I_CODE) begin
+            if (I_VALID = '1' and I_CODE(0).valid = '1') then
+                if (I_CODE(0).class = MsgPack_Object.CLASS_INT ) or
+                   (I_CODE(0).class = MsgPack_Object.CLASS_UINT) then
+                    if (I_CODE(0).complete = '0') then
+                        if    (ENABLE64 = FALSE) then
+                            type_error <= TRUE;
+                            done       <= TRUE;
+                            ii_valid   <= "00";
+                            ii_shift   <= "00";
+                        elsif (I_CODE(1).valid = '0') then
+                            type_error <= FALSE;
+                            done       <= FALSE;
+                            ii_valid   <= "00";
+                            ii_shift   <= "00";
+                        elsif (I_CODE(1).valid    = '1') and
+                              (I_CODE(1).class    = I_CODE(0).class) and
+                              (I_CODE(1).complete = '1') then
+                            type_error <= FALSE;
+                            done       <= TRUE;
+                            ii_valid   <= "11";
+                            ii_shift   <= "11";
+                        else
+                            type_error <= TRUE;
+                            done       <= TRUE;
+                            ii_valid   <= "00";
+                            ii_shift   <= "00";
+                        end if;
+                    else
+                            type_error <= FALSE;
+                            done       <= TRUE;
+                            ii_valid   <= "01";
+                            ii_shift   <= "01";
+                    end if;
+                else
+                            type_error <= TRUE;
+                            done       <= TRUE;
+                            ii_valid   <= "00";
+                            ii_shift   <= "00";
+                end if;
+            else
+                            type_error <= FALSE;
+                            done       <= FALSE;
+                            ii_valid   <= "00";
+                            ii_shift   <= "00";
+            end if;
+        end process;
+        ---------------------------------------------------------------------------
+        --
+        ---------------------------------------------------------------------------
+        process (ii_valid, I_CODE) begin
+            if    (ii_valid(1) = '1' and ENABLE64 = TRUE) then
+                ii_value(31 downto  0) <= I_CODE(0).data;
+                ii_value(63 downto 32) <= I_CODE(1).data;
+            elsif (I_CODE(0).class = MsgPack_Object.CLASS_INT) and
+                  (I_CODE(0).data(31) = '1') then
+                ii_value(31 downto  0) <= I_CODE(0).data;
+                ii_value(63 downto 32) <= (63 downto 32 => '1');
+            else
+                ii_value(31 downto  0) <= I_CODE(0).data;
+                ii_value(63 downto 32) <= (63 downto 32 => '0');
+            end if;
+        end process;
+        ii_sign <= '1' when (I_CODE(0).class = MsgPack_Object.CLASS_INT) else '0';
+    end generate;
+    -------------------------------------------------------------------------------
+    -- range_error
+    -------------------------------------------------------------------------------
+    process (ii_value, ii_valid) begin
+        range_error <= FALSE;
+        if (CHECK_RANGE = TRUE and VALUE_BITS < 64 and ii_valid(0) = '1') then
+            if (VALUE_SIGN) then
+                for i in 63 downto VALUE_BITS loop
+                    if (ii_value(i) /= ii_value(VALUE_BITS-1)) then
+                        range_error <= TRUE;
+                    end if;
+                end loop;
+            else
+                for i in 63 downto VALUE_BITS loop
+                    if (ii_value(i) /= '0') then
+                        range_error <= TRUE;
+                    end if;
+                end loop;
+            end if;
+        end if;
+    end process;
+    -------------------------------------------------------------------------------
+    -- I_ERROR/I_DONE
+    -------------------------------------------------------------------------------
+    I_DONE  <= '1' when (done        = TRUE ) else '0';
+    I_ERROR <= '1' when (type_error  = TRUE ) or
+                        (range_error = TRUE ) else '0';
+    -------------------------------------------------------------------------------
+    -- I_SHIFT
+    -------------------------------------------------------------------------------
+    process (type_error, range_error, ii_shift) begin
+        if (type_error = TRUE or range_error = TRUE) then
+            I_SHIFT <= (others => '0');
+        else
+            for i in I_SHIFT'range loop
+                if (i <= ii_shift'high) then
+                    I_SHIFT(i) <= ii_shift(i);
+                else
+                    I_SHIFT(i) <= '0';
+                end if;
+            end loop;
+        end if;
+    end process;
+    -------------------------------------------------------------------------------
+    --
+    -------------------------------------------------------------------------------
+    OUTLET: block
+        constant  SIGN_POS  :  integer := VALUE_BITS + 0;
+        constant  LAST_POS  :  integer := VALUE_BITS + 1;
+        constant  DATA_BITS :  integer := VALUE_BITS + 2;
+        signal    ii_data   :  std_logic_vector(DATA_BITS-1 downto 0);
+        signal    oo_data   :  std_logic_vector(DATA_BITS-1 downto 0);
+        signal    qq_valid  :  std_logic;
+    begin
+        ---------------------------------------------------------------------------
+        --
+        ---------------------------------------------------------------------------
+        ii_data(VALUE_BITS-1 downto 0) <= ii_value(VALUE_BITS-1 downto 0);
+        ii_data(SIGN_POS             ) <= ii_sign;
+        ii_data(LAST_POS             ) <= I_LAST;
+        qq_valid <= '1' when (type_error  = FALSE) and
+                             (range_error = FALSE) and
+                             (ii_valid(0) = '1'  ) else '0';
+        ---------------------------------------------------------------------------
+        --
+        ---------------------------------------------------------------------------
+        QUEUE: QUEUE_REGISTER                -- 
+            generic map (                    -- 
+                QUEUE_SIZE  => QUEUE_SIZE  , -- 
+                DATA_BITS   => DATA_BITS   , -- 
+                LOWPOWER    => 0             -- 
+            )                                -- 
+            port map (                       -- 
+                CLK         => CLK         , -- In  :
+                RST         => RST         , -- In  :
+                CLR         => CLR         , -- In  :
+                I_DATA      => ii_data     , -- In  :
+                I_VAL       => qq_valid    , -- In  :
+                I_RDY       => ii_ready    , -- Out :
+                O_DATA      => open        , -- Out :
+                O_VAL       => open        , -- Out :
+                Q_DATA      => oo_data     , -- Out :
+                Q_VAL(0)    => O_VALID     , -- Out :
+                Q_RDY       => O_READY       -- In  :
+            );                               --
+        ---------------------------------------------------------------------------
+        --
+        ---------------------------------------------------------------------------
+        O_VALUE <= oo_data(VALUE_BITS-1 downto 0);
+        O_SIGN  <= oo_data(SIGN_POS);
+        O_LAST  <= oo_data(LAST_POS);
+    end block;
+end RTL;
 -----------------------------------------------------------------------------------
 --!     @file    msgpack_structre_stack.vhd
 --!     @brief   MessagePack Array/Map Structure Stack :
---!     @version 0.1.0
---!     @date    2015/10/11
+--!     @version 0.2.0
+--!     @date    2015/11/9
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
@@ -5828,323 +8606,14 @@ begin
     NEXT_PSIZE <= std_logic_vector(RESIZE(next_piece_size, PSIZE'length));
 end RTL;
 -----------------------------------------------------------------------------------
---!     @file    queue_register.vhd
---!     @brief   QUEUE REGISTER MODULE :
---!              フリップフロップベースの比較的浅いキュー.
---!     @version 1.5.0
---!     @date    2013/4/2
+--!     @file    msgpack_kvmap_query_map_value.vhd
+--!     @brief   MessagePack-KVMap(Key Value Map) Query Map Value Module :
+--!     @version 0.2.0
+--!     @date    2016/5/17
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
---      Copyright (C) 2012,2013 Ichiro Kawazome
---      All rights reserved.
---
---      Redistribution and use in source and binary forms, with or without
---      modification, are permitted provided that the following conditions
---      are met:
---
---        1. Redistributions of source code must retain the above copyright
---           notice, this list of conditions and the following disclaimer.
---
---        2. Redistributions in binary form must reproduce the above copyright
---           notice, this list of conditions and the following disclaimer in
---           the documentation and/or other materials provided with the
---           distribution.
---
---      THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
---      "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
---      LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
---      A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
---      OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
---      SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
---      LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
---      DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
---      THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
---      (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
---      OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
---
------------------------------------------------------------------------------------
-library ieee;
-use     ieee.std_logic_1164.all;
------------------------------------------------------------------------------------
---! @brief   QUEUE REGISTER
---!          フリップフロップベースの比較的浅いキュー.
---!        * フリップフロップを使っているのでキューの段数が大きいと
---!          それなりに回路規模が大きくなることに注意.
------------------------------------------------------------------------------------
-entity  QUEUE_REGISTER is
-    -------------------------------------------------------------------------------
-    -- ジェネリック変数
-    -------------------------------------------------------------------------------
-    generic (
-        QUEUE_SIZE  : --! @brief QUEUE SIZE :
-                      --! キューの大きさをワード数で指定する.
-                      integer := 1;
-        DATA_BITS   : --! @brief DATA BITS :
-                      --! データ(I_DATA/O_DATA/Q_DATA)のビット幅を指定する.
-                      integer :=  32;
-        LOWPOWER    : --! @brief LOW POWER MODE :
-                      --! キューのレジスタに不必要なロードを行わないことにより、
-                      --! レジスタが不必要にトグルすることを防いで消費電力を
-                      --! 下げるようにする.
-                      --! ただし、回路が若干増える.
-                      integer range 0 to 1 := 1
-    );
-    port (
-    -------------------------------------------------------------------------------
-    -- クロック&リセット信号
-    -------------------------------------------------------------------------------
-        CLK         : --! @brief CLOCK :
-                      --! クロック信号
-                      in  std_logic; 
-        RST         : --! @brief ASYNCRONOUSE RESET :
-                      --! 非同期リセット信号.アクティブハイ.
-                      in  std_logic;
-        CLR         : --! @brief SYNCRONOUSE RESET :
-                      --! 同期リセット信号.アクティブハイ.
-                      in  std_logic;
-    -------------------------------------------------------------------------------
-    -- 入力側
-    -------------------------------------------------------------------------------
-        I_DATA      : --! @brief INPUT DATA  :
-                      --! 入力データ信号.
-                      in  std_logic_vector(DATA_BITS-1 downto 0);
-        I_VAL       : --! @brief INPUT DATA VALID :
-                      --! 入力データ有効信号.
-                      in  std_logic;
-        I_RDY       : --! @brief INPUT READY :
-                      --! 入力可能信号.
-                      --! キューが空いていて、入力データを受け付けることが可能で
-                      --! あることを示す信号.
-                      out std_logic;
-    -------------------------------------------------------------------------------
-    -- 出力側
-    -------------------------------------------------------------------------------
-        O_DATA      : --! @brief OUTPUT DATA :
-                      --! 出力データ.
-                      out std_logic_vector(DATA_BITS-1 downto 0);
-        O_VAL       : --! @brief OUTPUT DATA VALID :
-                      --! キューレジスタに有効なデータが入っている事を示すフラグ.
-                      --! * キューレジスタは1〜QUEUE_SIZEまであるが、対応する位置の
-                      --!   フラグが'1'ならば有効なデータが入っている事を示す.
-                      --! * この出力信号の範囲が1からではなく0から始まっている事に
-                      --!   注意. これはQUEUE_SIZE=0の場合に対応するため.
-                      --!   QUEUE_SIZE>0の場合は、O_VAL(0)はO_VAL(1)と同じ.
-                      out std_logic_vector(QUEUE_SIZE  downto 0);
-        Q_DATA      : --! @brief OUTPUT REGISTERD DATA :
-                      --! レジスタ出力の出力データ.
-                      --! 出力データ(O_DATA)をクロックで叩いたもの.
-                      out std_logic_vector(DATA_BITS-1 downto 0);
-        Q_VAL       : --! @brief OUTPUT REGISTERD DATA VALID :
-                      --! キューレジスタに有効なデータが入っている事を示すフラグ.
-                      --! O_VALをクロックで叩いたもの.
-                      --! * キューレジスタは1〜QUEUE_SIZEまであるが、対応する位置の
-                      --!   フラグが'1'ならば有効なデータが入っている事を示す.
-                      --! * この出力信号の範囲が1からではなく0から始まっている事に
-                      --!   注意. これはQUEUE_SIZE=0の場合に対応するため.
-                      --!   QUEUE_SIZE>0の場合は、Q_VAL(0)はQ_VAL(1)と同じ.
-                      out std_logic_vector(QUEUE_SIZE  downto 0);
-        Q_RDY       : --! @brief OUTPUT READY :
-                      --! 出力可能信号.
-                      in  std_logic
-    );
-end QUEUE_REGISTER;
------------------------------------------------------------------------------------
--- アーキテクチャ本体
------------------------------------------------------------------------------------
-library ieee;
-use     ieee.std_logic_1164.all;
-architecture RTL of QUEUE_REGISTER is
-begin
-    -------------------------------------------------------------------------------
-    --  QUEUE_SIZE=0の場合はなにもしない
-    -------------------------------------------------------------------------------
-    QUEUE_SIZE_EQ_0: if (QUEUE_SIZE = 0) generate
-        O_DATA   <= I_DATA;
-        Q_DATA   <= I_DATA;
-        O_VAL(0) <= I_VAL;
-        Q_VAL(0) <= I_VAL;
-        I_RDY    <= Q_RDY;
-    end generate;
-    -------------------------------------------------------------------------------
-    -- QUEUE_SIZE>0の場合
-    -------------------------------------------------------------------------------
-    QUEUE_SIZE_GT_0: if (QUEUE_SIZE > 0) generate
-        subtype  QUEUE_DATA_TYPE   is std_logic_vector(DATA_BITS-1 downto 0);
-        constant QUEUE_DATA_NULL    : std_logic_vector(DATA_BITS-1 downto 0) := (others => '0');
-        type     QUEUE_DATA_VECTOR is array (natural range <>) of QUEUE_DATA_TYPE;
-        constant FIRST_OF_QUEUE     : integer := 1;
-        constant LAST_OF_QUEUE      : integer := QUEUE_SIZE;
-        signal   next_queue_data    : QUEUE_DATA_VECTOR(LAST_OF_QUEUE downto FIRST_OF_QUEUE);
-        signal   curr_queue_data    : QUEUE_DATA_VECTOR(LAST_OF_QUEUE downto FIRST_OF_QUEUE);
-        signal   queue_data_load    : std_logic_vector (LAST_OF_QUEUE downto FIRST_OF_QUEUE);
-        signal   next_queue_valid   : std_logic_vector (LAST_OF_QUEUE downto FIRST_OF_QUEUE);
-        signal   curr_queue_valid   : std_logic_vector (LAST_OF_QUEUE downto FIRST_OF_QUEUE);
-    begin
-        ---------------------------------------------------------------------------
-        -- next_queue_valid : 次のクロックでのキューの状態を示すフラグ.
-        -- queue_data_load  : 次のクロックでcurr_queue_dataにnext_queue_dataの値を
-        --                    ロードすることを示すフラグ.
-        ---------------------------------------------------------------------------
-        process (I_VAL, Q_RDY, curr_queue_valid) begin
-            for i in FIRST_OF_QUEUE to LAST_OF_QUEUE loop
-                -------------------------------------------------------------------
-                -- 自分のキューにデータが格納されている場合...
-                -------------------------------------------------------------------
-                if (curr_queue_valid(i) = '1') then
-                    ---------------------------------------------------------------
-                    -- もし自分のキューにデータが格納されていて、
-                    -- かつ自分がキューの最後ならば、
-                    -- Q_RDY='1'で自分のキューをクリアする.
-                    ---------------------------------------------------------------
-                    if (i = LAST_OF_QUEUE) then
-                        if (Q_RDY = '1') then
-                            next_queue_valid(i) <= '0';
-                        else
-                            next_queue_valid(i) <= '1';
-                        end if;
-                        queue_data_load(i) <= '0';
-                    ---------------------------------------------------------------
-                    -- もし自分のキューにデータが格納されていて、
-                    -- かつ自分がキューの最後でなくて、
-                    -- かつ後ろのキューにデータが入っているならば、
-                    -- Q_RDY='1'で後ろのキューのデータを自分のキューに格納する.
-                    ---------------------------------------------------------------
-                    elsif (curr_queue_valid(i+1) = '1') then
-                        next_queue_valid(i) <= '1';
-                        if (Q_RDY = '1') then
-                            queue_data_load(i) <= '1';
-                        else
-                            queue_data_load(i) <= '0';
-                        end if;
-                    ---------------------------------------------------------------
-                    -- もし自分のキューにデータが格納されていて、
-                    -- かつ自分がキューの最後でなくて、
-                    -- かつ後ろのキューにデータが入っていないならば、
-                    -- I_VAL='0' かつ Q_RDY='1'ならば自分のキューをクリアする. 
-                    -- I_VAL='1' かつ Q_RDY='1'ならばI_DATAを自分のキューに格納する.
-                    ---------------------------------------------------------------
-                    else
-                        if (I_VAL = '0' and Q_RDY = '1') then
-                            next_queue_valid(i) <= '0';
-                        else
-                            next_queue_valid(i) <= '1';
-                        end if;
-                        if (LOWPOWER > 0 and I_VAL = '1' and Q_RDY = '1') or
-                           (LOWPOWER = 0                 and Q_RDY = '1') then
-                            queue_data_load(i)  <= '1';
-                        else
-                            queue_data_load(i)  <= '0';
-                        end if;
-                    end if;
-                -------------------------------------------------------------------
-                -- 自分のところにデータが格納されていない場合...
-                -------------------------------------------------------------------
-                else -- if (curr_queue_valid(i) = '0') then
-                    ---------------------------------------------------------------
-                    -- もし自分のキューにデータが格納されてなくて、
-                    -- かつ自分がキューの先頭ならば、
-                    -- I_VAL='1'で自分のキューにデータを格納する.
-                    ---------------------------------------------------------------
-                    if    (i = FIRST_OF_QUEUE) then
-                        if (I_VAL = '1') then
-                            next_queue_valid(i) <= '1';
-                            queue_data_load(i)  <= '1';
-                        else
-                            next_queue_valid(i) <= '0';
-                            queue_data_load(i)  <= '0';
-                        end if;
-                    ---------------------------------------------------------------
-                    -- もし自分のキューにデータが格納されてなくて、
-                    -- かつ自分がキューの先頭なくて、
-                    -- かつ前のキューにデータが格納されているならば、
-                    -- I_VAL='1'かつQ_RDY='0'で自分のキューにデータを格納する.
-                    ---------------------------------------------------------------
-                    elsif (curr_queue_valid(i-1) = '1') then
-                        if (I_VAL = '1' and Q_RDY = '0') then
-                            next_queue_valid(i) <= '1';
-                        else
-                            next_queue_valid(i) <= '0';
-                        end if;
-                        if (LOWPOWER = 0) or
-                           (LOWPOWER > 0 and I_VAL = '1' and Q_RDY = '0') then
-                            queue_data_load(i)  <= '1';
-                        else
-                            queue_data_load(i)  <= '0';
-                        end if;
-                    ---------------------------------------------------------------
-                    -- もし自分のキューにデータが格納されてなくて、
-                    -- かつ自分がキューの先頭なくて、
-                    -- かつ前のキューにデータが格納されていないならば、
-                    -- キューは空のまま.
-                    ---------------------------------------------------------------
-                    else
-                            next_queue_valid(i) <= '0';
-                            queue_data_load(i)  <= '0';
-                    end if;
-                end if;
-            end loop;
-        end process;
-        ---------------------------------------------------------------------------
-        -- next_queue_data  : 次のクロックでキューに格納されるデータ.
-        ---------------------------------------------------------------------------
-        process (I_DATA, queue_data_load, curr_queue_data, curr_queue_valid) begin
-            for i in FIRST_OF_QUEUE to LAST_OF_QUEUE loop
-                if (queue_data_load(i) = '1') then
-                    if    (i = LAST_OF_QUEUE) then
-                        next_queue_data(i) <= I_DATA;
-                    elsif (curr_queue_valid(i+1) = '1') then
-                        next_queue_data(i) <= curr_queue_data(i+1);
-                    else
-                        next_queue_data(i) <= I_DATA;
-                    end if;
-                else
-                        next_queue_data(i) <= curr_queue_data(i);
-                end if;
-            end loop;
-        end process;
-        ---------------------------------------------------------------------------
-        -- curr_queue_data  : 現在、キューに格納されているデータ.
-        -- curr_queue_valid : 現在、キューにデータが格納されていることを示すフラグ.
-        -- I_RDY            : キューにデータが格納することが出来ることを示すフラグ.
-        ---------------------------------------------------------------------------
-        process (CLK, RST) begin
-            if     (RST = '1') then
-                   curr_queue_data  <= (others => QUEUE_DATA_NULL);
-                   curr_queue_valid <= (others => '0');
-                   I_RDY            <= '0';
-            elsif  (CLK'event and CLK = '1') then
-               if (CLR = '1') then
-                   curr_queue_data  <= (others => QUEUE_DATA_NULL);
-                   curr_queue_valid <= (others => '0');
-                   I_RDY            <= '0';
-               else
-                   curr_queue_data  <= next_queue_data;
-                   curr_queue_valid <= next_queue_valid;
-                   I_RDY            <= not next_queue_valid(LAST_OF_QUEUE);
-               end if;
-            end if;
-        end process;
-        ---------------------------------------------------------------------------
-        -- 各種出力信号
-        ---------------------------------------------------------------------------
-        O_DATA                     <= next_queue_data (FIRST_OF_QUEUE);
-        Q_DATA                     <= curr_queue_data (FIRST_OF_QUEUE);
-        O_VAL(0)                   <= next_queue_valid(FIRST_OF_QUEUE);
-        O_VAL(QUEUE_SIZE downto 1) <= next_queue_valid;
-        Q_VAL(0)                   <= curr_queue_valid(FIRST_OF_QUEUE);
-        Q_VAL(QUEUE_SIZE downto 1) <= curr_queue_valid;
-    end generate;
-end RTL;
------------------------------------------------------------------------------------
---!     @file    msgpack_kvmap_get_value.vhd
---!     @brief   MessagePack-KVMap(Key Value Map) Get Value Module :
---!     @version 0.1.0
---!     @date    2015/10/25
---!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
------------------------------------------------------------------------------------
---
---      Copyright (C) 2015 Ichiro Kawazome
+--      Copyright (C) 2015-2016 Ichiro Kawazome
 --      All rights reserved.
 --
 --      Redistribution and use in source and binary forms, with or without
@@ -6176,7 +8645,7 @@ library ieee;
 use     ieee.std_logic_1164.all;
 library MsgPack;
 use     MsgPack.MsgPack_Object;
-entity  MsgPack_KVMap_Get_Value is
+entity  MsgPack_KVMap_Query_Map_Value is
     -------------------------------------------------------------------------------
     -- Generic Parameters
     -------------------------------------------------------------------------------
@@ -6255,7 +8724,7 @@ entity  MsgPack_KVMap_Get_Value is
         VALUE_ERROR     : in  std_logic_vector(          STORE_SIZE           -1 downto 0);
         VALUE_READY     : out std_logic_vector(          STORE_SIZE           -1 downto 0)
     );
-end MsgPack_KVMap_Get_Value;
+end MsgPack_KVMap_Query_Map_Value;
 -----------------------------------------------------------------------------------
 -- 
 -----------------------------------------------------------------------------------
@@ -6265,7 +8734,7 @@ use     ieee.numeric_std.all;
 library MsgPack;
 use     MsgPack.MsgPack_Object;
 use     MsgPack.MsgPack_KVMap_Components.MsgPack_KVMap_Dispatcher;
-architecture RTL of MsgPack_KVMap_Get_Value is
+architecture RTL of MsgPack_KVMap_Query_Map_Value is
     signal    req_select    :  std_logic_vector(STORE_SIZE-1 downto 0);
     signal    req_start     :  std_logic;
     signal    req_error     :  std_logic;
@@ -6457,14 +8926,14 @@ begin
     end process;
 end RTL;
 -----------------------------------------------------------------------------------
---!     @file    msgpack_kvmap_set_value.vhd
---!     @brief   MessagePack-KVMap(Key Value Map) Set Value Module :
---!     @version 0.1.0
---!     @date    2015/10/25
+--!     @file    msgpack_kvmap_store_map_value.vhd
+--!     @brief   MessagePack-KVMap(Key Value Map) Store Map Value Module :
+--!     @version 0.2.0
+--!     @date    2016/5/17
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
---      Copyright (C) 2015 Ichiro Kawazome
+--      Copyright (C) 2015-2016 Ichiro Kawazome
 --      All rights reserved.
 --
 --      Redistribution and use in source and binary forms, with or without
@@ -6496,7 +8965,7 @@ library ieee;
 use     ieee.std_logic_1164.all;
 library MsgPack;
 use     MsgPack.MsgPack_Object;
-entity  MsgPack_KVMap_Set_Value is
+entity  MsgPack_KVMap_Store_Map_Value is
     -------------------------------------------------------------------------------
     -- Generic Parameters
     -------------------------------------------------------------------------------
@@ -6559,7 +9028,7 @@ entity  MsgPack_KVMap_Set_Value is
         VALUE_DONE      : in  std_logic_vector(STORE_SIZE           -1 downto 0);
         VALUE_SHIFT     : in  std_logic_vector(STORE_SIZE*CODE_WIDTH-1 downto 0)
     );
-end MsgPack_KVMap_Set_Value;
+end MsgPack_KVMap_Store_Map_Value;
 -----------------------------------------------------------------------------------
 -- 
 -----------------------------------------------------------------------------------
@@ -6569,7 +9038,7 @@ use     ieee.numeric_std.all;
 library MsgPack;
 use     MsgPack.MsgPack_Object;
 use     MsgPack.MsgPack_KVMap_Components.MsgPack_KVMap_Dispatcher;
-architecture RTL of MsgPack_KVMap_Set_Value is
+architecture RTL of MsgPack_KVMap_Store_Map_Value is
 begin
     -------------------------------------------------------------------------------
     --
@@ -6646,12 +9115,12 @@ end RTL;
 -----------------------------------------------------------------------------------
 --!     @file    msgpack_object_code_compare.vhd
 --!     @brief   MessagePack Object Code Compare Module :
---!     @version 0.1.0
---!     @date    2015/10/2
+--!     @version 0.2.0
+--!     @date    2016/6/24
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
---      Copyright (C) 2012-2015 Ichiro Kawazome
+--      Copyright (C) 2012-2016 Ichiro Kawazome
 --      All rights reserved.
 --
 --      Redistribution and use in source and binary forms, with or without
@@ -6967,8 +9436,8 @@ end RTL;
 -----------------------------------------------------------------------------------
 --!     @file    msgpack_object_code_fifo.vhd
 --!     @brief   MessagePack Object Code FIFO
---!     @version 0.1.0
---!     @date    2015/10/19
+--!     @version 0.2.0
+--!     @date    2015/11/9
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
@@ -7267,409 +9736,14 @@ begin
             
 end RTL;
 -----------------------------------------------------------------------------------
---!     @file    msgpack_object_decode_integer.vhd
---!     @brief   MessagePack Object decode to integer
---!     @version 0.1.0
---!     @date    2015/10/22
---!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
------------------------------------------------------------------------------------
---
---      Copyright (C) 2015 Ichiro Kawazome
---      All rights reserved.
---
---      Redistribution and use in source and binary forms, with or without
---      modification, are permitted provided that the following conditions
---      are met:
---
---        1. Redistributions of source code must retain the above copyright
---           notice, this list of conditions and the following disclaimer.
---
---        2. Redistributions in binary form must reproduce the above copyright
---           notice, this list of conditions and the following disclaimer in
---           the documentation and/or other materials provided with the
---           distribution.
---
---      THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
---      "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
---      LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
---      A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
---      OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
---      SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
---      LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
---      DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
---      THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
---      (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
---      OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
---
------------------------------------------------------------------------------------
-library ieee;
-use     ieee.std_logic_1164.all;
-library MsgPack;
-use     MsgPack.MsgPack_Object;
-entity  MsgPack_Object_Decode_Integer is
-    -------------------------------------------------------------------------------
-    -- Generic Parameters
-    -------------------------------------------------------------------------------
-    generic (
-        CODE_WIDTH      :  positive := 1;
-        VALUE_BITS      :  integer range 1 to 64;
-        VALUE_SIGN      :  boolean  := FALSE;
-        QUEUE_SIZE      :  integer  := 0;
-        CHECK_RANGE     :  boolean  := TRUE ;
-        ENABLE64        :  boolean  := TRUE 
-    );
-    port (
-    -------------------------------------------------------------------------------
-    -- Clock and Reset Signals
-    -------------------------------------------------------------------------------
-        CLK             : in  std_logic; 
-        RST             : in  std_logic;
-        CLR             : in  std_logic;
-    -------------------------------------------------------------------------------
-    -- MessagePack Object Code Input Interface
-    -------------------------------------------------------------------------------
-        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
-        I_LAST          : in  std_logic;
-        I_VALID         : in  std_logic;
-        I_ERROR         : out std_logic;
-        I_DONE          : out std_logic;
-        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
-    -------------------------------------------------------------------------------
-    -- Integer Value Output Interface
-    -------------------------------------------------------------------------------
-        O_VALUE         : out std_logic_vector(VALUE_BITS-1 downto 0);
-        O_SIGN          : out std_logic;
-        O_LAST          : out std_logic;
-        O_VALID         : out std_logic;
-        O_READY         : in  std_logic
-    );
-end  MsgPack_Object_Decode_Integer;
------------------------------------------------------------------------------------
--- 
------------------------------------------------------------------------------------
-library ieee;
-use     ieee.std_logic_1164.all;
-use     ieee.numeric_std.all;
-library MsgPack;
-use     MsgPack.MsgPack_Object;
-use     MsgPack.PipeWork_Components.QUEUE_REGISTER;
-architecture RTL of MsgPack_Object_Decode_Integer is
-    signal   ii_sign     :  std_logic;
-    signal   ii_value    :  std_logic_vector(63 downto 0);
-    signal   ii_valid    :  std_logic_vector( 1 downto 0);
-    signal   ii_shift    :  std_logic_vector( 1 downto 0);
-    signal   ii_ready    :  std_logic;
-    signal   done        :  boolean;
-    signal   type_error  :  boolean;
-    signal   range_error :  boolean;
-begin
-    -------------------------------------------------------------------------------
-    --
-    -------------------------------------------------------------------------------
-    SHORT_VEC: if (CODE_WIDTH  < 2) generate
-        type      STATE_TYPE    is (IDLE_STATE, INT64_STATE, UINT64_STATE);
-        signal    curr_state    :  STATE_TYPE;
-        signal    next_state    :  STATE_TYPE;
-        signal    upper_value   :  std_logic_vector(31 downto 0);
-    begin
-        ---------------------------------------------------------------------------
-        --
-        ---------------------------------------------------------------------------
-        process (I_VALID, I_CODE, curr_state, ii_ready) begin
-            if (I_VALID = '1' and I_CODE(0).valid = '1' and ii_ready = '1') then
-                if     (ENABLE64   = TRUE) and
-                       (curr_state = INT64_STATE) then
-                    if (I_CODE(0).complete = '1') and
-                       (I_CODE(0).class    = MsgPack_Object.CLASS_INT ) then
-                        type_error <= FALSE;
-                        done       <= TRUE;
-                        ii_valid   <= "11";
-                        ii_shift   <= "01";
-                        next_state <= IDLE_STATE;
-                    else
-                        type_error <= TRUE;
-                        done       <= TRUE;
-                        ii_valid   <= "00";
-                        ii_shift   <= "00";
-                        next_state <= IDLE_STATE;
-                    end if;
-                elsif  (ENABLE64   = TRUE) and
-                       (curr_state = UINT64_STATE) then
-                    if (I_CODE(0).complete = '1') and
-                       (I_CODE(0).class    = MsgPack_Object.CLASS_UINT) then
-                        type_error <= FALSE;
-                        done       <= TRUE;
-                        ii_valid   <= "11";
-                        ii_shift   <= "01";
-                        next_state <= IDLE_STATE;
-                    else
-                        type_error <= TRUE;
-                        done       <= TRUE;
-                        ii_valid   <= "00";
-                        ii_shift   <= "00";
-                        next_state <= IDLE_STATE;
-                    end if;
-                elsif (I_CODE(0).complete = '0') then
-                    if    (ENABLE64 = TRUE) and
-                          (I_CODE(0).class = MsgPack_Object.CLASS_INT) then
-                        type_error <= FALSE;
-                        done       <= FALSE;
-                        ii_valid   <= "00";
-                        ii_shift   <= "01";
-                        next_state <= INT64_STATE;
-                    elsif (ENABLE64 = TRUE) and
-                          (I_CODE(0).class = MsgPack_Object.CLASS_UINT) then
-                        type_error <= FALSE;
-                        done       <= FALSE;
-                        ii_valid   <= "00";
-                        ii_shift   <= "01";
-                        next_state <= UINT64_STATE;
-                    else
-                        type_error <= TRUE;
-                        done       <= TRUE;
-                        ii_valid   <= "00";
-                        ii_shift   <= "00";
-                        next_state <= IDLE_STATE;
-                    end if;
-                else
-                    if    (I_CODE(0).class = MsgPack_Object.CLASS_INT ) or
-                          (I_CODE(0).class = MsgPack_Object.CLASS_UINT) then
-                        type_error <= FALSE;
-                        done       <= TRUE;
-                        ii_valid   <= "01";
-                        ii_shift   <= "01";
-                        next_state <= IDLE_STATE;
-                    else
-                        type_error <= TRUE;
-                        done       <= TRUE;
-                        ii_valid   <= "00";
-                        ii_shift   <= "00";
-                        next_state <= IDLE_STATE;
-                    end if;
-                end if;
-            else
-                        type_error <= FALSE;
-                        done       <= FALSE;
-                        ii_valid   <= "00";
-                        ii_shift   <= "00";
-                        next_state <= curr_state;
-            end if;
-        end process;
-        ---------------------------------------------------------------------------
-        --
-        ---------------------------------------------------------------------------
-        process (curr_state, I_CODE, upper_value) begin
-            if   (ENABLE64 = TRUE) and
-                 ((curr_state = INT64_STATE ) or
-                  (curr_state = UINT64_STATE)) then
-                ii_value(31 downto  0) <= I_CODE(0).data;
-                ii_value(63 downto 32) <= upper_value;
-            elsif (I_CODE(0).class = MsgPack_Object.CLASS_INT) and
-                  (I_CODE(0).data(31) = '1') then
-                ii_value(31 downto  0) <= I_CODE(0).data;
-                ii_value(63 downto 32) <= (63 downto 32 => '1');
-            else
-                ii_value(31 downto  0) <= I_CODE(0).data;
-                ii_value(63 downto 32) <= (63 downto 32 => '0');
-            end if;
-        end process;
-        ---------------------------------------------------------------------------
-        --
-        ---------------------------------------------------------------------------
-        process (CLK, RST) begin
-            if (RST = '1') then
-                    curr_state  <= IDLE_STATE;
-                    upper_value <= (others => '0');
-            elsif (CLK'event and CLK = '1') then
-                if (CLR = '1') then
-                    curr_state  <= IDLE_STATE;
-                    upper_value <= (others => '0');
-                else
-                    curr_state  <= next_state;
-                    if (next_state /= IDLE_STATE) then
-                        upper_value <= I_CODE(0).data;
-                    end if;
-                end if;
-            end if;
-        end process;
-        ii_sign <= '1' when (curr_state = IDLE_STATE and I_CODE(0).class = MsgPack_Object.CLASS_INT) or
-                            (curr_state = INT64_STATE) else '0';
-    end generate;
-    -------------------------------------------------------------------------------
-    --
-    -------------------------------------------------------------------------------
-    LONG_VEC:  if (CODE_WIDTH >= 2) generate
-    begin
-        ---------------------------------------------------------------------------
-        --
-        ---------------------------------------------------------------------------
-        process (I_VALID, I_CODE) begin
-            if (I_VALID = '1' and I_CODE(0).valid = '1') then
-                if (I_CODE(0).class = MsgPack_Object.CLASS_INT ) or
-                   (I_CODE(0).class = MsgPack_Object.CLASS_UINT) then
-                    if (I_CODE(0).complete = '0') then
-                        if    (ENABLE64 = FALSE) then
-                            type_error <= TRUE;
-                            done       <= TRUE;
-                            ii_valid   <= "00";
-                            ii_shift   <= "00";
-                        elsif (I_CODE(1).valid = '0') then
-                            type_error <= FALSE;
-                            done       <= FALSE;
-                            ii_valid   <= "00";
-                            ii_shift   <= "00";
-                        elsif (I_CODE(1).valid    = '1') and
-                              (I_CODE(1).class    = I_CODE(0).class) and
-                              (I_CODE(1).complete = '1') then
-                            type_error <= FALSE;
-                            done       <= TRUE;
-                            ii_valid   <= "11";
-                            ii_shift   <= "11";
-                        else
-                            type_error <= TRUE;
-                            done       <= TRUE;
-                            ii_valid   <= "00";
-                            ii_shift   <= "00";
-                        end if;
-                    else
-                            type_error <= FALSE;
-                            done       <= TRUE;
-                            ii_valid   <= "01";
-                            ii_shift   <= "01";
-                    end if;
-                else
-                            type_error <= TRUE;
-                            done       <= TRUE;
-                            ii_valid   <= "00";
-                            ii_shift   <= "00";
-                end if;
-            else
-                            type_error <= FALSE;
-                            done       <= FALSE;
-                            ii_valid   <= "00";
-                            ii_shift   <= "00";
-            end if;
-        end process;
-        ---------------------------------------------------------------------------
-        --
-        ---------------------------------------------------------------------------
-        process (ii_valid, I_CODE) begin
-            if    (ii_valid(1) = '1' and ENABLE64 = TRUE) then
-                ii_value(31 downto  0) <= I_CODE(0).data;
-                ii_value(63 downto 32) <= I_CODE(1).data;
-            elsif (I_CODE(0).class = MsgPack_Object.CLASS_INT) and
-                  (I_CODE(0).data(31) = '1') then
-                ii_value(31 downto  0) <= I_CODE(0).data;
-                ii_value(63 downto 32) <= (63 downto 32 => '1');
-            else
-                ii_value(31 downto  0) <= I_CODE(0).data;
-                ii_value(63 downto 32) <= (63 downto 32 => '0');
-            end if;
-        end process;
-        ii_sign <= '1' when (I_CODE(0).class = MsgPack_Object.CLASS_INT) else '0';
-    end generate;
-    -------------------------------------------------------------------------------
-    -- range_error
-    -------------------------------------------------------------------------------
-    process (ii_value, ii_valid) begin
-        range_error <= FALSE;
-        if (CHECK_RANGE = TRUE and VALUE_BITS < 64 and ii_valid(0) = '1') then
-            if (VALUE_SIGN) then
-                for i in 63 downto VALUE_BITS loop
-                    if (ii_value(i) /= ii_value(VALUE_BITS-1)) then
-                        range_error <= TRUE;
-                    end if;
-                end loop;
-            else
-                for i in 63 downto VALUE_BITS loop
-                    if (ii_value(i) /= '0') then
-                        range_error <= TRUE;
-                    end if;
-                end loop;
-            end if;
-        end if;
-    end process;
-    -------------------------------------------------------------------------------
-    -- I_ERROR/I_DONE
-    -------------------------------------------------------------------------------
-    I_DONE  <= '1' when (done        = TRUE ) else '0';
-    I_ERROR <= '1' when (type_error  = TRUE ) or
-                        (range_error = TRUE ) else '0';
-    -------------------------------------------------------------------------------
-    -- I_SHIFT
-    -------------------------------------------------------------------------------
-    process (type_error, range_error, ii_shift) begin
-        if (type_error = TRUE or range_error = TRUE) then
-            I_SHIFT <= (others => '0');
-        else
-            for i in I_SHIFT'range loop
-                if (i <= ii_shift'high) then
-                    I_SHIFT(i) <= ii_shift(i);
-                else
-                    I_SHIFT(i) <= '0';
-                end if;
-            end loop;
-        end if;
-    end process;
-    -------------------------------------------------------------------------------
-    --
-    -------------------------------------------------------------------------------
-    OUTLET: block
-        constant  SIGN_POS  :  integer := VALUE_BITS + 0;
-        constant  LAST_POS  :  integer := VALUE_BITS + 1;
-        constant  DATA_BITS :  integer := VALUE_BITS + 2;
-        signal    ii_data   :  std_logic_vector(DATA_BITS-1 downto 0);
-        signal    oo_data   :  std_logic_vector(DATA_BITS-1 downto 0);
-        signal    qq_valid  :  std_logic;
-    begin
-        ---------------------------------------------------------------------------
-        --
-        ---------------------------------------------------------------------------
-        ii_data(VALUE_BITS-1 downto 0) <= ii_value(VALUE_BITS-1 downto 0);
-        ii_data(SIGN_POS             ) <= ii_sign;
-        ii_data(LAST_POS             ) <= I_LAST;
-        qq_valid <= '1' when (type_error  = FALSE) and
-                             (range_error = FALSE) and
-                             (ii_valid(0) = '1'  ) else '0';
-        ---------------------------------------------------------------------------
-        --
-        ---------------------------------------------------------------------------
-        QUEUE: QUEUE_REGISTER                -- 
-            generic map (                    -- 
-                QUEUE_SIZE  => QUEUE_SIZE  , -- 
-                DATA_BITS   => DATA_BITS   , -- 
-                LOWPOWER    => 0             -- 
-            )                                -- 
-            port map (                       -- 
-                CLK         => CLK         , -- In  :
-                RST         => RST         , -- In  :
-                CLR         => CLR         , -- In  :
-                I_DATA      => ii_data     , -- In  :
-                I_VAL       => qq_valid    , -- In  :
-                I_RDY       => ii_ready    , -- Out :
-                O_DATA      => open        , -- Out :
-                O_VAL       => open        , -- Out :
-                Q_DATA      => oo_data     , -- Out :
-                Q_VAL(0)    => O_VALID     , -- Out :
-                Q_RDY       => O_READY       -- In  :
-            );                               --
-        ---------------------------------------------------------------------------
-        --
-        ---------------------------------------------------------------------------
-        O_VALUE <= oo_data(VALUE_BITS-1 downto 0);
-        O_SIGN  <= oo_data(SIGN_POS);
-        O_LAST  <= oo_data(LAST_POS);
-    end block;
-end RTL;
------------------------------------------------------------------------------------
 --!     @file    msgpack_object_decode_map.vhd
 --!     @brief   MessagePack Object decode to map
---!     @version 0.1.0
---!     @date    2015/10/19
+--!     @version 0.2.0
+--!     @date    2016/6/23
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
---      Copyright (C) 2015 Ichiro Kawazome
+--      Copyright (C) 2015-2016 Ichiro Kawazome
 --      All rights reserved.
 --
 --      Redistribution and use in source and binary forms, with or without
@@ -7715,6 +9789,12 @@ entity  MsgPack_Object_Decode_Map is
         CLK             : in  std_logic; 
         RST             : in  std_logic;
         CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Control/Status Signals
+    -------------------------------------------------------------------------------
+        ENABLE          : in  std_logic := '1';
+        BUSY            : out std_logic;
+        READY           : out std_logic;
     -------------------------------------------------------------------------------
     -- MessagePack Object Code Input Interface
     -------------------------------------------------------------------------------
@@ -7786,7 +9866,7 @@ begin
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
-    process (curr_state, I_VALID, I_CODE, I_LAST,
+    process (curr_state, I_VALID, I_CODE, I_LAST, ENABLE, 
              KEY_ERROR  , KEY_DONE  , KEY_SHIFT ,
              VALUE_ERROR, VALUE_DONE, VALUE_SHIFT, map_count_zero)
         variable  ii_valid      :  std_logic_vector(CODE_WIDTH-1 downto 0);
@@ -7801,7 +9881,7 @@ begin
         end loop;
         case curr_state is
             when IDLE_STATE =>
-                if (I_VALID = '1' and I_CODE(0).valid = '1') then
+                if (I_VALID = '1' and I_CODE(0).valid = '1' and ENABLE = '1') then
                     if    (I_CODE(0).class /= MsgPack_Object.CLASS_MAP) then
                         I_ERROR     <= '1';
                         I_DONE      <= '1';
@@ -7950,11 +10030,22 @@ begin
     process (CLK, RST) begin
         if (RST = '1') then
                 curr_state <= IDLE_STATE;
+                BUSY       <= '0';
+                READY      <= '0';
         elsif (CLK'event and CLK = '1') then
             if (CLR = '1') then
                 curr_state <= IDLE_STATE;
+                BUSY       <= '0';
+                READY      <= '0';
             else
                 curr_state <= next_state;
+                if (next_state = IDLE_STATE) then
+                    READY <= '1';
+                    BUSY  <= '0';
+                else
+                    READY <= '0';
+                    BUSY  <= '1';
+                end if;
             end if;
         end if;
     end process;
@@ -8023,14 +10114,204 @@ begin
     end process;
 end RTL;
 -----------------------------------------------------------------------------------
---!     @file    msgpack_object_encode_map.vhd
---!     @brief   MessagePack Object encode to map
---!     @version 0.1.0
---!     @date    2015/10/19
+--!     @file    msgpack_object_encode_integer.vhd
+--!     @brief   MessagePack Object encode integer :
+--!     @version 0.2.0
+--!     @date    2016/6/23
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
---      Copyright (C) 2015 Ichiro Kawazome
+--      Copyright (C) 2012-2016 Ichiro Kawazome
+--      All rights reserved.
+--
+--      Redistribution and use in source and binary forms, with or without
+--      modification, are permitted provided that the following conditions
+--      are met:
+--
+--        1. Redistributions of source code must retain the above copyright
+--           notice, this list of conditions and the following disclaimer.
+--
+--        2. Redistributions in binary form must reproduce the above copyright
+--           notice, this list of conditions and the following disclaimer in
+--           the documentation and/or other materials provided with the
+--           distribution.
+--
+--      THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+--      "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+--      LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+--      A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+--      OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+--      SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+--      LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+--      DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+--      THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
+--      (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+--      OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+--
+-----------------------------------------------------------------------------------
+library ieee;
+use     ieee.std_logic_1164.all;
+library MsgPack;
+use     MsgPack.MsgPack_Object;
+entity  MsgPack_Object_Encode_Integer is
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        VALUE_BITS      :  integer range 1 to 64;
+        VALUE_SIGN      :  boolean  := FALSE;
+        QUEUE_SIZE      :  integer  := 0
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Control and Status Signals 
+    -------------------------------------------------------------------------------
+        START           : in  std_logic := '1';
+        BUSY            : out std_logic;
+        READY           : out std_logic;
+    -------------------------------------------------------------------------------
+    -- Object Code Output Interface
+    -------------------------------------------------------------------------------
+        O_CODE          : out MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        O_LAST          : out std_logic;
+        O_ERROR         : out std_logic;
+        O_VALID         : out std_logic;
+        O_READY         : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Integer Value Input
+    -------------------------------------------------------------------------------
+        I_VALUE         : in  std_logic_vector(VALUE_BITS-1 downto 0);
+        I_VALID         : in  std_logic;
+        I_READY         : out std_logic
+    );
+end MsgPack_Object_Encode_Integer;
+-----------------------------------------------------------------------------------
+-- 
+-----------------------------------------------------------------------------------
+library ieee;
+use     ieee.std_logic_1164.all;
+use     ieee.numeric_std.all;
+library MsgPack;
+use     MsgPack.MsgPack_Object;
+use     MsgPack.MsgPack_Object_Components.MsgPack_Object_Code_Reducer;
+architecture RTL of MsgPack_Object_Encode_Integer is
+    function  max(A,B:integer) return integer is begin
+        if (A>B) then return A;
+        else          return B;
+        end if;
+    end function;
+    constant  CODE_DATA_BITS    :  integer := MsgPack_Object.CODE_DATA_BITS;
+    constant  I_WIDTH           :  integer := (VALUE_BITS+CODE_DATA_BITS-1)/CODE_DATA_BITS;
+    signal    i_code            :  MsgPack_Object.Code_Vector(I_WIDTH-1 downto 0);
+    constant  o_shift           :  std_logic_vector(CODE_WIDTH-1 downto 0) := (others => '1');
+    constant  I_QUEUE_SIZE      :  integer := max(QUEUE_SIZE, max(CODE_WIDTH, I_WIDTH));
+    signal    queue_busy        :  std_logic;
+    signal    i_enable          :  std_logic;
+    signal    q_ready           :  std_logic;
+    type      STATE_TYPE        is (RESET_STATE, IDLE_STATE, RUN_STATE);
+    signal    curr_state        :  STATE_TYPE;
+begin
+    -------------------------------------------------------------------------------
+    --
+    -------------------------------------------------------------------------------
+    S_INT: if (VALUE_SIGN = TRUE ) generate
+        i_code <= MsgPack_Object.New_Code_Vector_Integer(I_WIDTH,   signed(I_VALUE));
+    end generate;
+    U_INT: if (VALUE_SIGN = FALSE) generate
+        i_code <= MsgPack_Object.New_Code_Vector_Integer(I_WIDTH, unsigned(I_VALUE));
+    end generate;
+    -------------------------------------------------------------------------------
+    --
+    -------------------------------------------------------------------------------
+    QUEUE: MsgPack_Object_Code_Reducer              -- 
+        generic map (                               -- 
+            I_WIDTH         => I_WIDTH            , -- 
+            O_WIDTH         => CODE_WIDTH         , --
+            O_VALID_SIZE    => CODE_WIDTH         , -- 
+            QUEUE_SIZE      => I_QUEUE_SIZE         --
+        )                                           -- 
+        port map (                                  -- 
+        ---------------------------------------------------------------------------
+        -- Clock and Reset Signals
+        ---------------------------------------------------------------------------
+            CLK             => CLK                , -- In  :
+            RST             => RST                , -- In  :
+            CLR             => CLR                , -- In  :
+        ---------------------------------------------------------------------------
+        -- Control and Status Signals
+        ---------------------------------------------------------------------------
+            DONE            => '0'                , -- In  :
+            BUSY            => queue_busy         , -- Out :
+        ---------------------------------------------------------------------------
+        -- Object Code Input Interface
+        ---------------------------------------------------------------------------
+            I_ENABLE        => i_enable           , -- In  :
+            I_CODE          => i_code             , -- In  :
+            I_DONE          => '1'                , -- In  :
+            I_VALID         => I_VALID            , -- In  :
+            I_READY         => q_ready            , -- Out :
+        ---------------------------------------------------------------------------
+        -- Object Code Output Interface
+        ---------------------------------------------------------------------------
+            O_ENABLE        => '1'                , -- In  :
+            O_CODE          => O_CODE             , -- Out :
+            O_DONE          => O_LAST             , -- Out :
+            O_VALID         => O_VALID            , -- Out :
+            O_READY         => O_READY            , -- In  :
+            O_SHIFT         => o_shift              -- In  :
+    );                                              -- 
+    O_ERROR  <= '0';
+    I_READY  <= q_ready;
+    -------------------------------------------------------------------------------
+    --
+    -------------------------------------------------------------------------------
+    i_enable <= '1' when (curr_state = IDLE_STATE and START = '1') or
+                         (curr_state = RUN_STATE                 ) else '0';
+    process (CLK, RST) begin
+        if (RST = '1') then
+                curr_state <= RESET_STATE;
+        elsif (CLK'event and CLK = '1') then
+            if (CLR = '1') then
+                curr_state <= RESET_STATE;
+            else
+                case curr_state is
+                    when IDLE_STATE =>
+                        if (START = '1') then
+                            curr_state <= RUN_STATE;
+                        else
+                            curr_state <= IDLE_STATE;
+                        end if;
+                    when RUN_STATE  =>
+                        if (I_VALID = '1' and q_ready = '1') then
+                            curr_state <= IDLE_STATE;
+                        else
+                            curr_state <= RUN_STATE;
+                        end if;
+                    when others => 
+                            curr_state <= IDLE_STATE;
+                end case;
+            end if;
+        end if;
+    end process;
+    BUSY  <= '1' when (curr_state = RUN_STATE  or  queue_busy = '1') else '0';
+    READY <= '1' when (curr_state = IDLE_STATE and queue_busy = '0') else '0';
+end RTL;
+-----------------------------------------------------------------------------------
+--!     @file    msgpack_object_encode_map.vhd
+--!     @brief   MessagePack Object encode to map
+--!     @version 0.2.0
+--!     @date    2016/6/23
+--!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
+-----------------------------------------------------------------------------------
+--
+--      Copyright (C) 2015-2016 Ichiro Kawazome
 --      All rights reserved.
 --
 --      Redistribution and use in source and binary forms, with or without
@@ -8082,6 +10363,8 @@ entity  MsgPack_Object_Encode_Map is
     -------------------------------------------------------------------------------
         START           : in  std_logic;
         SIZE            : in  std_logic_vector(SIZE_BITS-1 downto 0);
+        BUSY            : out std_logic;
+        READY           : out std_logic;
     -------------------------------------------------------------------------------
     -- Key Object Encode Input Interface
     -------------------------------------------------------------------------------
@@ -8125,49 +10408,63 @@ begin
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
-    process (CLK, RST) begin
+    process (CLK, RST)
+        variable  next_state    :  STATE_TYPE;
+    begin
         if (RST = '1') then
                 curr_state <= IDLE_STATE;
+                BUSY       <= '0';
+                READY      <= '0';
         elsif (CLK'event and CLK = '1') then
             if (CLR = '1') then
                 curr_state <= IDLE_STATE;
+                BUSY       <= '0';
+                READY      <= '0';
             else
                 case curr_state is
                     when IDLE_STATE =>
                         if (START = '1') then
-                                curr_state <= MAP_STATE;
+                                next_state := MAP_STATE;
                         else
-                                curr_state <= IDLE_STATE;
+                                next_state := IDLE_STATE;
                         end if;
                     when MAP_STATE =>
                         if (O_MAP_READY = '1') then
                             if (map_count_zero) then
-                                curr_state <= IDLE_STATE;
+                                next_state := IDLE_STATE;
                             else
-                                curr_state <= KEY_STATE;
+                                next_state := KEY_STATE;
                             end if;
                         else
-                                curr_state <= MAP_STATE;
+                                next_state := MAP_STATE;
                         end if;
                     when KEY_STATE =>
                         if (I_KEY_VALID = '1' and I_KEY_LAST = '1' and O_MAP_READY = '1') then
-                                curr_state <= VAL_STATE;
+                                next_state := VAL_STATE;
                         else
-                                curr_state <= KEY_STATE;
+                                next_state := KEY_STATE;
                         end if;
                     when VAL_STATE =>
                         if (I_VAL_VALID = '1' and I_VAL_LAST = '1' and O_MAP_READY = '1') then
                             if (map_count_zero) then
-                                curr_state <= IDLE_STATE;
+                                next_state := IDLE_STATE;
                             else
-                                curr_state <= KEY_STATE;
+                                next_state := KEY_STATE;
                             end if;
                         else
-                                curr_state <= VAL_STATE;
+                                next_state := VAL_STATE;
                         end if;
                     when others =>
-                                curr_state <= IDLE_STATE;
+                                next_state := IDLE_STATE;
                 end case;
+                curr_state <= next_state;
+                if (next_state = IDLE_STATE) then
+                    READY <= '1';
+                    BUSY  <= '0';
+                else
+                    READY <= '0';
+                    BUSY  <= '1';
+                end if;
             end if;
         end if;
     end process;
@@ -8220,8 +10517,8 @@ end RTL;
 -----------------------------------------------------------------------------------
 --!     @file    msgpack_object_encode_string_constant.vhd
 --!     @brief   MessagePack Object encode string constant :
---!     @version 0.1.0
---!     @date    2015/10/19
+--!     @version 0.2.0
+--!     @date    2015/11/9
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
@@ -8381,8 +10678,8 @@ end RTL;
 -----------------------------------------------------------------------------------
 --!     @file    msgpack_object_match_aggregator.vhd
 --!     @brief   MessagePack Object Match Aggregator Module :
---!     @version 0.1.0
---!     @date    2015/10/11
+--!     @version 0.2.0
+--!     @date    2015/11/9
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
@@ -8563,8 +10860,8 @@ end RTL;
 -----------------------------------------------------------------------------------
 --!     @file    msgpack_object_packer.vhd
 --!     @brief   MessagePack Object Code Pack to Byte Stream Module :
---!     @version 0.1.0
---!     @date    2015/10/19
+--!     @version 0.2.0
+--!     @date    2015/11/9
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
@@ -9377,9 +11674,163 @@ begin
     );                                              --
 end RTL;
 -----------------------------------------------------------------------------------
+--!     @file    msgpack_object_query_stream_parameter.vhd
+--!     @brief   MessagePack Object Query Stream Parameter Module :
+--!     @version 0.2.0
+--!     @date    2016/6/23
+--!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
+-----------------------------------------------------------------------------------
+--
+--      Copyright (C) 2015-2016 Ichiro Kawazome
+--      All rights reserved.
+--
+--      Redistribution and use in source and binary forms, with or without
+--      modification, are permitted provided that the following conditions
+--      are met:
+--
+--        1. Redistributions of source code must retain the above copyright
+--           notice, this list of conditions and the following disclaimer.
+--
+--        2. Redistributions in binary form must reproduce the above copyright
+--           notice, this list of conditions and the following disclaimer in
+--           the documentation and/or other materials provided with the
+--           distribution.
+--
+--      THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+--      "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+--      LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+--      A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+--      OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+--      SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+--      LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+--      DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+--      THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
+--      (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+--      OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+--
+-----------------------------------------------------------------------------------
+library ieee;
+use     ieee.std_logic_1164.all;
+library MsgPack;
+use     MsgPack.MsgPack_Object;
+entity  MsgPack_Object_Query_Stream_Parameter is
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        SIZE_BITS       :  integer range 1 to 32 := 32
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Default(when parameter == nil) Query Size 
+    -------------------------------------------------------------------------------
+        DEFAULT_SIZE    : in  std_logic_vector(SIZE_BITS -1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- 
+    -------------------------------------------------------------------------------
+        ENABLE          : in  std_logic;
+        START           : out std_logic;
+        SIZE            : out std_logic_vector(SIZE_BITS -1 downto 0)
+    );
+end MsgPack_Object_Query_Stream_Parameter;
+-----------------------------------------------------------------------------------
+-- 
+-----------------------------------------------------------------------------------
+library ieee;
+use     ieee.std_logic_1164.all;
+use     ieee.numeric_std.all;
+library MsgPack;
+use     MsgPack.MsgPack_Object;
+use     MsgPack.MsgPack_Object_Components.MsgPack_Object_Decode_Integer;
+architecture RTL of MsgPack_Object_Query_Stream_Parameter is
+    signal    integer_i_error   :  std_logic;
+    signal    integer_i_done    :  std_logic;
+    signal    integer_i_shift   :  std_logic_vector(CODE_WIDTH-1 downto 0);
+    signal    integer_valid     :  std_logic;
+    signal    integer_value     :  std_logic_vector( SIZE_BITS-1 downto 0);
+begin
+    -------------------------------------------------------------------------------
+    --
+    -------------------------------------------------------------------------------
+    DECODE_INTEGER: MsgPack_Object_Decode_Integer    -- 
+        generic map (                                -- 
+            CODE_WIDTH      => CODE_WIDTH          , --
+            VALUE_BITS      => SIZE_BITS           , --
+            VALUE_SIGN      => FALSE               , --
+            QUEUE_SIZE      => 0                   , -- Must 0     !
+            CHECK_RANGE     => TRUE                , -- Must TRUE  !
+            ENABLE64        => FALSE                 -- Must FALSE !
+        )                                            -- 
+        port map (                                   -- 
+            CLK             => CLK                 , -- In  :
+            RST             => RST                 , -- In  :
+            CLR             => CLR                 , -- In  :
+            I_CODE          => I_CODE              , -- In  :
+            I_LAST          => I_LAST              , -- In  :
+            I_VALID         => I_VALID             , -- In  :
+            I_ERROR         => integer_i_error     , -- Out :
+            I_DONE          => integer_i_done      , -- Out :
+            I_SHIFT         => integer_i_shift     , -- Out :
+            O_VALUE         => integer_value       , -- Out :
+            O_SIGN          => open                , -- Out :
+            O_LAST          => open                , -- Out :
+            O_VALID         => integer_valid       , -- Out :
+            O_READY         => '1'                   -- In  :
+        );
+    -------------------------------------------------------------------------------
+    --
+    -------------------------------------------------------------------------------
+    process (I_VALID, I_CODE, ENABLE, DEFAULT_SIZE,
+             integer_i_error, integer_i_done, integer_i_shift, integer_value, integer_valid) begin
+        if (I_VALID = '1' and I_CODE(0).valid = '1' and ENABLE = '1') then
+            if    (I_CODE(0).class = MsgPack_Object.CLASS_NIL) then
+                SIZE      <= DEFAULT_SIZE;
+                START     <= '1';
+                I_ERROR   <= '0';
+                I_DONE    <= '1';
+                I_SHIFT   <= (0 => '1', others => '0');
+            elsif (integer_i_done = '1' and integer_i_error = '0') then
+                SIZE      <= integer_value;
+                START     <= integer_valid;
+                I_ERROR   <= '0';
+                I_DONE    <= '1';
+                I_SHIFT   <= integer_i_shift;
+            else
+                SIZE      <= integer_value;
+                START     <= '0';
+                I_ERROR   <= '1';
+                I_DONE    <= '1';
+                I_SHIFT   <= (others => '0');
+            end if;
+        else
+                SIZE      <= DEFAULT_SIZE;
+                START     <= '0';
+                I_ERROR   <= '0';
+                I_DONE    <= '0';
+                I_SHIFT   <= (others => '0');
+        end if;
+    end process;
+end RTL;
+-----------------------------------------------------------------------------------
 --!     @file    msgpack_object_unpacker.vhd
 --!     @brief   MessagePack Object Code Unpack from Byte Stream Module :
---!     @version 0.1.1
+--!     @version 0.2.0
 --!     @date    2016/2/4
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
@@ -10902,7 +13353,7 @@ end ONE_HOT_ARCH;
 -----------------------------------------------------------------------------------
 --!     @file    msgpack_rpc.vhd
 --!     @brief   MessagePack-RPC(Remote Procedure Call) Package :
---!     @version 0.1.2
+--!     @version 0.2.0
 --!     @date    2016/3/16
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
@@ -11099,14 +13550,14 @@ package body MsgPack_RPC is
     
 end MsgPack_RPC;
 -----------------------------------------------------------------------------------
---!     @file    msgpack_kvmap_decode_get_stream_parameter.vhd
---!     @brief   MessagePack-KVMap(Key Value Map) decode get stream parameter Module :
---!     @version 0.1.0
---!     @date    2015/10/25
+--!     @file    msgpack_kvmap_key_compare.vhd
+--!     @brief   MessagePack-KVMap(Key Value Map) Key Compare :
+--!     @version 0.2.0
+--!     @date    2016/6/24
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
---      Copyright (C) 2015 Ichiro Kawazome
+--      Copyright (C) 2012-2016 Ichiro Kawazome
 --      All rights reserved.
 --
 --      Redistribution and use in source and binary forms, with or without
@@ -11138,14 +13589,14 @@ library ieee;
 use     ieee.std_logic_1164.all;
 library MsgPack;
 use     MsgPack.MsgPack_Object;
-entity  MsgPack_KVMap_Decode_Get_Stream_Parameter is
+entity  MsgPack_KVMap_Key_Compare is
     -------------------------------------------------------------------------------
     -- Generic Parameters
     -------------------------------------------------------------------------------
     generic (
-        CODE_WIDTH      :  positive := 1;
-        SIZE_BITS       :  positive := 32;  
-        SIZE_MAX        :  positive := 1
+        CODE_WIDTH      : positive := 1;
+        I_MAX_PHASE     : positive := 1;
+        KEYWORD         : string
     );
     port (
     -------------------------------------------------------------------------------
@@ -11155,108 +13606,59 @@ entity  MsgPack_KVMap_Decode_Get_Stream_Parameter is
         RST             : in  std_logic;
         CLR             : in  std_logic;
     -------------------------------------------------------------------------------
-    -- Object Code Input Interface
+    -- Input Object Code Interface
     -------------------------------------------------------------------------------
         I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
-        I_LAST          : in  std_logic;
-        I_VALID         : in  std_logic;
-        I_ERROR         : out std_logic;
-        I_DONE          : out std_logic;
-        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
+        I_REQ_PHASE     : in  std_logic_vector(I_MAX_PHASE-1 downto 0);
     -------------------------------------------------------------------------------
-    -- 
+    -- Compare Result Output
     -------------------------------------------------------------------------------
-        START           : out std_logic;
-        SIZE            : out std_logic_vector(SIZE_BITS -1 downto 0);
-        BUSY            : in  std_logic
+        MATCH           : out std_logic;
+        MISMATCH        : out std_logic;
+        SHIFT           : out std_logic_vector(CODE_WIDTH-1 downto 0)
     );
-end MsgPack_KVMap_Decode_Get_Stream_Parameter;
+end MsgPack_KVMap_Key_Compare;
 -----------------------------------------------------------------------------------
 -- 
 -----------------------------------------------------------------------------------
 library ieee;
 use     ieee.std_logic_1164.all;
-use     ieee.numeric_std.all;
 library MsgPack;
 use     MsgPack.MsgPack_Object;
-use     MsgPack.MsgPack_Object_Components.MsgPack_Object_Decode_Integer;
-architecture RTL of MsgPack_KVMap_Decode_Get_Stream_Parameter is
-    signal    integer_i_error   :  std_logic;
-    signal    integer_i_done    :  std_logic;
-    signal    integer_i_shift   :  std_logic_vector(CODE_WIDTH-1 downto 0);
-    signal    integer_valid     :  std_logic;
-    signal    integer_value     :  std_logic_vector( SIZE_BITS-1 downto 0);
+use     MsgPack.MsgPack_Object_Components.MsgPack_Object_Code_Compare;
+architecture RTL of MsgPack_KVMap_Key_Compare is
+    constant  CODE_DATA_BYTES    :  integer := MsgPack_Object.CODE_DATA_BYTES;
+    constant  STR_CODE_WIDTH     :  integer := (KEYWORD'length+CODE_DATA_BYTES-1)/CODE_DATA_BYTES + 1;
+    constant  STR_CODE           :  MsgPack_Object.Code_Vector(STR_CODE_WIDTH-1 downto 0)
+                                 := MsgPack_Object.New_Code_Vector_String(STR_CODE_WIDTH, KEYWORD);
 begin
-    -------------------------------------------------------------------------------
-    --
-    -------------------------------------------------------------------------------
-    DECODE_INTEGER: MsgPack_Object_Decode_Integer    -- 
-        generic map (                                -- 
-            CODE_WIDTH      => CODE_WIDTH          , --
-            VALUE_BITS      => SIZE_BITS           , --
-            VALUE_SIGN      => FALSE               , --
-            QUEUE_SIZE      => 0                   , -- Must 0 !
-            CHECK_RANGE     => FALSE               , --
-            ENABLE64        => FALSE                 --
-        )                                            -- 
-        port map (                                   -- 
-            CLK             => CLK                 , -- In  :
-            RST             => RST                 , -- In  :
-            CLR             => CLR                 , -- In  :
-            I_CODE          => I_CODE              , -- In  :
-            I_LAST          => I_LAST              , -- In  :
-            I_VALID         => I_VALID             , -- In  :
-            I_ERROR         => integer_i_error     , -- Out :
-            I_DONE          => integer_i_done      , -- Out :
-            I_SHIFT         => integer_i_shift     , -- Out :
-            O_VALUE         => integer_value       , -- Out :
-            O_SIGN          => open                , -- Out :
-            O_LAST          => open                , -- Out :
-            O_VALID         => integer_valid       , -- Out :
-            O_READY         => '1'                   -- In  :
+    COMP: MsgPack_Object_Code_Compare            -- 
+        generic map (                            -- 
+            C_WIDTH         => STR_CODE_WIDTH  , -- 
+            I_WIDTH         => CODE_WIDTH      , -- 
+            I_MAX_PHASE     => I_MAX_PHASE       -- 
+        )                                        -- 
+        port map (                               -- 
+            CLK             => CLK             , -- In  :
+            RST             => RST             , -- In  :
+            CLR             => CLR             , -- In  :
+            I_CODE          => I_CODE          , -- In  :
+            I_REQ_PHASE     => I_REQ_PHASE     , -- In  :
+            C_CODE          => STR_CODE        , -- In  :
+            MATCH           => MATCH           , -- Out :
+            MISMATCH        => MISMATCH        , -- Out :
+            SHIFT           => SHIFT             -- Out :
         );
-    -------------------------------------------------------------------------------
-    --
-    -------------------------------------------------------------------------------
-    process (I_VALID, I_CODE, BUSY, integer_i_error, integer_i_done, integer_i_shift, integer_value, integer_valid) begin
-        if (I_VALID = '1' and I_CODE(0).valid = '1' and BUSY = '0') then
-            if    (I_CODE(0).class = MsgPack_Object.CLASS_NIL) then
-                SIZE      <= std_logic_vector(to_unsigned(SIZE_MAX, SIZE_BITS));
-                START     <= '1';
-                I_ERROR   <= '0';
-                I_DONE    <= '1';
-                I_SHIFT   <= (0 => '1', others => '0');
-            elsif (integer_i_done = '1' and integer_i_error = '0') then
-                SIZE      <= integer_value;
-                START     <= integer_valid;
-                I_ERROR   <= '0';
-                I_DONE    <= '1';
-                I_SHIFT   <= integer_i_shift;
-            else
-                SIZE      <= std_logic_vector(to_unsigned(SIZE_MAX, SIZE_BITS));
-                START     <= '0';
-                I_ERROR   <= '1';
-                I_DONE    <= '1';
-                I_SHIFT   <= (others => '0');
-            end if;
-        else
-                SIZE      <= std_logic_vector(to_unsigned(SIZE_MAX, SIZE_BITS));
-                START     <= '0';
-                I_ERROR   <= '0';
-                I_DONE    <= '0';
-                I_SHIFT   <= (others => '0');
-        end if;
-    end process;
 end RTL;
 -----------------------------------------------------------------------------------
---!     @file    msgpack_kvmap_get_map_value.vhd
---!     @brief   MessagePack-KVMap(Key Value Map) Get Map Value Module :
---!     @version 0.1.0
---!     @date    2015/10/25
+--!     @file    msgpack_kvmap_query.vhd
+--!     @brief   MessagePack-KVMap(Key Value Map) Query Module :
+--!     @version 0.2.0
+--!     @date    2016/6/23
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
---      Copyright (C) 2015 Ichiro Kawazome
+--      Copyright (C) 2015-2016 Ichiro Kawazome
 --      All rights reserved.
 --
 --      Redistribution and use in source and binary forms, with or without
@@ -11288,7 +13690,7 @@ library ieee;
 use     ieee.std_logic_1164.all;
 library MsgPack;
 use     MsgPack.MsgPack_Object;
-entity  MsgPack_KVMap_Get_Map_Value is
+entity  MsgPack_KVMap_Query is
     -------------------------------------------------------------------------------
     -- Generic Parameters
     -------------------------------------------------------------------------------
@@ -11348,7 +13750,7 @@ entity  MsgPack_KVMap_Get_Map_Value is
         VALUE_ERROR     : in  std_logic_vector(          STORE_SIZE           -1 downto 0);
         VALUE_READY     : out std_logic_vector(          STORE_SIZE           -1 downto 0)
     );
-end MsgPack_KVMap_Get_Map_Value;
+end MsgPack_KVMap_Query;
 -----------------------------------------------------------------------------------
 -- 
 -----------------------------------------------------------------------------------
@@ -11359,12 +13761,13 @@ library MsgPack;
 use     MsgPack.MsgPack_Object;
 use     MsgPack.MsgPack_Object_Components.MsgPack_Object_Decode_Map;
 use     MsgPack.MsgPack_Object_Components.MsgPack_Object_Encode_Map;
-use     MsgPack.MsgPack_KVMap_Components.MsgPack_KVMap_Get_Value;
-architecture RTL of MsgPack_KVMap_Get_Map_Value is
+use     MsgPack.MsgPack_KVMap_Components.MsgPack_KVMap_Query_Map_Value;
+architecture RTL of MsgPack_KVMap_Query is
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
     constant  SIZE_BITS         :  integer := 32;
+    signal    map_enable        :  std_logic;
     signal    map_start         :  std_logic;
     signal    map_size          :  std_logic_vector(SIZE_BITS-1 downto 0);
     -------------------------------------------------------------------------------
@@ -11419,6 +13822,12 @@ begin
             RST             => RST                 , -- In  :
             CLR             => CLR                 , -- In  :
         ---------------------------------------------------------------------------
+        -- Control/Status Signals
+        ---------------------------------------------------------------------------
+            ENABLE          => map_enable          , -- In  :
+            BUSY            => open                , -- Out :
+            READY           => open                , -- Out :
+        ---------------------------------------------------------------------------
         -- MessagePack Object Code Input Interface
         ---------------------------------------------------------------------------
             I_CODE          => I_CODE              , -- In  :
@@ -11457,7 +13866,7 @@ begin
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
-    GET_VALUE: MsgPack_KVMap_Get_Value               -- 
+    GET_VALUE: MsgPack_KVMap_Query_Map_Value         -- 
         generic map (                                -- 
             CODE_WIDTH      => CODE_WIDTH          , --
             STORE_SIZE      => STORE_SIZE          , --
@@ -11553,6 +13962,8 @@ begin
         ---------------------------------------------------------------------------
             START           => map_start           , -- In  :
             SIZE            => map_size            , -- In  :
+            BUSY            => open                , -- Out :
+            READY           => map_enable          , -- Out :
         ---------------------------------------------------------------------------
         -- Key Object Encode Input Interface
         ---------------------------------------------------------------------------
@@ -11580,14 +13991,14 @@ begin
     );                                               -- 
 end RTL;
 -----------------------------------------------------------------------------------
---!     @file    msgpack_kvmap_key_compare.vhd
---!     @brief   MessagePack-KVMap(Key Value Map) Key Compare :
---!     @version 0.1.0
---!     @date    2015/10/19
+--!     @file    msgpack_kvmap_store.vhd
+--!     @brief   MessagePack-KVMap(Key Value Map) Store Module :
+--!     @version 0.2.0
+--!     @date    2016/6/23
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
---      Copyright (C) 2012-2015 Ichiro Kawazome
+--      Copyright (C) 2015-2016 Ichiro Kawazome
 --      All rights reserved.
 --
 --      Redistribution and use in source and binary forms, with or without
@@ -11619,108 +14030,7 @@ library ieee;
 use     ieee.std_logic_1164.all;
 library MsgPack;
 use     MsgPack.MsgPack_Object;
-entity  MsgPack_KVMap_Key_Compare is
-    -------------------------------------------------------------------------------
-    -- Generic Parameters
-    -------------------------------------------------------------------------------
-    generic (
-        CODE_WIDTH      : positive := 1;
-        I_MAX_PHASE     : positive := 1;
-        KEYWORD         : string
-    );
-    port (
-    -------------------------------------------------------------------------------
-    -- Clock and Reset Signals
-    -------------------------------------------------------------------------------
-        CLK             : in  std_logic; 
-        RST             : in  std_logic;
-        CLR             : in  std_logic;
-    -------------------------------------------------------------------------------
-    -- Input Object Code Interface
-    -------------------------------------------------------------------------------
-        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
-        I_REQ_PHASE     : in  std_logic_vector(I_MAX_PHASE-1 downto 0);
-    -------------------------------------------------------------------------------
-    -- Compare Result Output
-    -------------------------------------------------------------------------------
-        MATCH           : out std_logic;
-        MISMATCH        : out std_logic;
-        SHIFT           : out std_logic_vector(CODE_WIDTH-1 downto 0)
-    );
-end MsgPack_KVMap_Key_Compare;
------------------------------------------------------------------------------------
--- 
------------------------------------------------------------------------------------
-library ieee;
-use     ieee.std_logic_1164.all;
-library MsgPack;
-use     MsgPack.MsgPack_Object;
-use     MsgPack.MsgPack_Object_Components.MsgPack_Object_Code_Compare;
-architecture RTL of MsgPack_KVMap_Key_Compare is
-    constant  CODE_DATA_BYTES    :  integer := MsgPack_Object.CODE_DATA_BYTES;
-    constant  STR_CODE_WIDTH     :  integer := (KEYWORD'length+CODE_DATA_BYTES-1)/CODE_DATA_BYTES + 1;
-    constant  STR_CODE           :  MsgPack_Object.Code_Vector(STR_CODE_WIDTH-1 downto 0)
-                                 := MsgPack_Object.New_Code_Vector_String(STR_CODE_WIDTH, KEYWORD);
-begin
-    COMP: MsgPack_Object_Code_Compare            -- 
-        generic map (                            -- 
-            C_WIDTH         => STR_CODE_WIDTH  , -- 
-            I_WIDTH         => CODE_WIDTH      , -- 
-            I_MAX_PHASE     => I_MAX_PHASE       -- 
-        )                                        -- 
-        port map (                               -- 
-            CLK             => CLK             , -- In  :
-            RST             => RST             , -- In  :
-            CLR             => CLR             , -- In  :
-            I_CODE          => I_CODE          , -- In  :
-            I_REQ_PHASE     => I_REQ_PHASE     , -- In  :
-            C_CODE          => STR_CODE        , -- In  :
-            MATCH           => MATCH           , -- Out :
-            MISMATCH        => MISMATCH        , -- Out :
-            SHIFT           => SHIFT             -- Out :
-        );
-end RTL;
------------------------------------------------------------------------------------
---!     @file    msgpack_kvmap_set_map_value.vhd
---!     @brief   MessagePack-KVMap(Key Value Map) Set Map Value Module :
---!     @version 0.1.0
---!     @date    2015/10/25
---!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
------------------------------------------------------------------------------------
---
---      Copyright (C) 2015 Ichiro Kawazome
---      All rights reserved.
---
---      Redistribution and use in source and binary forms, with or without
---      modification, are permitted provided that the following conditions
---      are met:
---
---        1. Redistributions of source code must retain the above copyright
---           notice, this list of conditions and the following disclaimer.
---
---        2. Redistributions in binary form must reproduce the above copyright
---           notice, this list of conditions and the following disclaimer in
---           the documentation and/or other materials provided with the
---           distribution.
---
---      THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
---      "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
---      LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
---      A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
---      OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
---      SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
---      LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
---      DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
---      THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
---      (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
---      OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
---
------------------------------------------------------------------------------------
-library ieee;
-use     ieee.std_logic_1164.all;
-library MsgPack;
-use     MsgPack.MsgPack_Object;
-entity  MsgPack_KVMap_Set_Map_Value is
+entity  MsgPack_KVMap_Store is
     -------------------------------------------------------------------------------
     -- Generic Parameters
     -------------------------------------------------------------------------------
@@ -11764,7 +14074,7 @@ entity  MsgPack_KVMap_Set_Map_Value is
         VALUE_DONE      : in  std_logic_vector(STORE_SIZE           -1 downto 0);
         VALUE_SHIFT     : in  std_logic_vector(STORE_SIZE*CODE_WIDTH-1 downto 0)
     );
-end MsgPack_KVMap_Set_Map_Value;
+end MsgPack_KVMap_Store;
 -----------------------------------------------------------------------------------
 -- 
 -----------------------------------------------------------------------------------
@@ -11774,8 +14084,8 @@ use     ieee.numeric_std.all;
 library MsgPack;
 use     MsgPack.MsgPack_Object;
 use     MsgPack.MsgPack_Object_Components.MsgPack_Object_Decode_Map;
-use     MsgPack.MsgPack_KVMap_Components.MsgPack_KVMap_Set_Value;
-architecture RTL of MsgPack_KVMap_Set_Map_Value is
+use     MsgPack.MsgPack_KVMap_Components.MsgPack_KVMap_Store_Map_Value;
+architecture RTL of MsgPack_KVMap_Store is
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
@@ -11811,6 +14121,12 @@ begin
             CLK             => CLK                 , -- In  :
             RST             => RST                 , -- In  :
             CLR             => CLR                 , -- In  :
+        ---------------------------------------------------------------------------
+        -- Control/Status Signals
+        ---------------------------------------------------------------------------
+            ENABLE          => '1'                 , -- In  :
+            BUSY            => open                , -- Out :
+            READY           => open                , -- Out :
         ---------------------------------------------------------------------------
         -- MessagePack Object Code Input Interface
         ---------------------------------------------------------------------------
@@ -11850,7 +14166,7 @@ begin
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
-    SET_VALUE: MsgPack_KVMap_Set_Value               -- 
+    STORE_VALUE: MsgPack_KVMap_Store_Map_Value       -- 
         generic map (                                -- 
             CODE_WIDTH      => CODE_WIDTH          , --
             STORE_SIZE      => STORE_SIZE          , --
@@ -11914,12 +14230,12 @@ end RTL;
 -----------------------------------------------------------------------------------
 --!     @file    msgpack_object_decode_array.vhd
 --!     @brief   MessagePack Object decode to array
---!     @version 0.1.0
---!     @date    2015/10/19
+--!     @version 0.2.0
+--!     @date    2016/6/23
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
---      Copyright (C) 2015 Ichiro Kawazome
+--      Copyright (C) 2015-2016 Ichiro Kawazome
 --      All rights reserved.
 --
 --      Redistribution and use in source and binary forms, with or without
@@ -11956,7 +14272,8 @@ entity  MsgPack_Object_Decode_Array is
     -- Generic Parameters
     -------------------------------------------------------------------------------
     generic (
-        CODE_WIDTH      :  positive := 1
+        CODE_WIDTH      :  positive := 1;
+        SIZE_BITS       :  integer  := MsgPack_Object.CODE_DATA_BITS
     );
     port (
     -------------------------------------------------------------------------------
@@ -11965,6 +14282,12 @@ entity  MsgPack_Object_Decode_Array is
         CLK             : in  std_logic; 
         RST             : in  std_logic;
         CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- Control/Status Signals
+    -------------------------------------------------------------------------------
+        ENABLE          : in  std_logic := '1';
+        BUSY            : out std_logic;
+        READY           : out std_logic;
     -------------------------------------------------------------------------------
     -- MessagePack Object Code Input Interface
     -------------------------------------------------------------------------------
@@ -11978,8 +14301,14 @@ entity  MsgPack_Object_Decode_Array is
     -- 
     -------------------------------------------------------------------------------
         ARRAY_START     : out std_logic;
-        ARRAY_SIZE      : out std_logic_vector(31 downto 0);
-        ARRAY_LAST      : out std_logic;
+        ARRAY_SIZE      : out std_logic_vector(SIZE_BITS-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- 
+    -------------------------------------------------------------------------------
+        ENTRY_START     : out std_logic;
+        ENTRY_BUSY      : out std_logic;
+        ENTRY_LAST      : out std_logic;
+        ENTRY_SIZE      : out std_logic_vector(SIZE_BITS-1 downto 0);
     -------------------------------------------------------------------------------
     -- 
     -------------------------------------------------------------------------------
@@ -12001,7 +14330,7 @@ use     ieee.numeric_std.all;
 library MsgPack;
 use     MsgPack.MsgPack_Object;
 architecture RTL of MsgPack_Object_Decode_Array is
-    signal    array_count       :  std_logic_vector(31 downto 0);
+    signal    array_count       :  std_logic_vector(SIZE_BITS-1 downto 0);
     signal    array_count_zero  :  boolean;
     type      STATE_TYPE        is (IDLE_STATE, START_STATE, VALUE_STATE);
     signal    curr_state        :  STATE_TYPE;
@@ -12021,11 +14350,27 @@ architecture RTL of MsgPack_Object_Decode_Array is
         end loop;
         return shift;
     end function;
+    -------------------------------------------------------------------------------
+    -- resize
+    -------------------------------------------------------------------------------
+    function  resize(VEC: std_logic_vector; LEN: integer) return std_logic_vector is
+        variable r_vec :  std_logic_vector(       LEN-1 downto 0);
+        alias    i_vec :  std_logic_vector(VEC'length-1 downto 0) is VEC;
+    begin
+        for i in r_vec'range loop
+            if (i <= i_vec'high) then
+                r_vec(i) := i_vec(i);
+            else
+                r_vec(i) := '0';
+            end if;
+        end loop;
+        return r_vec;
+    end function;
 begin 
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
-    process (curr_state, I_VALID, I_CODE, I_LAST, VALUE_ERROR, VALUE_DONE, VALUE_SHIFT, array_count_zero)
+    process (curr_state, I_VALID, I_CODE, I_LAST, ENABLE, VALUE_ERROR, VALUE_DONE, VALUE_SHIFT, array_count_zero)
         variable  ii_valid      :  std_logic_vector(CODE_WIDTH-1 downto 0);
         constant  II_ALL_0      :  std_logic_vector(CODE_WIDTH-1 downto 0) := (others => '0');
         impure function  i_nomore(SHIFT:  std_logic_vector) return boolean is begin
@@ -12038,12 +14383,13 @@ begin
         end loop;
         case curr_state is
             when IDLE_STATE =>
-                if (I_VALID = '1' and I_CODE(0).valid = '1') then
+                if (I_VALID = '1' and I_CODE(0).valid = '1' and ENABLE = '1') then
                     if    (I_CODE(0).class /= MsgPack_Object.CLASS_ARRAY) then
                         I_ERROR     <= '1';
                         I_DONE      <= '1';
                         I_SHIFT     <= to_shift(0);
                         ARRAY_START <= '0';
+                        ENTRY_START <= '0';
                         VALUE_START <= '0';
                         next_state  <= IDLE_STATE;
                     else
@@ -12051,6 +14397,7 @@ begin
                         I_DONE      <= '0';
                         I_SHIFT     <= to_shift(0);
                         ARRAY_START <= '1';
+                        ENTRY_START <= '0';
                         VALUE_START <= '0';
                         next_state  <= START_STATE;
                     end if;
@@ -12059,6 +14406,7 @@ begin
                         I_DONE      <= '0';
                         I_SHIFT     <= to_shift(0);
                         ARRAY_START <= '0';
+                        ENTRY_START <= '0';
                         VALUE_START <= '0';
                         next_state  <= IDLE_STATE;
                 end if;
@@ -12068,6 +14416,7 @@ begin
                         I_DONE      <= '1';
                         I_SHIFT     <= to_shift(1);
                         ARRAY_START <= '0';
+                        ENTRY_START <= '0';
                         VALUE_START <= '0';
                         next_state  <= IDLE_STATE;
                 elsif (i_nomore(to_shift(1))) then
@@ -12075,6 +14424,7 @@ begin
                         I_DONE      <= '1';
                         I_SHIFT     <= to_shift(0);
                         ARRAY_START <= '0';
+                        ENTRY_START <= '0';
                         VALUE_START <= '0';
                         next_state  <= IDLE_STATE;
                 else
@@ -12082,6 +14432,7 @@ begin
                         I_DONE      <= '0';
                         I_SHIFT     <= to_shift(1);
                         ARRAY_START <= '0';
+                        ENTRY_START <= '1';
                         VALUE_START <= '1';
                         next_state  <= VALUE_STATE;
                 end if;
@@ -12093,12 +14444,14 @@ begin
                         I_DONE      <= '1';
                         I_SHIFT     <= VALUE_SHIFT;
                         ARRAY_START <= '0';
+                        ENTRY_START <= '0';
                         VALUE_START <= '0';
                         next_state  <= IDLE_STATE;
                     elsif (array_count_zero = TRUE) then
                         I_ERROR     <= '0';
                         I_DONE      <= '1';
                         ARRAY_START <= '0';
+                        ENTRY_START <= '0';
                         VALUE_START <= '0';
                         I_SHIFT     <= VALUE_SHIFT;
                         next_state  <= IDLE_STATE;
@@ -12106,6 +14459,7 @@ begin
                         I_ERROR     <= '0';
                         I_DONE      <= '0';
                         ARRAY_START <= '0';
+                        ENTRY_START <= '0';
                         VALUE_START <= '1';
                         I_SHIFT     <= VALUE_SHIFT;
                         next_state  <= VALUE_STATE;
@@ -12115,6 +14469,7 @@ begin
                         I_DONE      <= '0';
                         I_SHIFT     <= VALUE_SHIFT;
                         ARRAY_START <= '0';
+                        ENTRY_START <= '0';
                         VALUE_START <= '0';
                         next_state  <= VALUE_STATE;
                 end if;
@@ -12123,6 +14478,7 @@ begin
                         I_DONE      <= '0';
                         I_SHIFT     <= to_shift(0);
                         ARRAY_START <= '0';
+                        ENTRY_START <= '0';
                         VALUE_START <= '0';
                         next_state  <= IDLE_STATE;
         end case;
@@ -12133,11 +14489,22 @@ begin
     process (CLK, RST) begin
         if (RST = '1') then
                 curr_state <= IDLE_STATE;
+                BUSY       <= '0';
+                READY      <= '0';
         elsif (CLK'event and CLK = '1') then
             if (CLR = '1') then
                 curr_state <= IDLE_STATE;
+                BUSY       <= '0';
+                READY      <= '0';
             else
                 curr_state <= next_state;
+                if (next_state = IDLE_STATE) then
+                    READY <= '1';
+                    BUSY  <= '0';
+                else
+                    READY <= '0';
+                    BUSY  <= '1';
+                end if;
             end if;
         end if;
     end process;
@@ -12156,9 +14523,9 @@ begin
                 array_count_zero <= TRUE;
             else
                 if (curr_state = IDLE_STATE) then
-                    next_count := unsigned(I_CODE(0).data);
+                    next_count := unsigned(resize(I_CODE(0).data, SIZE_BITS));
                 else
-                    next_count := unsigned(array_count   );
+                    next_count := unsigned(array_count);
                 end if;
                 if (curr_state = START_STATE) or
                    (curr_state = VALUE_STATE and VALUE_DONE = '1') then
@@ -12172,8 +14539,13 @@ begin
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
-    ARRAY_SIZE  <= I_CODE(0).data;
-    ARRAY_LAST  <= '1' when (array_count_zero) else '0';
+    ARRAY_SIZE  <= resize(I_CODE(0).data, SIZE_BITS);
+    -------------------------------------------------------------------------------
+    --
+    -------------------------------------------------------------------------------
+    ENTRY_BUSY  <= '1' when (curr_state = VALUE_STATE) else '0';
+    ENTRY_LAST  <= '1' when (array_count_zero) else '0';
+    ENTRY_SIZE  <= array_count;
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
@@ -12193,12 +14565,12 @@ end RTL;
 -----------------------------------------------------------------------------------
 --!     @file    msgpack_object_encode_array.vhd
 --!     @brief   MessagePack Object encode to array
---!     @version 0.1.0
---!     @date    2015/10/19
+--!     @version 0.2.0
+--!     @date    2016/6/23
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
---      Copyright (C) 2015 Ichiro Kawazome
+--      Copyright (C) 2015-2016 Ichiro Kawazome
 --      All rights reserved.
 --
 --      Redistribution and use in source and binary forms, with or without
@@ -12250,6 +14622,8 @@ entity  MsgPack_Object_Encode_Array is
     -------------------------------------------------------------------------------
         START           : in  std_logic;
         SIZE            : in  std_logic_vector(SIZE_BITS-1 downto 0);
+        BUSY            : out std_logic;
+        READY           : out std_logic;
     -------------------------------------------------------------------------------
     -- Value Object Encode Input Interface
     -------------------------------------------------------------------------------
@@ -12285,43 +14659,57 @@ begin
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
-    process (CLK, RST) begin
+    process (CLK, RST)
+        variable next_state     :  STATE_TYPE;
+    begin
         if (RST = '1') then
                 curr_state <= IDLE_STATE;
+                BUSY       <= '0';
+                READY      <= '0';
         elsif (CLK'event and CLK = '1') then
             if (CLR = '1') then
                 curr_state <= IDLE_STATE;
+                BUSY       <= '0';
+                READY      <= '0';
             else
                 case curr_state is
                     when IDLE_STATE =>
                         if (START = '1') then
-                                curr_state <= ARRAY_STATE;
+                                next_state := ARRAY_STATE;
                         else
-                                curr_state <= IDLE_STATE;
+                                next_state := IDLE_STATE;
                         end if;
                     when ARRAY_STATE =>
                         if (O_READY = '1') then
                             if (array_count_zero) then
-                                curr_state <= IDLE_STATE;
+                                next_state := IDLE_STATE;
                             else
-                                curr_state <= VALUE_STATE;
+                                next_state := VALUE_STATE;
                             end if;
                         else
-                                curr_state <= ARRAY_STATE;
+                                next_state := ARRAY_STATE;
                         end if;
                     when VALUE_STATE =>
                         if (I_VALID = '1' and I_LAST = '1' and O_READY = '1') then
                             if (array_count_zero) then
-                                curr_state <= IDLE_STATE;
+                                next_state := IDLE_STATE;
                             else
-                                curr_state <= VALUE_STATE;
+                                next_state := VALUE_STATE;
                             end if;
                         else
-                                curr_state <= VALUE_STATE;
+                                next_state := VALUE_STATE;
                         end if;
                     when others =>
-                                curr_state <= IDLE_STATE;
+                                next_state := IDLE_STATE;
                 end case;
+                curr_state <= next_state;
+                if (next_state = IDLE_STATE) then
+                    READY <= '1';
+                    BUSY  <= '0';
+                else
+                    READY <= '0';
+                    BUSY  <= '1';
+                end if;
             end if;
         end if;
     end process;
@@ -12369,14 +14757,14 @@ end RTL;
 
         
 -----------------------------------------------------------------------------------
---!     @file    msgpack_object_encode_integer.vhd
---!     @brief   MessagePack Object encode integer :
---!     @version 0.1.0
---!     @date    2015/10/19
+--!     @file    msgpack_object_query_integer_register.vhd
+--!     @brief   MessagePack Object Query Integer Register Module :
+--!     @version 0.2.0
+--!     @date    2016/6/23
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
---      Copyright (C) 2012-2015 Ichiro Kawazome
+--      Copyright (C) 2015-2016 Ichiro Kawazome
 --      All rights reserved.
 --
 --      Redistribution and use in source and binary forms, with or without
@@ -12408,15 +14796,14 @@ library ieee;
 use     ieee.std_logic_1164.all;
 library MsgPack;
 use     MsgPack.MsgPack_Object;
-entity  MsgPack_Object_Encode_Integer is
+entity  MsgPack_Object_Query_Integer_Register is
     -------------------------------------------------------------------------------
     -- Generic Parameters
     -------------------------------------------------------------------------------
     generic (
         CODE_WIDTH      :  positive := 1;
-        VALUE_BITS      :  integer range 1 to 64;
-        VALUE_SIGN      :  boolean  := FALSE;
-        QUEUE_SIZE      :  integer  := 0
+        VALUE_BITS      :  integer range 1 to 64 := 32;
+        VALUE_SIGN      :  boolean  := FALSE
     );
     port (
     -------------------------------------------------------------------------------
@@ -12426,10 +14813,14 @@ entity  MsgPack_Object_Encode_Integer is
         RST             : in  std_logic;
         CLR             : in  std_logic;
     -------------------------------------------------------------------------------
-    -- Control and Status Signals 
+    -- Object Code Input Interface
     -------------------------------------------------------------------------------
-        START           : in  std_logic := '1';
-        BUSY            : out std_logic;
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
     -------------------------------------------------------------------------------
     -- Object Code Output Interface
     -------------------------------------------------------------------------------
@@ -12439,13 +14830,13 @@ entity  MsgPack_Object_Encode_Integer is
         O_VALID         : out std_logic;
         O_READY         : in  std_logic;
     -------------------------------------------------------------------------------
-    -- Integer Value Input
+    -- 
     -------------------------------------------------------------------------------
-        I_VALUE         : in  std_logic_vector(VALUE_BITS-1 downto 0);
-        I_VALID         : in  std_logic;
-        I_READY         : out std_logic
+        VALUE           : in  std_logic_vector(VALUE_BITS-1 downto 0);
+        VALID           : in  std_logic;
+        READY           : out std_logic
     );
-end MsgPack_Object_Encode_Integer;
+end  MsgPack_Object_Query_Integer_Register;
 -----------------------------------------------------------------------------------
 -- 
 -----------------------------------------------------------------------------------
@@ -12454,118 +14845,190 @@ use     ieee.std_logic_1164.all;
 use     ieee.numeric_std.all;
 library MsgPack;
 use     MsgPack.MsgPack_Object;
-use     MsgPack.MsgPack_Object_Components.MsgPack_Object_Code_Reducer;
-architecture RTL of MsgPack_Object_Encode_Integer is
-    function  max(A,B:integer) return integer is begin
-        if (A>B) then return A;
-        else          return B;
-        end if;
-    end function;
-    constant  CODE_DATA_BITS    :  integer := MsgPack_Object.CODE_DATA_BITS;
-    constant  I_WIDTH           :  integer := (VALUE_BITS+CODE_DATA_BITS-1)/CODE_DATA_BITS;
-    signal    i_code            :  MsgPack_Object.Code_Vector(I_WIDTH-1 downto 0);
-    constant  o_shift           :  std_logic_vector(CODE_WIDTH-1 downto 0) := (others => '1');
-    constant  I_QUEUE_SIZE      :  integer := max(QUEUE_SIZE, max(CODE_WIDTH, I_WIDTH));
-    signal    queue_busy        :  std_logic;
-    signal    i_enable          :  std_logic;
-    signal    q_ready           :  std_logic;
-    type      STATE_TYPE        is (IDLE_STATE, RUN_STATE);
-    signal    curr_state        :  STATE_TYPE;
+use     MsgPack.MsgPack_Object_Components.MsgPack_Object_Encode_Integer;
+use     MsgPack.MsgPack_Object_Components.MsgPack_Object_Query_Stream_Parameter;
+architecture RTL of MsgPack_Object_Query_Integer_Register is
+    signal    encode_start  :  std_logic;
+    signal    encode_enable :  std_logic;
+    signal    encode_size   :  std_logic_vector(0 downto 0);
+    constant  default_size  :  std_logic_vector(0 downto 0) := (others => '1');
 begin
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
-    S_INT: if (VALUE_SIGN = TRUE ) generate
-        i_code <= MsgPack_Object.New_Code_Vector_Integer(I_WIDTH,   signed(I_VALUE));
-    end generate;
-    U_INT: if (VALUE_SIGN = FALSE) generate
-        i_code <= MsgPack_Object.New_Code_Vector_Integer(I_WIDTH, unsigned(I_VALUE));
-    end generate;
+    PARAM: MsgPack_Object_Query_Stream_Parameter --
+        generic map (                            -- 
+            CODE_WIDTH      => CODE_WIDTH      , --
+            SIZE_BITS       => 1                 --
+        )                                        -- 
+        port map (                               -- 
+            CLK             => CLK             , -- In  :
+            RST             => RST             , -- In  :
+            CLR             => CLR             , -- In  :
+            DEFAULT_SIZE    => default_size    , -- In  :
+            I_CODE          => I_CODE          , -- In  :
+            I_LAST          => I_LAST          , -- In  :
+            I_VALID         => I_VALID         , -- In  :
+            I_ERROR         => I_ERROR         , -- Out :
+            I_DONE          => I_DONE          , -- Out :
+            I_SHIFT         => I_SHIFT         , -- Out :
+            ENABLE          => encode_enable   , -- In  :
+            START           => encode_start    , -- Out :
+            SIZE            => encode_size       -- Out :
+        );                                       -- 
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
-    QUEUE: MsgPack_Object_Code_Reducer              -- 
-        generic map (                               -- 
-            I_WIDTH         => I_WIDTH            , -- 
-            O_WIDTH         => CODE_WIDTH         , --
-            O_VALID_SIZE    => CODE_WIDTH         , -- 
-            QUEUE_SIZE      => I_QUEUE_SIZE         --
-        )                                           -- 
-        port map (                                  -- 
-        ---------------------------------------------------------------------------
-        -- Clock and Reset Signals
-        ---------------------------------------------------------------------------
-            CLK             => CLK                , -- In  :
-            RST             => RST                , -- In  :
-            CLR             => CLR                , -- In  :
-        ---------------------------------------------------------------------------
-        -- Control and Status Signals
-        ---------------------------------------------------------------------------
-            DONE            => '0'                , -- In  :
-            BUSY            => queue_busy         , -- Out :
-        ---------------------------------------------------------------------------
-        -- Object Code Input Interface
-        ---------------------------------------------------------------------------
-            I_ENABLE        => i_enable           , -- In  :
-            I_CODE          => i_code             , -- In  :
-            I_DONE          => '1'                , -- In  :
-            I_VALID         => I_VALID            , -- In  :
-            I_READY         => q_ready            , -- Out :
-        ---------------------------------------------------------------------------
-        -- Object Code Output Interface
-        ---------------------------------------------------------------------------
-            O_ENABLE        => '1'                , -- In  :
-            O_CODE          => O_CODE             , -- Out :
-            O_DONE          => O_LAST             , -- Out :
-            O_VALID         => O_VALID            , -- Out :
-            O_READY         => O_READY            , -- In  :
-            O_SHIFT         => o_shift              -- In  :
-    );                                              -- 
-    O_ERROR  <= '0';
-    I_READY  <= q_ready;
+    ENCODE: MsgPack_Object_Encode_Integer        -- 
+        generic map (                            -- 
+            CODE_WIDTH      => CODE_WIDTH      , --
+            VALUE_BITS      => VALUE_BITS      , --
+            VALUE_SIGN      => VALUE_SIGN      , --
+            QUEUE_SIZE      => 0                 --
+        )                                        -- 
+        port map (                               -- 
+            CLK             => CLK             , -- In  :
+            RST             => RST             , -- In  :
+            CLR             => CLR             , -- In  :
+            START           => encode_start    , -- In  :
+            BUSY            => open            , -- Out :
+            READY           => encode_enable   , -- Out :
+            O_CODE          => O_CODE          , -- Out :
+            O_LAST          => O_LAST          , -- Out :
+            O_ERROR         => O_ERROR         , -- Out :
+            O_VALID         => O_VALID         , -- Out :
+            O_READY         => O_READY         , -- In  :
+            I_VALUE         => VALUE           , -- In  :
+            I_VALID         => VALID           , -- In  :
+            I_READY         => READY             -- Out :
+        );                                       --
+end RTL;
+-----------------------------------------------------------------------------------
+--!     @file    msgpack_object_store_integer_register.vhd
+--!     @brief   MessagePack Object Store Integer Register Module :
+--!     @version 0.2.0
+--!     @date    2016/6/7
+--!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
+-----------------------------------------------------------------------------------
+--
+--      Copyright (C) 2015-2016 Ichiro Kawazome
+--      All rights reserved.
+--
+--      Redistribution and use in source and binary forms, with or without
+--      modification, are permitted provided that the following conditions
+--      are met:
+--
+--        1. Redistributions of source code must retain the above copyright
+--           notice, this list of conditions and the following disclaimer.
+--
+--        2. Redistributions in binary form must reproduce the above copyright
+--           notice, this list of conditions and the following disclaimer in
+--           the documentation and/or other materials provided with the
+--           distribution.
+--
+--      THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
+--      "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
+--      LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
+--      A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
+--      OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
+--      SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
+--      LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
+--      DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
+--      THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
+--      (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+--      OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+--
+-----------------------------------------------------------------------------------
+library ieee;
+use     ieee.std_logic_1164.all;
+library MsgPack;
+use     MsgPack.MsgPack_Object;
+entity  MsgPack_Object_Store_Integer_Register is
+    -------------------------------------------------------------------------------
+    -- Generic Parameters
+    -------------------------------------------------------------------------------
+    generic (
+        CODE_WIDTH      :  positive := 1;
+        VALUE_BITS      :  integer range 1 to 64;
+        VALUE_SIGN      :  boolean  := FALSE;
+        CHECK_RANGE     :  boolean  := TRUE ;
+        ENABLE64        :  boolean  := TRUE
+    );
+    port (
+    -------------------------------------------------------------------------------
+    -- Clock and Reset Signals
+    -------------------------------------------------------------------------------
+        CLK             : in  std_logic; 
+        RST             : in  std_logic;
+        CLR             : in  std_logic;
+    -------------------------------------------------------------------------------
+    -- MessagePack Object Code Input Interface
+    -------------------------------------------------------------------------------
+        I_CODE          : in  MsgPack_Object.Code_Vector(CODE_WIDTH-1 downto 0);
+        I_LAST          : in  std_logic;
+        I_VALID         : in  std_logic;
+        I_ERROR         : out std_logic;
+        I_DONE          : out std_logic;
+        I_SHIFT         : out std_logic_vector(CODE_WIDTH-1 downto 0);
+    -------------------------------------------------------------------------------
+    -- Value Output Interface
+    -------------------------------------------------------------------------------
+        VALUE           : out std_logic_vector(VALUE_BITS-1 downto 0);
+        SIGN            : out std_logic;
+        LAST            : out std_logic;
+        VALID           : out std_logic;
+        READY           : in  std_logic
+    );
+end  MsgPack_Object_Store_Integer_Register;
+-----------------------------------------------------------------------------------
+-- 
+-----------------------------------------------------------------------------------
+library ieee;
+use     ieee.std_logic_1164.all;
+use     ieee.numeric_std.all;
+library MsgPack;
+use     MsgPack.MsgPack_Object;
+use     MsgPack.MsgPack_Object_Components.MsgPack_Object_Decode_Integer;
+architecture RTL of MsgPack_Object_Store_Integer_Register is
+begin
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
-    i_enable <= '1' when (curr_state = IDLE_STATE and START = '1') or
-                         (curr_state = RUN_STATE                 ) else '0';
-    process (CLK, RST) begin
-        if (RST = '1') then
-                curr_state <= IDLE_STATE;
-        elsif (CLK'event and CLK = '1') then
-            if (CLR = '1') then
-                curr_state <= IDLE_STATE;
-            else
-                case curr_state is
-                    when IDLE_STATE =>
-                        if (START = '1') then
-                            curr_state <= RUN_STATE;
-                        else
-                            curr_state <= IDLE_STATE;
-                        end if;
-                    when RUN_STATE  =>
-                        if (I_VALID = '1' and q_ready = '1') then
-                            curr_state <= IDLE_STATE;
-                        else
-                            curr_state <= RUN_STATE;
-                        end if;
-                    when others => 
-                            curr_state <= IDLE_STATE;
-                end case;
-            end if;
-        end if;
-    end process;
-    BUSY <= '1' when (curr_state = RUN_STATE or queue_busy = '1') else '0';
+    DECODE: MsgPack_Object_Decode_Integer        -- 
+        generic map (                            -- 
+            CODE_WIDTH      => CODE_WIDTH      , --
+            VALUE_BITS      => VALUE_BITS      , --
+            VALUE_SIGN      => VALUE_SIGN      , --
+            CHECK_RANGE     => CHECK_RANGE     , --
+            ENABLE64        => ENABLE64          --
+        )                                        -- 
+        port map (                               -- 
+            CLK             => CLK             , -- In  :
+            RST             => RST             , -- In  :
+            CLR             => CLR             , -- In  :
+            I_CODE          => I_CODE          , -- In  :
+            I_LAST          => I_LAST          , -- In  :
+            I_VALID         => I_VALID         , -- In  :
+            I_ERROR         => I_ERROR         , -- Out :
+            I_DONE          => I_DONE          , -- Out :
+            I_SHIFT         => I_SHIFT         , -- Out :
+            O_VALUE         => VALUE           , -- Out :
+            O_SIGN          => SIGN            , -- Out :
+            O_LAST          => LAST            , -- Out :
+            O_VALID         => VALID           , -- Out :
+            O_READY         => READY             -- In  :
+        );                                       --
 end RTL;
 -----------------------------------------------------------------------------------
 --!     @file    rpc/msgpack_rpc_components.vhd                                  --
 --!     @brief   MessagaPack Component Library Description                       --
---!     @version 0.1.0                                                           --
---!     @date    2015/10/25                                                      --
+--!     @version 0.2.0                                                           --
+--!     @date    2016/06/23                                                      --
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>                     --
 -----------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------
 --                                                                               --
---      Copyright (C) 2015 Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>           --
+--      Copyright (C) 2016 Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>           --
 --      All rights reserved.                                                     --
 --                                                                               --
 --      Redistribution and use in source and binary forms, with or without       --
@@ -12815,6 +15278,7 @@ component MsgPack_RPC_Method_Main_with_Param
         RET_ID          : out MsgPack_RPC.MsgID_Type;
         RET_ERROR       : out std_logic;
         RET_START       : out std_logic;
+        RET_DONE        : out std_logic;
         RET_BUSY        : in  std_logic
     );
 end component;
@@ -12850,6 +15314,7 @@ component MsgPack_RPC_Method_Main_No_Param
         PROC_REQ_ID     : in  MsgPack_RPC.MsgID_Type;
         PROC_REQ        : in  std_logic;
         PROC_BUSY       : out std_logic;
+        PROC_START      : out std_logic;
         PARAM_CODE      : in  MsgPack_RPC.Code_Type;
         PARAM_VALID     : in  std_logic;
         PARAM_LAST      : in  std_logic;
@@ -12865,6 +15330,7 @@ component MsgPack_RPC_Method_Main_No_Param
         RET_ID          : out MsgPack_RPC.MsgID_Type;
         RET_ERROR       : out std_logic;
         RET_START       : out std_logic;
+        RET_DONE        : out std_logic;
         RET_BUSY        : in  std_logic
     );
 end component;
@@ -12935,6 +15401,7 @@ component MsgPack_RPC_Method_Return_Integer
     -------------------------------------------------------------------------------
         RET_ERROR       : in  std_logic;
         RET_START       : in  std_logic;
+        RET_DONE        : in  std_logic;
         RET_BUSY        : out std_logic;
     -------------------------------------------------------------------------------
     -- MessagePack-RPC Method Response Interface
@@ -12965,6 +15432,7 @@ component MsgPack_RPC_Method_Return_Nil
     -------------------------------------------------------------------------------
         RET_ERROR       : in  std_logic;
         RET_START       : in  std_logic;
+        RET_DONE        : in  std_logic;
         RET_BUSY        : out std_logic;
     -------------------------------------------------------------------------------
     -- MessagePack-RPC Method Response Interface
@@ -12991,6 +15459,7 @@ component MsgPack_RPC_Method_Return_Code
     -------------------------------------------------------------------------------
         RET_ERROR       : in  std_logic;
         RET_START       : in  std_logic;
+        RET_DONE        : in  std_logic;
         RET_BUSY        : out std_logic;
     -------------------------------------------------------------------------------
     -- MessagePack-RPC Method Response Interface
@@ -13153,12 +15622,12 @@ end MsgPack_RPC_Components;
 -----------------------------------------------------------------------------------
 --!     @file    msgpack_rpc_method_return_code.vhd
 --!     @brief   MessagePack-RPC Method Return (Object Encode) Module :
---!     @version 0.1.0
---!     @date    2015/10/19
+--!     @version 0.2.0
+--!     @date    2016/5/20
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
---      Copyright (C) 2015 Ichiro Kawazome
+--      Copyright (C) 2015-2016 Ichiro Kawazome
 --      All rights reserved.
 --
 --      Redistribution and use in source and binary forms, with or without
@@ -13204,6 +15673,7 @@ entity  MsgPack_RPC_Method_Return_Code is
     -------------------------------------------------------------------------------
         RET_ERROR       : in  std_logic;
         RET_START       : in  std_logic;
+        RET_DONE        : in  std_logic;
         RET_BUSY        : out std_logic;
     -------------------------------------------------------------------------------
     -- MessagePack-RPC Method Response Interface
@@ -13340,8 +15810,8 @@ end RTL;
 -----------------------------------------------------------------------------------
 --!     @file    msgpack_rpc_method_return_nil.vhd
 --!     @brief   MessagePack-RPC Method Return Nil Module :
---!     @version 0.1.2
---!     @date    2016/3/16
+--!     @version 0.2.0
+--!     @date    2016/5/20
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
@@ -13391,6 +15861,7 @@ entity  MsgPack_RPC_Method_Return_Nil is
     -------------------------------------------------------------------------------
         RET_ERROR       : in  std_logic;
         RET_START       : in  std_logic;
+        RET_DONE        : in  std_logic;
         RET_BUSY        : out std_logic;
     -------------------------------------------------------------------------------
     -- MessagePack-RPC Method Response Interface
@@ -13422,12 +15893,7 @@ architecture RTL of MsgPack_RPC_Method_Return_Nil is
                    1 => MsgPack_Object.New_Code_Nil
               );
     signal    return_code   :  MsgPack_Object.Code_Vector(1 downto 0);
-    signal    return_valid  :  std_logic;
 begin
-    -------------------------------------------------------------------------------
-    --
-    -------------------------------------------------------------------------------
-    return_valid <= '1' when (RET_START = '1' or RET_ERROR = '1') else '0';
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
@@ -13452,7 +15918,7 @@ begin
             I_ENABLE        => '1'                     , -- In  :
             I_CODE          => return_code             , -- In  :
             I_DONE          => '1'                     , -- In  :
-            I_VALID         => return_valid            , -- In  :
+            I_VALID         => RET_DONE                , -- In  :
             I_READY         => open                    , -- Out :
             O_ENABLE        => '1'                     , -- In  :
             O_CODE          => RES_CODE                , -- Out :
@@ -13465,8 +15931,8 @@ end RTL;
 -----------------------------------------------------------------------------------
 --!     @file    msgpack_rpc_server_requester.vhd
 --!     @brief   MessagePack-RPC Server Requester Module :
---!     @version 0.1.0
---!     @date    2015/10/19
+--!     @version 0.2.0
+--!     @date    2015/11/9
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
@@ -14232,8 +16698,8 @@ end RTL;
 -----------------------------------------------------------------------------------
 --!     @file    msgpack_rpc_server_responder.vhd
 --!     @brief   MessagePack-RPC Server Responder Module :
---!     @version 0.1.0
---!     @date    2015/10/19
+--!     @version 0.2.0
+--!     @date    2015/11/9
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
@@ -14814,14 +17280,14 @@ begin
         );                                       -- 
 end RTL;
 -----------------------------------------------------------------------------------
---!     @file    msgpack_kvmap_get_integer.vhd
---!     @brief   MessagePack-KVMap(Key Value Map) Get Integer Value Module :
---!     @version 0.1.0
---!     @date    2015/10/25
+--!     @file    msgpack_kvmap_query_integer_register.vhd
+--!     @brief   MessagePack-KVMap(Key Value Map) Query Integer Register Module :
+--!     @version 0.2.0
+--!     @date    2016/6/7
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
---      Copyright (C) 2015 Ichiro Kawazome
+--      Copyright (C) 2015-2016 Ichiro Kawazome
 --      All rights reserved.
 --
 --      Redistribution and use in source and binary forms, with or without
@@ -14853,7 +17319,7 @@ library ieee;
 use     ieee.std_logic_1164.all;
 library MsgPack;
 use     MsgPack.MsgPack_Object;
-entity  MsgPack_KVMap_Get_Integer is
+entity  MsgPack_KVMap_Query_Integer_Register is
     -------------------------------------------------------------------------------
     -- Generic Parameters
     -------------------------------------------------------------------------------
@@ -14903,7 +17369,7 @@ entity  MsgPack_KVMap_Get_Integer is
         VALID           : in  std_logic;
         READY           : out std_logic
     );
-end  MsgPack_KVMap_Get_Integer;
+end  MsgPack_KVMap_Query_Integer_Register;
 -----------------------------------------------------------------------------------
 -- 
 -----------------------------------------------------------------------------------
@@ -14912,13 +17378,9 @@ use     ieee.std_logic_1164.all;
 use     ieee.numeric_std.all;
 library MsgPack;
 use     MsgPack.MsgPack_Object;
-use     MsgPack.MsgPack_Object_Components.MsgPack_Object_Encode_Integer;
+use     MsgPack.MsgPack_Object_Components.MsgPack_Object_Query_Integer_Register;
 use     MsgPack.MsgPack_KVMap_Components.MsgPack_KVMap_Key_Compare;
-use     MsgPack.MsgPack_KVMap_Components.MsgPack_KVMap_Decode_Get_Stream_Parameter;
-architecture RTL of MsgPack_KVMap_Get_Integer is
-    signal    start    :  std_logic;
-    signal    busy     :  std_logic;
-    signal    size     :  std_logic_vector(0 downto 0);
+architecture RTL of MsgPack_KVMap_Query_Integer_Register is
 begin
     -------------------------------------------------------------------------------
     --
@@ -14942,11 +17404,11 @@ begin
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
-    PARAM: MsgPack_KVMap_Decode_Get_Stream_Parameter  --
+    QUERY: MsgPack_Object_Query_Integer_Register -- 
         generic map (                            -- 
             CODE_WIDTH      => CODE_WIDTH      , --
-            SIZE_BITS       => 1               , --
-            SIZE_MAX        => 1                 --
+            VALUE_BITS      => VALUE_BITS      , --
+            VALUE_SIGN      => VALUE_SIGN        --
         )                                        -- 
         port map (                               -- 
             CLK             => CLK             , -- In  :
@@ -14958,45 +17420,25 @@ begin
             I_ERROR         => I_ERROR         , -- Out :
             I_DONE          => I_DONE          , -- Out :
             I_SHIFT         => I_SHIFT         , -- Out :
-            START           => start           , -- Out :
-            SIZE            => size            , -- Out :
-            BUSY            => busy              -- In  :
-        );                                       -- 
-    -------------------------------------------------------------------------------
-    --
-    -------------------------------------------------------------------------------
-    ENCODE: MsgPack_Object_Encode_Integer        -- 
-        generic map (                            -- 
-            CODE_WIDTH      => CODE_WIDTH      , --
-            VALUE_BITS      => VALUE_BITS      , --
-            VALUE_SIGN      => VALUE_SIGN      , --
-            QUEUE_SIZE      => 0                 --
-        )                                        -- 
-        port map (                               -- 
-            CLK             => CLK             , -- In  :
-            RST             => RST             , -- In  :
-            CLR             => CLR             , -- In  :
-            START           => start           , -- In  :
-            BUSY            => busy            , -- Out :
             O_CODE          => O_CODE          , -- Out :
             O_LAST          => O_LAST          , -- Out :
             O_ERROR         => O_ERROR         , -- Out :
             O_VALID         => O_VALID         , -- Out :
             O_READY         => O_READY         , -- In  :
-            I_VALUE         => VALUE           , -- In  :
-            I_VALID         => VALID           , -- In  :
-            I_READY         => READY             -- Out :
+            VALUE           => VALUE           , -- In  :
+            VALID           => VALID           , -- In  :
+            READY           => READY             -- Out :
         );                                       --
 end RTL;
 -----------------------------------------------------------------------------------
---!     @file    msgpack_kvmap_set_integer.vhd
---!     @brief   MessagePack-KVMap(Key Value Map) Set Integer Value Module :
---!     @version 0.1.0
---!     @date    2015/10/25
+--!     @file    msgpack_kvmap_store_integer_register.vhd
+--!     @brief   MessagePack-KVMap(Key Value Map) Store Integer Register Module :
+--!     @version 0.2.0
+--!     @date    2016/6/7
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
---      Copyright (C) 2015 Ichiro Kawazome
+--      Copyright (C) 2015-2016 Ichiro Kawazome
 --      All rights reserved.
 --
 --      Redistribution and use in source and binary forms, with or without
@@ -15028,7 +17470,7 @@ library ieee;
 use     ieee.std_logic_1164.all;
 library MsgPack;
 use     MsgPack.MsgPack_Object;
-entity  MsgPack_KVMap_Set_Integer is
+entity  MsgPack_KVMap_Store_Integer_Register is
     -------------------------------------------------------------------------------
     -- Generic Parameters
     -------------------------------------------------------------------------------
@@ -15075,7 +17517,7 @@ entity  MsgPack_KVMap_Set_Integer is
         VALID           : out std_logic;
         READY           : in  std_logic
     );
-end  MsgPack_KVMap_Set_Integer;
+end  MsgPack_KVMap_Store_Integer_Register;
 -----------------------------------------------------------------------------------
 -- 
 -----------------------------------------------------------------------------------
@@ -15084,9 +17526,9 @@ use     ieee.std_logic_1164.all;
 use     ieee.numeric_std.all;
 library MsgPack;
 use     MsgPack.MsgPack_Object;
-use     MsgPack.MsgPack_Object_Components.MsgPack_Object_Decode_Integer;
+use     MsgPack.MsgPack_Object_Components.MsgPack_Object_Store_Integer_Register;
 use     MsgPack.MsgPack_KVMap_Components.MsgPack_KVMap_Key_Compare;
-architecture RTL of MsgPack_KVMap_Set_Integer is
+architecture RTL of MsgPack_KVMap_Store_Integer_Register is
 begin
     -------------------------------------------------------------------------------
     --
@@ -15095,7 +17537,7 @@ begin
         generic map (                            -- 
             CODE_WIDTH      => CODE_WIDTH      , -- 
             I_MAX_PHASE     => MATCH_PHASE     , --
-            KEYWORD         => kEY               --
+            KEYWORD         => KEY               --
         )                                        -- 
         port map (                               -- 
             CLK             => CLK             , -- 
@@ -15110,7 +17552,7 @@ begin
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
-    DECODE: MsgPack_Object_Decode_Integer        -- 
+    STORE: MsgPack_Object_Store_Integer_Register -- 
         generic map (                            -- 
             CODE_WIDTH      => CODE_WIDTH      , --
             VALUE_BITS      => VALUE_BITS      , --
@@ -15128,22 +17570,22 @@ begin
             I_ERROR         => I_ERROR         , -- Out :
             I_DONE          => I_DONE          , -- Out :
             I_SHIFT         => I_SHIFT         , -- Out :
-            O_VALUE         => VALUE           , -- Out :
-            O_SIGN          => SIGN            , -- Out :
-            O_LAST          => LAST            , -- Out :
-            O_VALID         => VALID           , -- Out :
-            O_READY         => READY             -- In  :
+            VALUE           => VALUE           , -- Out :
+            SIGN            => SIGN            , -- Out :
+            LAST            => LAST            , -- Out :
+            VALID           => VALID           , -- Out :
+            READY           => READY             -- In  :
         );                                       --
 end RTL;
 -----------------------------------------------------------------------------------
 --!     @file    msgpack_rpc_method_main_with_param.vhd
 --!     @brief   MessagePack-RPC Method Main Module with Parameter :
---!     @version 0.1.0
---!     @date    2015/10/19
+--!     @version 0.2.0
+--!     @date    2016/5/20
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
---      Copyright (C) 2015 Ichiro Kawazome
+--      Copyright (C) 2015-2016 Ichiro Kawazome
 --      All rights reserved.
 --
 --      Redistribution and use in source and binary forms, with or without
@@ -15231,6 +17673,7 @@ entity  MsgPack_RPC_Method_Main_with_Param is
         RET_ID          : out MsgPack_RPC.MsgID_Type;
         RET_ERROR       : out std_logic;
         RET_START       : out std_logic;
+        RET_DONE        : out std_logic;
         RET_BUSY        : in  std_logic
     );
 end  MsgPack_RPC_Method_Main_with_Param;
@@ -15486,8 +17929,10 @@ begin
     PROC_BUSY <= '1' when (curr_state /= IDLE_STATE        ) else '0';
     RUN_REQ   <= '1' when (curr_state  = PROC_BEGIN_STATE  ) else '0';
     RET_ERROR <= '1' when (curr_state  = ERROR_RETURN_STATE) else '0';
-    RET_START <= '1' when (curr_state  = PROC_BUSY_STATE   ) and
-                          (RUN_BUSY    = '0'               ) else '0';
+    RET_START <= '1' when (curr_state  = ERROR_RETURN_STATE) or
+                          (curr_state  = PROC_BEGIN_STATE and RUN_BUSY = '1') else '0';
+    RET_DONE  <= '1' when (curr_state  = ERROR_RETURN_STATE) or
+                          (curr_state  = PROC_BUSY_STATE  and RUN_BUSY = '0') else '0';
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
@@ -15547,12 +17992,12 @@ end RTL;
 -----------------------------------------------------------------------------------
 --!     @file    msgpack_rpc_method_return_integer.vhd
 --!     @brief   MessagePack-RPC Method Return (Integer Type) Module :
---!     @version 0.1.0
---!     @date    2015/10/19
+--!     @version 0.2.0
+--!     @date    2016/5/20
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
---      Copyright (C) 2015 Ichiro Kawazome
+--      Copyright (C) 2015-2016 Ichiro Kawazome
 --      All rights reserved.
 --
 --      Redistribution and use in source and binary forms, with or without
@@ -15608,6 +18053,7 @@ entity  MsgPack_RPC_Method_Return_Integer is
     -------------------------------------------------------------------------------
         RET_ERROR       : in  std_logic;
         RET_START       : in  std_logic;
+        RET_DONE        : in  std_logic;
         RET_BUSY        : out std_logic;
     -------------------------------------------------------------------------------
     -- MessagePack-RPC Method Response Interface
@@ -15636,12 +18082,7 @@ architecture RTL of MsgPack_RPC_Method_Return_Integer is
     constant  RESULT_WIDTH  :  integer := (VALUE'length+MsgPack_Object.CODE_DATA_BITS-1)/MsgPack_Object.CODE_DATA_BITS;
     signal    return_code   :  MsgPack_Object.Code_Vector(RESULT_WIDTH downto 0);
     constant  res_shift     :  MsgPack_RPC.Shift_Type := (others => '1');
-    signal    return_valid  :  std_logic;
 begin
-    -------------------------------------------------------------------------------
-    --
-    -------------------------------------------------------------------------------
-    return_valid <= '1' when (RET_START = '1' or RET_ERROR = '1') else '0';
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
@@ -15685,7 +18126,7 @@ begin
             I_ENABLE        => '1'                     , -- In  :
             I_CODE          => return_code             , -- In  :
             I_DONE          => '1'                     , -- In  :
-            I_VALID         => return_valid            , -- In  :
+            I_VALID         => RET_DONE                , -- In  :
             I_READY         => open                    , -- Out :
             O_ENABLE        => '1'                     , -- In  :
             O_CODE          => RES_CODE                , -- Out :
@@ -15696,159 +18137,14 @@ begin
         );                                               --
 end RTL;
 -----------------------------------------------------------------------------------
---!     @file    msgpack_rpc_method_set_param_integer.vhd
---!     @brief   MessagePack-RPC Method Set Parameter (Integer) Module :
---!     @version 0.1.0
---!     @date    2015/10/22
---!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
------------------------------------------------------------------------------------
---
---      Copyright (C) 2015 Ichiro Kawazome
---      All rights reserved.
---
---      Redistribution and use in source and binary forms, with or without
---      modification, are permitted provided that the following conditions
---      are met:
---
---        1. Redistributions of source code must retain the above copyright
---           notice, this list of conditions and the following disclaimer.
---
---        2. Redistributions in binary form must reproduce the above copyright
---           notice, this list of conditions and the following disclaimer in
---           the documentation and/or other materials provided with the
---           distribution.
---
---      THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
---      "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
---      LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR
---      A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL THE COPYRIGHT
---      OWNER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL,
---      SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT
---      LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE,
---      DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY
---      THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
---      (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
---      OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
---
------------------------------------------------------------------------------------
-library ieee;
-use     ieee.std_logic_1164.all;
-library MsgPack;
-use     MsgPack.MsgPack_Object;
-use     MsgPack.MsgPack_RPC;
-entity  MsgPack_RPC_Method_Set_Param_Integer is
-    -------------------------------------------------------------------------------
-    -- Generic Parameters
-    -------------------------------------------------------------------------------
-    generic (
-        VALUE_BITS      :  integer range 1 to 64;
-        VALUE_SIGN      :  boolean  := FALSE;
-        CHECK_RANGE     :  boolean  := TRUE ;
-        ENABLE64        :  boolean  := TRUE
-    );
-    port (
-    -------------------------------------------------------------------------------
-    -- Clock and Reset Signals
-    -------------------------------------------------------------------------------
-        CLK             : in  std_logic; 
-        RST             : in  std_logic;
-        CLR             : in  std_logic;
-    -------------------------------------------------------------------------------
-    -- MessagePack-RPC Method Set Parameter Interface
-    -------------------------------------------------------------------------------
-        SET_PARAM_CODE  : in  MsgPack_RPC.Code_Type;
-        SET_PARAM_LAST  : in  std_logic;
-        SET_PARAM_VALID : in  std_logic;
-        SET_PARAM_ERROR : out std_logic;
-        SET_PARAM_DONE  : out std_logic;
-        SET_PARAM_SHIFT : out MsgPack_RPC.Shift_Type;
-    -------------------------------------------------------------------------------
-    -- Default Value Input Interface
-    -------------------------------------------------------------------------------
-        DEFAULT_VALUE   : in  std_logic_vector(VALUE_BITS-1 downto 0);
-        DEFAULT_WE      : in  std_logic;
-    -------------------------------------------------------------------------------
-    -- Parameter Value Output Interface
-    -------------------------------------------------------------------------------
-        PARAM_VALUE     : out std_logic_vector(VALUE_BITS-1 downto 0);
-        PARAM_WE        : out std_logic
-    );
-end  MsgPack_RPC_Method_Set_Param_Integer;
------------------------------------------------------------------------------------
--- 
------------------------------------------------------------------------------------
-library ieee;
-use     ieee.std_logic_1164.all;
-use     ieee.numeric_std.all;
-library MsgPack;
-use     MsgPack.MsgPack_Object;
-use     MsgPack.MsgPack_RPC;
-use     MsgPack.MsgPack_Object_Components.MsgPack_Object_Decode_Integer;
-architecture RTL of MsgPack_RPC_Method_Set_Param_Integer is
-    signal    value_din         :  std_logic_vector(VALUE_BITS-1 downto 0);
-    signal    value_load        :  std_logic;
-begin
-    -------------------------------------------------------------------------------
-    --
-    -------------------------------------------------------------------------------
-    DECODE: MsgPack_Object_Decode_Integer                -- 
-        generic map (                                    -- 
-            CODE_WIDTH      => MsgPack_RPC.Code_Length , --
-            VALUE_BITS      => VALUE_BITS              , --
-            VALUE_SIGN      => VALUE_SIGN              , --
-            QUEUE_SIZE      => 0                       , --
-            CHECK_RANGE     => CHECK_RANGE             , --
-            ENABLE64        => ENABLE64                  --
-        )                                                -- 
-        port map (                                       -- 
-            CLK             => CLK                     , -- In  :
-            RST             => RST                     , -- In  :
-            CLR             => CLR                     , -- In  :
-            I_CODE          => SET_PARAM_CODE          , -- In  :
-            I_LAST          => SET_PARAM_LAST          , -- In  :
-            I_VALID         => SET_PARAM_VALID         , -- In  :
-            I_ERROR         => SET_PARAM_ERROR         , -- Out :
-            I_DONE          => SET_PARAM_DONE          , -- Out :
-            I_SHIFT         => SET_PARAM_SHIFT         , -- Out :
-            O_VALUE         => value_din               , -- Out :
-            O_SIGN          => open                    , -- Out :
-            O_LAST          => open                    , -- Out :
-            O_VALID         => value_load              , -- Out :
-            O_READY         => '1'                       -- In  :
-        );                                               --
-    -------------------------------------------------------------------------------
-    --
-    -------------------------------------------------------------------------------
-    process (CLK, RST) begin
-        if (RST = '1') then
-                PARAM_VALUE <= (others => '0');
-                PARAM_WE    <= '0';
-        elsif (CLK'event and CLK = '1') then
-            if (CLR = '1') then
-                PARAM_VALUE <= (others => '0');
-                PARAM_WE    <= '0';
-            elsif (DEFAULT_WE = '1') then
-                PARAM_VALUE <= DEFAULT_VALUE;
-                PARAM_WE    <= '1';
-            elsif (value_load = '1') then
-                PARAM_VALUE <= value_din;
-                PARAM_WE    <= '1';
-            else
-                PARAM_WE    <= '0';
-            end if;
-        end if;
-    end process;
-end RTL;
-
------------------------------------------------------------------------------------
 --!     @file    msgpack_rpc_server.vhd
 --!     @brief   MessagePack-RPC Server Module :
---!     @version 0.1.0
---!     @date    2015/10/19
+--!     @version 0.2.0
+--!     @date    2016/5/20
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
---      Copyright (C) 2015 Ichiro Kawazome
+--      Copyright (C) 2015-2016 Ichiro Kawazome
 --      All rights reserved.
 --
 --      Redistribution and use in source and binary forms, with or without
@@ -16019,23 +18315,23 @@ begin
             RES_LAST        => res_last        , -- In  :
             RES_READY       => res_ready         -- Out :
         );
-    RES_GEN: for i in 1 to PROC_NUM generate
-        res_id   (i) <= PROC_RES_ID   (i-1);
-        res_code (i) <= PROC_RES_CODE (i-1);
-        res_valid(i) <= PROC_RES_VALID(i-1);
-        res_last (i) <= PROC_RES_LAST (i-1);
-        PROC_RES_READY(i-1) <= res_ready(i);
+    RES_GEN: for i in 0 to PROC_NUM-1 generate
+        res_id   (i+1) <= PROC_RES_ID   (i);
+        res_code (i+1) <= PROC_RES_CODE (i);
+        res_valid(i+1) <= PROC_RES_VALID(i);
+        res_last (i+1) <= PROC_RES_LAST (i);
+        PROC_RES_READY(i) <= res_ready(i+1);
     end generate;
 end RTL;
 -----------------------------------------------------------------------------------
 --!     @file    msgpack_rpc_server_kvmap_get_value.vhd
 --!     @brief   MessagePack-RPC Server Key Value Map Get Value Module :
---!     @version 0.1.0
---!     @date    2015/10/19
+--!     @version 0.2.0
+--!     @date    2016/6/23
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
---      Copyright (C) 2015 Ichiro Kawazome
+--      Copyright (C) 2015-2016 Ichiro Kawazome
 --      All rights reserved.
 --
 --      Redistribution and use in source and binary forms, with or without
@@ -16153,7 +18449,7 @@ use     MsgPack.MsgPack_Object_Components.MsgPack_Object_Code_Reducer;
 use     MsgPack.MsgPack_Object_Components.MsgPack_Object_Decode_Array;
 use     MsgPack.MsgPack_Object_Components.MsgPack_Object_Encode_Array;
 use     MsgPack.MsgPack_RPC_Components.MsgPack_RPC_Method_Return_Code;
-use     MsgPack.MsgPack_KVMap_Components.MsgPack_KVMap_Get_Map_Value;
+use     MsgPack.MsgPack_KVMap_Components.MsgPack_KVMap_Query;
 use     MsgPack.MsgPack_KVMap_Components.MsgPack_KVMap_Key_Compare;
 architecture RTL of MsgPack_RPC_Server_KVMap_Get_Value is
     -------------------------------------------------------------------------------
@@ -16209,6 +18505,7 @@ architecture RTL of MsgPack_RPC_Server_KVMap_Get_Value is
     -------------------------------------------------------------------------------
     signal    return_error      :  std_logic;
     signal    return_start      :  std_logic;
+    signal    return_done       :  std_logic;
     signal    return_busy       :  std_logic;
     -------------------------------------------------------------------------------
     --
@@ -16218,6 +18515,7 @@ architecture RTL of MsgPack_RPC_Server_KVMap_Get_Value is
     signal    curr_state        :  STATE_TYPE;
     signal    array_start       :  std_logic;
     signal    array_size        :  std_logic_vector(SIZE_BITS-1 downto 0);
+    signal    array_enable      :  std_logic;
 begin
     -------------------------------------------------------------------------------
     --
@@ -16286,12 +18584,16 @@ begin
     -------------------------------------------------------------------------------
     DECODE_ARRAY: MsgPack_Object_Decode_Array            -- 
         generic map (                                    -- 
-            CODE_WIDTH      => I_PARAM_WIDTH             -- 
+            CODE_WIDTH      => I_PARAM_WIDTH           , -- 
+            SIZE_BITS       => SIZE_BITS                 -- 
         )                                                -- 
         port map (                                       -- 
             CLK             => CLK                     , -- In  :
             RST             => RST                     , -- In  :
             CLR             => CLR                     , -- In  :
+            ENABLE          => array_enable            , -- In  :
+            BUSY            => open                    , -- Out :
+            READY           => open                    , -- Out :
             I_CODE          => i_param_code            , -- In  :
             I_LAST          => i_param_last            , -- In  :
             I_VALID         => unpack_valid            , -- In  :
@@ -16300,6 +18602,10 @@ begin
             I_SHIFT         => unpack_shift            , -- Out :
             ARRAY_START     => array_start             , -- Out :
             ARRAY_SIZE      => array_size              , -- Out :
+            ENTRY_START     => open                    , -- Out :
+            ENTRY_BUSY      => open                    , -- Out :
+            ENTRY_LAST      => open                    , -- Out :
+            ENTRY_SIZE      => open                    , -- Out :
             VALUE_START     => open                    , -- Out :
             VALUE_CODE      => get_kvmap_code          , -- Out :
             VALUE_LAST      => get_kvmap_last          , -- Out :
@@ -16311,7 +18617,7 @@ begin
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
-    GET_KVMAP: MsgPack_KVMap_Get_Map_Value               -- 
+    QUERY_MAP: MsgPack_KVMap_Query                       -- 
         generic map (                                    -- 
             CODE_WIDTH      => I_PARAM_WIDTH           , -- 
             STORE_SIZE      => STORE_SIZE              , --
@@ -16379,6 +18685,8 @@ begin
             CLR             => CLR                     , -- In  :
             START           => array_start             , -- In  :
             SIZE            => array_size              , -- In  :
+            BUSY            => open                    , -- Out :
+            READY           => array_enable            , -- Out :
             I_CODE          => ret_value_code          , -- In  :
             I_LAST          => ret_value_last          , -- In  :
             I_ERROR         => ret_value_error         , -- In  :
@@ -16400,6 +18708,7 @@ begin
             CLR             => CLR                     , -- In  :
             RET_ERROR       => return_error            , -- In  :
             RET_START       => return_start            , -- In  :
+            RET_DONE        => return_done             , -- In  :
             RET_BUSY        => return_busy             , -- Out :
             RES_CODE        => RES_CODE                , -- Out :
             RES_VALID       => RES_VALID               , -- Out :
@@ -16469,7 +18778,8 @@ begin
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
-    return_start   <= '1' when (curr_state  = IDLE_STATE and PROC_REQ = '1') else '0';
+    return_start   <= '1' when (curr_state  = IDLE_STATE and PROC_REQ    = '1') else '0';
+    return_done    <= '1' when (curr_state  = RUN_STATE  and unpack_done = '1') else '0';
     return_error   <= '0';
     -------------------------------------------------------------------------------
     --
@@ -16500,12 +18810,12 @@ end RTL;
 -----------------------------------------------------------------------------------
 --!     @file    msgpack_rpc_server_kvmap_set_value.vhd
 --!     @brief   MessagePack-RPC Server Key Value Map Set Value Module :
---!     @version 0.1.0
---!     @date    2015/10/19
+--!     @version 0.2.0
+--!     @date    2016/6/23
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
---      Copyright (C) 2015 Ichiro Kawazome
+--      Copyright (C) 2015-2016 Ichiro Kawazome
 --      All rights reserved.
 --
 --      Redistribution and use in source and binary forms, with or without
@@ -16613,7 +18923,7 @@ use     MsgPack.MsgPack_RPC;
 use     MsgPack.MsgPack_Object_Components.MsgPack_Object_Code_Reducer;
 use     MsgPack.MsgPack_Object_Components.MsgPack_Object_Decode_Array;
 use     MsgPack.MsgPack_RPC_Components.MsgPack_RPC_Method_Return_Nil;
-use     MsgPack.MsgPack_KVMap_Components.MsgPack_KVMap_Set_Map_Value;
+use     MsgPack.MsgPack_KVMap_Components.MsgPack_KVMap_Store;
 use     MsgPack.MsgPack_KVMap_Components.MsgPack_KVMap_Key_Compare;
 architecture RTL of MsgPack_RPC_Server_KVMap_Set_Value is
     -------------------------------------------------------------------------------
@@ -16652,6 +18962,7 @@ architecture RTL of MsgPack_RPC_Server_KVMap_Set_Value is
     -------------------------------------------------------------------------------
     signal    return_error      :  std_logic;
     signal    return_start      :  std_logic;
+    signal    return_done       :  std_logic;
     signal    return_busy       :  std_logic;
     -------------------------------------------------------------------------------
     --
@@ -16726,12 +19037,16 @@ begin
     -------------------------------------------------------------------------------
     DECODE_ARRAY: MsgPack_Object_Decode_Array            -- 
         generic map (                                    -- 
-            CODE_WIDTH      => I_PARAM_WIDTH             -- 
+            CODE_WIDTH      => I_PARAM_WIDTH           , --
+            SIZE_BITS       => 32                        -- 
         )                                                -- 
         port map (                                       -- 
             CLK             => CLK                     , -- In  :
             RST             => RST                     , -- In  :
             CLR             => CLR                     , -- In  :
+            ENABLE          => '1'                     , -- In  :
+            BUSY            => open                    , -- Out :
+            READY           => open                    , -- Out :
             I_CODE          => i_param_code            , -- In  :
             I_LAST          => i_param_last            , -- In  :
             I_VALID         => unpack_valid            , -- In  :
@@ -16740,6 +19055,10 @@ begin
             I_SHIFT         => unpack_shift            , -- Out :
             ARRAY_START     => open                    , -- Out :
             ARRAY_SIZE      => open                    , -- Out :
+            ENTRY_START     => open                    , -- Out :
+            ENTRY_BUSY      => open                    , -- Out :
+            ENTRY_LAST      => open                    , -- Out :
+            ENTRY_SIZE      => open                    , -- Out :
             VALUE_START     => open                    , -- Out :
             VALUE_CODE      => set_kvmap_code          , -- Out :
             VALUE_LAST      => set_kvmap_last          , -- Out :
@@ -16751,7 +19070,7 @@ begin
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
-    SET_KVMap: MsgPack_KVMap_Set_Map_Value               -- 
+    STORE_MAP: MsgPack_KVMap_Store                       -- 
         generic map (                                    -- 
             CODE_WIDTH      => I_PARAM_WIDTH           , --
             STORE_SIZE      => STORE_SIZE              , --
@@ -16799,6 +19118,7 @@ begin
             CLR             => CLR                     , -- In  :
             RET_ERROR       => return_error            , -- In  :
             RET_START       => return_start            , -- In  :
+            RET_DONE        => return_done             , -- In  :
             RET_BUSY        => return_busy             , -- Out :
             RES_CODE        => RES_CODE                , -- Out :
             RES_VALID       => RES_VALID               , -- Out :
@@ -16864,8 +19184,9 @@ begin
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
-    return_start   <= '1' when (curr_state = RUN_STATE and unpack_done  = '1') else '0';
-    return_error   <= '1' when (curr_state = RUN_STATE and unpack_error = '1') else '0';
+    return_start   <= '1' when (curr_state  = IDLE_STATE and PROC_REQ    = '1') else '0';
+    return_done    <= '1' when (curr_state  = RUN_STATE  and unpack_done = '1') else '0';
+    return_error   <= '1' when (curr_state  = RUN_STATE  and unpack_done = '1' and unpack_error = '1') else '0';
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
@@ -16892,4 +19213,3 @@ begin
         end if;
     end process;
 end RTL;
-
