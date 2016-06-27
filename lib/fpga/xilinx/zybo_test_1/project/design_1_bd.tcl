@@ -9,6 +9,8 @@ array set available_vivado_version_list {"2015.1"   "ok"}
 array set available_vivado_version_list {"2015.2"   "ok"}
 array set available_vivado_version_list {"2015.3"   "ok"}
 array set available_vivado_version_list {"2015.4"   "ok"}
+array set available_vivado_version_list {"2016.1"   "ok"}
+array set available_vivado_version_list {"2016.2"   "ok"}
 set available_vivado_version [array names available_vivado_version_list]
 set current_vivado_version   [version -short]
 

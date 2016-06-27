@@ -33,10 +33,8 @@ add_fileset          QUARTUS_SYNTH QUARTUS_SYNTH "" ""
 set_fileset_property QUARTUS_SYNTH TOP_LEVEL                     Accumulator_Server
 set_fileset_property QUARTUS_SYNTH ENABLE_RELATIVE_INCLUDE_PATHS false
 set_fileset_property QUARTUS_SYNTH ENABLE_FILE_OVERWRITE_MODE    false
-add_fileset_file accumulator_server.vhd     VHDL PATH accumulator_server.vhd TOP_LEVEL_FILE
-add_fileset_file add_interface.vhd          VHDL PATH add_interface.vhd
-add_fileset_file get_interface.vhd          VHDL PATH get_interface.vhd
-add_fileset_file set_interface.vhd          VHDL PATH set_interface.vhd
+add_fileset_file Accumulator_Server.vhd     VHDL PATH Accumulator_Server.vhd TOP_LEVEL_FILE
+add_fileset_file Accumulator_Interface.vhd  VHDL PATH Accumulator_Interface.vhd
 add_fileset_file Accumulator.vhd            VHDL PATH Accumulator.vhd
 
 # 

@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------------------
 --!     @file    zundoko_interface.vhd
 --!     @brief   Zun-Doko Interface Module
---!     @version 0.1.0
---!     @date    2016/3/20
+--!     @version 0.2.0
+--!     @date    2016/6/26
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
@@ -89,6 +89,7 @@ architecture RTL of ZunDoko_Interface is
     signal    return_id         :  MsgPack_RPC.MsgID_Type;
     signal    return_error      :  std_logic;
     signal    return_start      :  std_logic;
+    signal    return_done       :  std_logic;
     signal    return_busy       :  std_logic;
     signal    proc_start        :  std_logic;
 begin
@@ -121,6 +122,7 @@ begin
             RET_ID          => PROC_RES_ID         , -- Out :
             RET_ERROR       => return_error        , -- Out :
             RET_START       => return_start        , -- Out :
+            RET_DONE        => return_done         , -- Out :
             RET_BUSY        => return_busy           -- In  :
         );                                           -- 
     -------------------------------------------------------------------------------
@@ -133,6 +135,7 @@ begin
             CLR             => CLR                 , -- In  :
             RET_ERROR       => return_error        , -- In  :
             RET_START       => return_start        , -- In  :
+            RET_DONE        => return_done         , -- In  :
             RET_BUSY        => return_busy         , -- Out :
             RES_CODE        => PROC_RES_CODE       , -- Out :
             RES_VALID       => PROC_RES_VALID      , -- Out :

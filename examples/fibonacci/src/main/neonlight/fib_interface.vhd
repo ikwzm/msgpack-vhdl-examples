@@ -1,12 +1,12 @@
 -----------------------------------------------------------------------------------
 --!     @file    fib_interface.vhd
 --!     @brief   Fib Interface Module
---!     @version 0.1.0
---!     @date    2015/11/25
+--!     @version 0.2.0
+--!     @date    2016/6/25
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
---      Copyright (C) 2012-2015 Ichiro Kawazome
+--      Copyright (C) 2012-2016 Ichiro Kawazome
 --      All rights reserved.
 --
 --      Redistribution and use in source and binary forms, with or without
@@ -96,6 +96,7 @@ architecture RTL of Fib_Interface is
     signal    return_id         :  MsgPack_RPC.MsgID_Type;
     signal    return_error      :  std_logic;
     signal    return_start      :  std_logic;
+    signal    return_done       :  std_logic;
     signal    return_busy       :  std_logic;
     signal    proc_start        :  std_logic;
     signal    fib_n_default     :  std_logic_vector(fib_n_data'range) := (others => '0');
@@ -140,6 +141,7 @@ begin
             RET_ID          => PROC_RES_ID         , -- Out :
             RET_ERROR       => return_error        , -- Out :
             RET_START       => return_start        , -- Out :
+            RET_DONE        => return_done         , -- Out :
             RET_BUSY        => return_busy           -- In  :
         );                                           -- 
     -------------------------------------------------------------------------------
@@ -184,6 +186,7 @@ begin
             CLR             => CLR                 , -- In  :
             RET_ERROR       => return_error        , -- In  :
             RET_START       => return_start        , -- In  :
+            RET_DONE        => return_done         , -- In  :
             RET_BUSY        => return_busy         , -- Out :
             RES_CODE        => PROC_RES_CODE       , -- Out :
             RES_VALID       => PROC_RES_VALID      , -- Out :

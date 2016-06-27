@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------------------
 --!     @file    zundoko_server.vhd
 --!     @brief   Zun-Doko for MsgPack_RPC_Server
---!     @version 0.1.0
---!     @date    2016/3/20
+--!     @version 0.2.0
+--!     @date    2016/6/26
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --

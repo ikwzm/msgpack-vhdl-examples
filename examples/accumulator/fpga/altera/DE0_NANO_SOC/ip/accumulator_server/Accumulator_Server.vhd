@@ -1,6 +1,6 @@
 library ieee;
 use     ieee.std_logic_1164.all;
-entity  Fibonacci_Server is
+entity  Accumulator_Server is
     generic(
         I_BYTES              : integer := 1;
         O_BYTES              : integer := 1
@@ -19,18 +19,21 @@ entity  Fibonacci_Server is
         O_TVALID             : out std_logic;
         O_TREADY             : in  std_logic
     );
-end     Fibonacci_Server;
+end     Accumulator_Server;
 library ieee;
 use     ieee.std_logic_1164.all;
 use     ieee.numeric_std.all;
-architecture RTL of Fibonacci_Server is
+architecture RTL of Accumulator_Server is
     signal    reset            :  std_logic;
     signal    reset_n          :  std_logic;
-    signal    GO               :  std_logic;
-    signal    BUSY             :  std_logic;
-    signal    N                :  std_logic_vector(8-1 downto 0);
-    signal    O                :  std_logic_vector(64-1 downto 0);
-    component Fibonacci_Interface is
+    signal    add_req          :  std_logic;
+    signal    add_busy         :  std_logic;
+    signal    add_x            :  signed(32-1 downto 0);
+    signal    add_return       :  signed(32-1 downto 0);
+    signal    reg_in           :  signed(32-1 downto 0);
+    signal    reg_we           :  std_logic;
+    signal    reg_out          :  signed(32-1 downto 0);
+    component Accumulator_Interface is
         generic(
             I_BYTES              : integer := 1;
             O_BYTES              : integer := 1
@@ -49,27 +52,32 @@ architecture RTL of Fibonacci_Server is
             O_LAST               : out std_logic;
             O_VALID              : out std_logic;
             O_READY              : in  std_logic;
-            GO                   : out std_logic;
-            BUSY                 : in  std_logic;
-            N                    : out std_logic_vector(8-1 downto 0);
-            O                    : in  std_logic_vector(64-1 downto 0)
+            add_req              : out std_logic;
+            add_busy             : in  std_logic;
+            add_x                : out signed(32-1 downto 0);
+            add_return           : in  signed(32-1 downto 0);
+            reg_in               : out signed(32-1 downto 0);
+            reg_we               : out std_logic;
+            reg_out              : in  signed(32-1 downto 0)
         );
     end component;
-    component FIB is
+    component Accumulator is
         port(
-            CLK                  : in  std_logic;
-            RST                  : in  std_logic;
-            CLR                  : in  std_logic;
-            GO                   : in  std_logic;
-            BUSY                 : out std_logic;
-            N                    : in  std_logic_vector(8-1 downto 0);
-            O                    : out std_logic_vector(64-1 downto 0)
+            clk                  : in  std_logic;
+            reset                : in  std_logic;
+            add_req              : in  std_logic;
+            add_busy             : out std_logic;
+            add_x                : in  signed(32-1 downto 0);
+            add_return           : out signed(32-1 downto 0);
+            reg_in               : in  signed(32-1 downto 0);
+            reg_we               : in  std_logic;
+            reg_out              : out signed(32-1 downto 0)
         );
     end component;
 begin
     reset      <= not ARESETn;
     reset_n    <=     ARESETn;
-    U : Fibonacci_Interface
+    U : Accumulator_Interface
         generic map(
             I_BYTES              => I_BYTES             ,
             O_BYTES              => O_BYTES             
@@ -88,19 +96,24 @@ begin
             O_LAST               => O_TLAST             ,
             O_VALID              => O_TVALID            ,
             O_READY              => O_TREADY            ,
-            GO                   => GO                  ,
-            BUSY                 => BUSY                ,
-            N                    => N                   ,
-            O                    => O                   
+            add_req              => add_req             ,
+            add_busy             => add_busy            ,
+            add_x                => add_x               ,
+            add_return           => add_return          ,
+            reg_in               => reg_in              ,
+            reg_we               => reg_we              ,
+            reg_out              => reg_out             
         );
-    T : FIB
+    T : Accumulator
         port map(
-            CLK                  => CLK                 ,
-            RST                  => reset               ,
-            CLR                  => '0'                 ,
-            GO                   => GO                  ,
-            BUSY                 => BUSY                ,
-            N                    => N                   ,
-            O                    => O                   
+            clk                  => CLK                 ,
+            reset                => reset               ,
+            add_req              => add_req             ,
+            add_busy             => add_busy            ,
+            add_x                => add_x               ,
+            add_return           => add_return          ,
+            reg_in               => reg_in              ,
+            reg_we               => reg_we              ,
+            reg_out              => reg_out             
         );
 end RTL;
