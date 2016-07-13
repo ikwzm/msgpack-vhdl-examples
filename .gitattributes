@@ -1,2 +1,3 @@
+*.vhd  linguist-language=VHDL
 *.tcl  linguist-vendored
 
