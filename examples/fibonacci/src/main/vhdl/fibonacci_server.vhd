@@ -28,6 +28,7 @@ architecture RTL of Fibonacci_Server is
     signal    reset_n          :  std_logic;
     signal    GO               :  std_logic;
     signal    BUSY             :  std_logic;
+    signal    DONE             :  std_logic;
     signal    N                :  std_logic_vector(8-1 downto 0);
     signal    O                :  std_logic_vector(64-1 downto 0);
     component Fibonacci_Interface is
@@ -51,6 +52,7 @@ architecture RTL of Fibonacci_Server is
             O_READY              : in  std_logic;
             GO                   : out std_logic;
             BUSY                 : in  std_logic;
+            DONE                 : in  std_logic;
             N                    : out std_logic_vector(8-1 downto 0);
             O                    : in  std_logic_vector(64-1 downto 0)
         );
@@ -59,9 +61,9 @@ architecture RTL of Fibonacci_Server is
         port(
             CLK                  : in  std_logic;
             RST                  : in  std_logic;
-            CLR                  : in  std_logic;
             GO                   : in  std_logic;
             BUSY                 : out std_logic;
+            DONE                 : out std_logic;
             N                    : in  std_logic_vector(8-1 downto 0);
             O                    : out std_logic_vector(64-1 downto 0)
         );
@@ -90,6 +92,7 @@ begin
             O_READY              => O_TREADY            ,
             GO                   => GO                  ,
             BUSY                 => BUSY                ,
+            DONE                 => DONE                ,
             N                    => N                   ,
             O                    => O                   
         );
@@ -97,9 +100,9 @@ begin
         port map(
             CLK                  => CLK                 ,
             RST                  => reset               ,
-            CLR                  => '0'                 ,
             GO                   => GO                  ,
             BUSY                 => BUSY                ,
+            DONE                 => DONE                ,
             N                    => N                   ,
             O                    => O                   
         );

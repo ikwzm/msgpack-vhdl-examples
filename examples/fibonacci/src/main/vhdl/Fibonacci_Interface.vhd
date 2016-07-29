@@ -22,6 +22,7 @@ entity  Fibonacci_Interface is
         O_READY              : in  std_logic;
         GO                   : out std_logic;
         BUSY                 : in  std_logic;
+        DONE                 : in  std_logic;
         N                    : out std_logic_vector(8-1 downto 0);
         O                    : in  std_logic_vector(64-1 downto 0)
     );
@@ -139,7 +140,10 @@ begin
                 SET_PARAM_DONE          => proc_set_param_done          , -- In  :
                 SET_PARAM_SHIFT         => proc_set_param_shift         , -- In  :
                 RUN_REQ                 => GO                           , -- Out :
+                RUN_ACK                 => BUSY                         , -- In  :
                 RUN_BUSY                => BUSY                         , -- In  :
+                RUN_DONE                => DONE                         , -- In  :
+                RUNNING                 => open                         , -- Out :
                 RET_ID                  => proc_res_id     (0)          , -- Out :
                 RET_START               => proc_return_start            , -- Out :
                 RET_DONE                => proc_return_done             , -- Out :
@@ -192,8 +196,8 @@ begin
             RET: MsgPack_RPC_Method_Return_Integer  -- 
                 generic map (                                                 -- 
                     VALUE_WIDTH             => 64                           , --
-                    RETURN_UINT             => FALSE                        , --
-                    RETURN_INT              => TRUE                         , --
+                    RETURN_UINT             => TRUE                         , --
+                    RETURN_INT              => FALSE                        , --
                     RETURN_FLOAT            => FALSE                        , --
                     RETURN_BOOLEAN          => FALSE                          --
                 )                                                             -- 
