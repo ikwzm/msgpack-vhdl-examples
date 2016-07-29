@@ -1,12 +1,12 @@
 -----------------------------------------------------------------------------------
 --!     @file    add_interface.vhd
 --!     @brief   Add Interface Module
---!     @version 0.1.0
---!     @date    2015/10/27
+--!     @version 0.2.2
+--!     @date    2016/7/29
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
---      Copyright (C) 2012-2015 Ichiro Kawazome
+--      Copyright (C) 2016 Ichiro Kawazome
 --      All rights reserved.
 --
 --      Redistribution and use in source and binary forms, with or without
@@ -95,6 +95,7 @@ architecture RTL of Add_Interface is
     signal    return_id         :  MsgPack_RPC.MsgID_Type;
     signal    return_error      :  std_logic;
     signal    return_start      :  std_logic;
+    signal    return_done       :  std_logic;
     signal    return_busy       :  std_logic;
     signal    proc_start        :  std_logic;
     signal    add_a_value       :  std_logic_vector(31 downto 0);
@@ -135,10 +136,14 @@ begin
             SET_PARAM_DONE  => set_param_done      , -- In  :
             SET_PARAM_SHIFT => set_param_shift     , -- In  :
             RUN_REQ         => add_req             , -- Out :
+            RUN_ACK         => add_busy            , -- In  :
             RUN_BUSY        => add_busy            , -- In  :
+            RUN_DONE        => '0'                 , -- In  :
+            RUNNING         => open                , -- Out :
             RET_ID          => PROC_RES_ID         , -- Out :
             RET_ERROR       => return_error        , -- Out :
             RET_START       => return_start        , -- Out :
+            RET_DONE        => return_done         , -- Out :
             RET_BUSY        => return_busy           -- In  :
         );                                           -- 
     -------------------------------------------------------------------------------
@@ -210,6 +215,7 @@ begin
             CLR             => CLR                 , -- In  :
             RET_ERROR       => return_error        , -- In  :
             RET_START       => return_start        , -- In  :
+            RET_DONE        => return_done         , -- In  :
             RET_BUSY        => return_busy         , -- Out :
             RES_CODE        => PROC_RES_CODE       , -- Out :
             RES_VALID       => PROC_RES_VALID      , -- Out :
