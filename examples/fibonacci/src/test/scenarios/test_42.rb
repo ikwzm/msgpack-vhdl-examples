@@ -18,7 +18,7 @@ class Responder
 end
 
 fib = Array.new
-(0..93).to_a.each do |n|
+(0..42).to_a.each do |n|
   if n <= 1
     fib[n] = n
   else
@@ -26,7 +26,7 @@ fib = Array.new
   end
 end
 
-File.open('test_1.snr','w') do |file|
+File.open('test_42.snr','w') do |file|
 
   i = Requester.new
   o = Responder.new
