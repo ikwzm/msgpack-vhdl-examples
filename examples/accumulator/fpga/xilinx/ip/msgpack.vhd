@@ -2,7 +2,7 @@
 --!     @file    msgpack_object.vhd
 --!     @brief   MessagePack Object Code Package :
 --!     @version 0.2.0
---!     @date    2016/3/16
+--!     @date    2016/6/26
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
@@ -759,19 +759,25 @@ package body MsgPack_Object is
     begin
         i_data := std_logic_vector(DATA);
         if (i_data'length > CODE_DATA_BITS) then
-            use_long := FALSE;
-            for pos in i_data'high downto CODE_DATA_BITS loop
-                if (i_data(pos) /= i_data(CODE_DATA_BITS-1)) then
-                    use_long := TRUE;
-                end if;
-            end loop;
             if (i_data(i_data'high) = '1') then
+                use_long := FALSE;
+                for pos in i_data'high downto CODE_DATA_BITS-1 loop
+                    if (i_data(pos) /= '1') then
+                        use_long := TRUE;
+                    end if;
+                end loop;
                 if (use_long) then
                     return New_Code_Vector_Signed(  LENGTH, i_data);
                 else
                     return New_Code_Vector_Signed(  LENGTH, i_data(CODE_DATA_BITS-1 downto 0));
                 end if;
             else
+                use_long := FALSE;
+                for pos in i_data'high downto CODE_DATA_BITS loop
+                    if (i_data(pos) /= '0') then
+                        use_long := TRUE;
+                    end if;
+                end loop;
                 if (use_long) then
                     return New_Code_Vector_Unsigned(LENGTH, i_data);
                 else
@@ -1106,7 +1112,7 @@ end MsgPack_Object;
 --!     @file    kvmap/msgpack_kvmap_components.vhd                              --
 --!     @brief   MessagaPack Component Library Description                       --
 --!     @version 0.2.0                                                           --
---!     @date    2016/06/24                                                      --
+--!     @date    2016/07/26                                                      --
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>                     --
 -----------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------
@@ -5065,7 +5071,7 @@ end RTL;
 --!     @file    object/msgpack_object_components.vhd                            --
 --!     @brief   MessagaPack Component Library Description                       --
 --!     @version 0.2.0                                                           --
---!     @date    2016/06/24                                                      --
+--!     @date    2016/07/26                                                      --
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>                     --
 -----------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------
@@ -15022,8 +15028,8 @@ end RTL;
 -----------------------------------------------------------------------------------
 --!     @file    rpc/msgpack_rpc_components.vhd                                  --
 --!     @brief   MessagaPack Component Library Description                       --
---!     @version 0.2.0                                                           --
---!     @date    2016/06/23                                                      --
+--!     @version 0.2.2                                                           --
+--!     @date    2016/07/28                                                      --
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>                     --
 -----------------------------------------------------------------------------------
 -----------------------------------------------------------------------------------
@@ -15268,10 +15274,13 @@ component MsgPack_RPC_Method_Main_with_Param
         SET_PARAM_DONE  : in  std_logic_vector        (PARAM_NUM-1 downto 0);
         SET_PARAM_SHIFT : in  MsgPack_RPC.Shift_Vector(PARAM_NUM-1 downto 0);
     -------------------------------------------------------------------------------
-    -- MessagePack-RPC Method Start/Busy
+    -- MessagePack-RPC Method Request/Acknowledge/Busy/Done/Running
     -------------------------------------------------------------------------------
         RUN_REQ         : out std_logic;
-        RUN_BUSY        : in  std_logic;
+        RUN_ACK         : in  std_logic := '1';
+        RUN_BUSY        : in  std_logic := '1';
+        RUN_DONE        : in  std_logic := '0';
+        RUNNING         : out std_logic;
     -------------------------------------------------------------------------------
     -- MessagePack-RPC Method Return Interface
     -------------------------------------------------------------------------------
@@ -15320,10 +15329,13 @@ component MsgPack_RPC_Method_Main_No_Param
         PARAM_LAST      : in  std_logic;
         PARAM_SHIFT     : out MsgPack_RPC.Shift_Type;
     -------------------------------------------------------------------------------
-    -- MessagePack-RPC Method Start/Busy
+    -- MessagePack-RPC Method Request/Acknowledge/Busy/Done/Running
     -------------------------------------------------------------------------------
         RUN_REQ         : out std_logic;
-        RUN_BUSY        : in  std_logic;
+        RUN_ACK         : in  std_logic := '1';
+        RUN_BUSY        : in  std_logic := '1';
+        RUN_DONE        : in  std_logic := '0';
+        RUNNING         : out std_logic;
     -------------------------------------------------------------------------------
     -- MessagePack-RPC Method Return Interface
     -------------------------------------------------------------------------------
@@ -17580,8 +17592,8 @@ end RTL;
 -----------------------------------------------------------------------------------
 --!     @file    msgpack_rpc_method_main_with_param.vhd
 --!     @brief   MessagePack-RPC Method Main Module with Parameter :
---!     @version 0.2.0
---!     @date    2016/5/20
+--!     @version 0.2.2
+--!     @date    2016/7/28
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
@@ -17663,10 +17675,13 @@ entity  MsgPack_RPC_Method_Main_with_Param is
         SET_PARAM_DONE  : in  std_logic_vector        (PARAM_NUM-1 downto 0);
         SET_PARAM_SHIFT : in  MsgPack_RPC.Shift_Vector(PARAM_NUM-1 downto 0);
     -------------------------------------------------------------------------------
-    -- MessagePack-RPC Method Start/Busy
+    -- MessagePack-RPC Method Request/Acknowledge/Busy/Done/Running
     -------------------------------------------------------------------------------
         RUN_REQ         : out std_logic;
-        RUN_BUSY        : in  std_logic;
+        RUN_ACK         : in  std_logic := '1';
+        RUN_BUSY        : in  std_logic := '1';
+        RUN_DONE        : in  std_logic := '0';
+        RUNNING         : out std_logic;
     -------------------------------------------------------------------------------
     -- MessagePack-RPC Method Return Interface
     -------------------------------------------------------------------------------
@@ -17894,13 +17909,16 @@ begin
                             curr_state <= ERROR_END_STATE;
                         end if;
                     when PROC_BEGIN_STATE =>
-                        if (RUN_BUSY = '1') then
+                        if    (RUN_DONE = '1') then
+                            curr_state <= PROC_END_STATE;
+                        elsif (RUN_ACK  = '1') then
                             curr_state <= PROC_BUSY_STATE;
                         else
                             curr_state <= PROC_BEGIN_STATE;
                         end if;
                     when PROC_BUSY_STATE  =>
-                        if (RUN_BUSY = '0') then
+                        if    (RUN_DONE = '1') or
+                              (RUN_BUSY = '0') then
                             curr_state <= PROC_END_STATE;
                         else
                             curr_state <= PROC_BUSY_STATE;
@@ -17928,10 +17946,15 @@ begin
     -------------------------------------------------------------------------------
     PROC_BUSY <= '1' when (curr_state /= IDLE_STATE        ) else '0';
     RUN_REQ   <= '1' when (curr_state  = PROC_BEGIN_STATE  ) else '0';
+    RUNNING   <= '1' when (curr_state  = PROC_BEGIN_STATE  ) or
+                          (curr_state  = PROC_BUSY_STATE   ) else '0';
     RET_ERROR <= '1' when (curr_state  = ERROR_RETURN_STATE) else '0';
     RET_START <= '1' when (curr_state  = ERROR_RETURN_STATE) or
-                          (curr_state  = PROC_BEGIN_STATE and RUN_BUSY = '1') else '0';
+                          (curr_state  = PROC_BEGIN_STATE and RUN_DONE = '1') or
+                          (curr_state  = PROC_BEGIN_STATE and RUN_ACK  = '1') else '0';
     RET_DONE  <= '1' when (curr_state  = ERROR_RETURN_STATE) or
+                          (curr_state  = PROC_BEGIN_STATE and RUN_DONE = '1') or
+                          (curr_state  = PROC_BUSY_STATE  and RUN_DONE = '1') or
                           (curr_state  = PROC_BUSY_STATE  and RUN_BUSY = '0') else '0';
     -------------------------------------------------------------------------------
     --
