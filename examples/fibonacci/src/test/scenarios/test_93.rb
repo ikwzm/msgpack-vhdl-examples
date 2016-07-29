@@ -18,7 +18,7 @@ class Responder
 end
 
 fib = Array.new
-(0..42).to_a.each do |n|
+(0..93).to_a.each do |n|
   if n <= 1
     fib[n] = n
   else
@@ -26,17 +26,17 @@ fib = Array.new
   end
 end
 
-File.open('test_1_32.snr','w') do |file|
+File.open('test_93.snr','w') do |file|
 
   i = Requester.new
   o = Responder.new
 
   file.puts "---"
   file.puts "- MARCHAL  : "
-  file.puts "  - SAY    : Fibonacci_Server TEST 2 Start."
+  file.puts "  - SAY    : Fibonacci_Server TEST 1 Start."
   file.puts "---"
   file.puts "- MARCHAL  : "
-  file.puts "  - SAY    : Fibonacci_Server TEST 2.1 Start."
+  file.puts "  - SAY    : Fibonacci_Server TEST 1.1 Start."
   file.puts "---"
   fib.each_index do |n|
     f = fib[n]
@@ -47,6 +47,6 @@ File.open('test_1_32.snr','w') do |file|
     file.puts "---"
   end
   file.puts "- MARCHAL  : "
-  file.puts "- SAY      : Fibonacci_Server TEST 2 Done."
+  file.puts "- SAY      : Fibonacci_Server TEST 1 Done."
   file.puts "---"
 end

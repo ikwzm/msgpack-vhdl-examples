@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------------------
 --!     @file    fib_interface.vhd
 --!     @brief   Fib Interface Module
---!     @version 0.2.0
---!     @date    2016/6/25
+--!     @version 0.2.2
+--!     @date    2016/7/29
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
@@ -93,15 +93,15 @@ architecture RTL of Fib_Interface is
     signal    set_param_error   :  std_logic_vector        (PARAM_NUM-1 downto 0);
     signal    set_param_done    :  std_logic_vector        (PARAM_NUM-1 downto 0);
     signal    set_param_shift   :  MsgPack_RPC.Shift_Vector(PARAM_NUM-1 downto 0);
-    signal    return_id         :  MsgPack_RPC.MsgID_Type;
     signal    return_error      :  std_logic;
     signal    return_start      :  std_logic;
     signal    return_done       :  std_logic;
     signal    return_busy       :  std_logic;
     signal    proc_start        :  std_logic;
     signal    fib_n_default     :  std_logic_vector(fib_n_data'range) := (others => '0');
-    signal    fib_go            :  std_logic;
-    signal    fib_busy          :  std_logic;
+    signal    fib_req           :  std_logic;
+    signal    fib_ack           :  std_logic;
+    signal    fib_done          :  std_logic;
     signal    fib_run           :  std_logic;
 begin
     -------------------------------------------------------------------------------
@@ -136,8 +136,11 @@ begin
             SET_PARAM_ERROR => set_param_error     , -- In  :
             SET_PARAM_DONE  => set_param_done      , -- In  :
             SET_PARAM_SHIFT => set_param_shift     , -- In  :
-            RUN_REQ         => fib_go              , -- Out :
-            RUN_BUSY        => fib_busy            , -- In  :
+            RUN_REQ         => fib_req             , -- Out :
+            RUN_ACK         => fib_ack             , -- In  :
+            RUN_BUSY        => fib_run             , -- In  :
+            RUN_DONE        => fib_done            , -- In  :
+            RUNNING         => fib_run             , -- Out :
             RET_ID          => PROC_RES_ID         , -- Out :
             RET_ERROR       => return_error        , -- Out :
             RET_START       => return_start        , -- Out :
@@ -197,27 +200,8 @@ begin
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
-    process (CLK, RST) begin
-        if (RST = '1') then
-            fib_run <= '0';
-        elsif (CLK'event and CLK = '1') then
-            if (fib_run = '0') then
-                if (fib_go = '1' and fib_n_ack = '1') then
-                    fib_run <= '1';
-                else
-                    fib_run <= '0';
-                end if;
-            else
-                if (fib_o_en = '1') then
-                    fib_run <= '0';
-                else
-                    fib_run <= '1';
-                end if;
-            end if;
-        end if;
-    end process;
-    fib_n_en  <= '1' when (fib_run = '0' and fib_go = '1') else '0';
-    fib_o_ack <= '1' when (fib_run = '1' and fib_o_en = '1') else '0';
-    fib_busy  <= '1' when (fib_run = '0' and fib_go = '1' and fib_n_ack = '1') or
-                          (fib_run = '1' and fib_o_en = '0') else '0';
+    fib_ack   <= '1' when (fib_run = '1' and fib_n_ack = '1') else '0';
+    fib_n_en  <= '1' when (fib_run = '1' and fib_req   = '1') else '0';
+    fib_done  <= '1' when (fib_run = '1' and fib_o_en  = '1') else '0';
+    fib_o_ack <= '1' when (fib_run = '1' and fib_o_en  = '1') else '0';
 end RTL;

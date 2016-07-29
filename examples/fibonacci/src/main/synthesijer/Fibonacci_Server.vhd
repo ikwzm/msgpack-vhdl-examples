@@ -26,12 +26,11 @@ use     ieee.numeric_std.all;
 architecture RTL of Fibonacci_Server is
     signal    reset            :  std_logic;
     signal    reset_n          :  std_logic;
-    signal    GO               :  std_logic;
-    signal    BUSY             :  std_logic;
-    signal    DONE             :  std_logic;
-    signal    N                :  std_logic_vector(8-1 downto 0);
-    signal    O                :  std_logic_vector(64-1 downto 0);
-    component Fibonacci_Interface is
+    signal    fib_req          :  std_logic;
+    signal    fib_busy         :  std_logic;
+    signal    fib_n            :  signed(32-1 downto 0);
+    signal    fib_return       :  signed(64-1 downto 0);
+    component Fib_Interface is
         generic(
             I_BYTES              : integer := 1;
             O_BYTES              : integer := 1
@@ -50,28 +49,26 @@ architecture RTL of Fibonacci_Server is
             O_LAST               : out std_logic;
             O_VALID              : out std_logic;
             O_READY              : in  std_logic;
-            GO                   : out std_logic;
-            BUSY                 : in  std_logic;
-            DONE                 : in  std_logic;
-            N                    : out std_logic_vector(8-1 downto 0);
-            O                    : in  std_logic_vector(64-1 downto 0)
+            fib_req              : out std_logic;
+            fib_busy             : in  std_logic;
+            fib_n                : out signed(32-1 downto 0);
+            fib_return           : in  signed(64-1 downto 0)
         );
     end component;
-    component FIB is
+    component Fib is
         port(
-            CLK                  : in  std_logic;
-            RST                  : in  std_logic;
-            GO                   : in  std_logic;
-            BUSY                 : out std_logic;
-            DONE                 : out std_logic;
-            N                    : in  std_logic_vector(8-1 downto 0);
-            O                    : out std_logic_vector(64-1 downto 0)
+            clk                  : in  std_logic;
+            reset                : in  std_logic;
+            fib_req              : in  std_logic;
+            fib_busy             : out std_logic;
+            fib_n                : in  signed(32-1 downto 0);
+            fib_return           : out signed(64-1 downto 0)
         );
     end component;
 begin
     reset      <= not ARESETn;
     reset_n    <=     ARESETn;
-    U : Fibonacci_Interface
+    U : Fib_Interface
         generic map(
             I_BYTES              => I_BYTES             ,
             O_BYTES              => O_BYTES             
@@ -90,20 +87,18 @@ begin
             O_LAST               => O_TLAST             ,
             O_VALID              => O_TVALID            ,
             O_READY              => O_TREADY            ,
-            GO                   => GO                  ,
-            BUSY                 => BUSY                ,
-            DONE                 => DONE                ,
-            N                    => N                   ,
-            O                    => O                   
+            fib_req              => fib_req             ,
+            fib_busy             => fib_busy            ,
+            fib_n                => fib_n               ,
+            fib_return           => fib_return          
         );
-    T : FIB
+    T : Fib
         port map(
-            CLK                  => CLK                 ,
-            RST                  => reset               ,
-            GO                   => GO                  ,
-            BUSY                 => BUSY                ,
-            DONE                 => DONE                ,
-            N                    => N                   ,
-            O                    => O                   
+            clk                  => CLK                 ,
+            reset                => reset               ,
+            fib_req              => fib_req             ,
+            fib_busy             => fib_busy            ,
+            fib_n                => fib_n               ,
+            fib_return           => fib_return          
         );
 end RTL;

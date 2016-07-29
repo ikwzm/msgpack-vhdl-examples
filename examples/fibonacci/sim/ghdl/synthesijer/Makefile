@@ -11,17 +11,8 @@ REMOVE     = -rm
 GHDL       = ghdl
 GHDLFLAGS  = --mb-comments -P$(DUMMY_PLUG_WORK_PATH)
 
-test   : test_bench.o dut
-	$(GHDL) -e $(GHDLFLAGS) --work=msgpack TEST_BENCH
-	$(GHDL) -r $(GHDLFLAGS) --work=msgpack TEST_BENCH
-
-test_1 : test_bench.o dut $(SRC_PATH)/test/scenarios/test_1.snr 
-	$(COPY) $(SRC_PATH)/test/scenarios/test_1.snr test.snr
-	$(GHDL) -e $(GHDLFLAGS) --work=msgpack TEST_BENCH
-	$(GHDL) -r $(GHDLFLAGS) --work=msgpack TEST_BENCH
-
-test_2 : test_bench.o dut $(SRC_PATH)/test/scenarios/test_2.snr 
-	$(COPY) $(SRC_PATH)/test/scenarios/test_2.snr test.snr
+test   : test_bench.o dut $(SRC_PATH)/test/scenarios/test_92.snr 
+	$(COPY) $(SRC_PATH)/test/scenarios/test_92.snr test.snr
 	$(GHDL) -e $(GHDLFLAGS) --work=msgpack TEST_BENCH
 	$(GHDL) -r $(GHDLFLAGS) --work=msgpack TEST_BENCH
 

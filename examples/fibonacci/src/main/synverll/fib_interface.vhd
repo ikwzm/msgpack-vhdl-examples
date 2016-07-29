@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------------------
 --!     @file    fib_interface.vhd
 --!     @brief   Fib Interface Module
---!     @version 0.2.0
---!     @date    2016/6/26
+--!     @version 0.2.2
+--!     @date    2016/7/29
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
@@ -135,7 +135,10 @@ begin
             SET_PARAM_DONE  => set_param_done      , -- In  :
             SET_PARAM_SHIFT => set_param_shift     , -- In  :
             RUN_REQ         => fib_req             , -- Out :
+            RUN_ACK         => fib_busy            , -- In  :
             RUN_BUSY        => fib_busy            , -- In  :
+            RUN_DONE        => '0'                 , -- In  :
+            RUNNING         => open                , -- Out :
             RET_ID          => PROC_RES_ID         , -- Out :
             RET_ERROR       => return_error        , -- Out :
             RET_START       => return_start        , -- Out :
