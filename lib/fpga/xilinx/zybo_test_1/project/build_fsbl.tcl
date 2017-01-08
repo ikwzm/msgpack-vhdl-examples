@@ -17,9 +17,17 @@ if {[info exists sdk_workspace] == 0} {
     set sdk_workspace       [file join $project_directory $project_name.sdk]
 }
 
-sdk set_workspace $sdk_workspace
+if {[info commands sdk::setws] ne ""} {
+    sdk setws         $sdk_workspace
+} else {
+    sdk set_workspace $sdk_workspace
+}
 
-sdk create_hw_project -name $hw_name -hwspec [file join $sdk_workspace $hwspec_file]
+if {[info commands sdk::createhw] ne ""} {
+    sdk createhw          -name $hw_name -hwspec [file join $sdk_workspace $hwspec_file]
+} else {
+    sdk create_hw_project -name $hw_name -hwspec [file join $sdk_workspace $hwspec_file]
+}
 
 hsi::open_hw_design  [file join $sdk_workspace $hw_name "system.hdf"]
 hsi::create_sw_design $bsp_name -proc $proc_name -os standalone
@@ -27,8 +35,16 @@ hsi::add_library xilffs
 hsi::generate_bsp -sw $bsp_name -dir [file join $sdk_workspace $bsp_name] -compile
 hsi::close_sw_design  $bsp_name
 
-sdk create_app_project -name $app_name -hwproject $hw_name -proc $proc_name -os standalone -lang C -app $app_type -bsp $bsp_name
+if {[info commands sdk::createapp] ne ""} {
+    sdk createapp          -name $app_name -hwproject $hw_name -proc $proc_name -os standalone -lang C -app $app_type -bsp $bsp_name
+} else {
+    sdk create_app_project -name $app_name -hwproject $hw_name -proc $proc_name -os standalone -lang C -app $app_type -bsp $bsp_name
+}
 
-sdk build_project $app_name
+if {[info commands sdk::projects] ne ""} {
+    sdk projects -build
+} else {
+    sdk build_project $app_name
+}
 
 exit
