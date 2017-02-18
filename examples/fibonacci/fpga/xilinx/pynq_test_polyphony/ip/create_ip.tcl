@@ -75,7 +75,7 @@ proc add_verilog_file {fileset library_name file_name} {
     set_property "file_type" "Verilog"     $file_obj
     set_property "library"   $library_name $file_obj
 }
-add_verilog_file sources_1 WORK ../../../../src/main/polyphony/fib.v
+add_verilog_file sources_1 WORK ../../../../src/main/polyphony/polyphony_out_fib.v
 add_vhdl_file sources_1 MsgPack msgpack.vhd
 source "add_sources.tcl"
 #

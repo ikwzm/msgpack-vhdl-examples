@@ -9,6 +9,8 @@ set     board_part          [get_board_parts -quiet -latest_file_version "*pynq*
 set     device_part         "xc7z020clg400-1"
 set     design_bd_tcl_file  [file join $script_directory "design_1_bd.tcl"  ]
 lappend constrs_file_list   [file join $script_directory "design_1_pin.xdc" ]
+lappend ip_repo_path_list   [file join $script_directory ".." ".." ".." ".." ".." "PTTY_AXI" "target" "xilinx" "ip"]
+lappend ip_repo_path_list   [file join $script_directory ".." ".." ".." ".." ".." "LED_AXI"  "target" "xilinx" "ip"]
 #
 # Create project
 #
