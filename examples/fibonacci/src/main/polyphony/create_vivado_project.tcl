@@ -3,7 +3,7 @@
 #
 
 set project_directory       [file dirname [info script]]
-set project_name            "fibonacci_server"
+set project_name            "fibonacci"
 set device_parts            "xc7z010clg400-1"
 #
 # Create project
@@ -60,14 +60,6 @@ current_run -implementation [get_runs impl_1]
 # Set 'sources_1' and 'sim_1' fileset object
 #
 
-proc add_vhdl_file {fileset library_name file_name} {
-    set file    [file normalize $file_name]
-    set fileset [get_filesets   $fileset  ] 
-    add_files -norecurse -fileset $fileset $file
-    set file_obj [get_files -of_objects $fileset $file]
-    set_property "file_type" "VHDL"        $file_obj
-    set_property "library"   $library_name $file_obj
-}
 proc add_verilog_file {fileset library_name file_name} {
     set file    [file normalize $file_name]
     set fileset [get_filesets   $fileset  ] 
@@ -76,32 +68,20 @@ proc add_verilog_file {fileset library_name file_name} {
     set_property "file_type" "Verilog"     $file_obj
     set_property "library"   $library_name $file_obj
 }
-source "add_sources.tcl"
-source "add_sim.tcl"
-add_verilog_file sources_1 WORK ../../../src/main/polyphony/polyphony_out_fib.v
-add_verilog_file sim_1     WORK ../../../src/main/polyphony/polyphony_out.v
-add_verilog_file sim_1     WORK ../../../src/main/polyphony/polyphony_out_test.v
+add_verilog_file sources_1 WORK ./polyphony_out_fib.v
+add_verilog_file sim_1     WORK ./polyphony_out.v
+add_verilog_file sim_1     WORK ./polyphony_out_test.v
 #
 # Set 'constrs_1'  fileset object
 #
-add_files -fileset constrs_1 -norecurse ./timing.xdc
+
 #
 # Set 'sources_1' fileset properties
 #
 set obj [get_filesets sources_1]
-set_property "top" "Fibonacci_Server"  $obj
+set_property "top" "fib"  $obj
 #
 # Set 'sim_1' fileset properties
 #
 set obj [get_filesets sim_1]
-
-set_property "top" "TEST_BENCH"  $obj
-set_property "generic" "SCENARIO_FILE=../../../../../../src/test/scenarios/test_42.snr" $obj
-
-# set_property "top" "test"  $obj
-
-update_compile_order -fileset sources_1
-update_compile_order -fileset sim_1
-set_property source_mgmt_mode DisplayOnly [current_project]
-reorder_files -fileset sources_1 -front [file normalize ../../../../../msgpack-vhdl/src/msgpack/object/msgpack_object.vhd]
-reorder_files -fileset sources_1 -after [file normalize ../../../../../msgpack-vhdl/src/msgpack/object/msgpack_object.vhd] [file normalize ../../../../../msgpack-vhdl/src/msgpack/rpc/msgpack_rpc.vhd] 
+set_property "top" "test"  $obj

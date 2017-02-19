@@ -13,11 +13,10 @@ def fib(n):
 
 @testbench
 def test():
-    assert 0  == fib(0)
-    assert 1  == fib(1)
-    assert 1  == fib(2)
-    assert 2  == fib(3)
-    assert 21 == fib(8)
+    expect = [0,1,1,2,3,5,8,13,21,34,55,89,144,233,377,610]
+    for i in range(len(expect)):
+        result = fib(i)
+        assert expect[i] == result
+        print(i, "=>", result)
 
 test()
-
