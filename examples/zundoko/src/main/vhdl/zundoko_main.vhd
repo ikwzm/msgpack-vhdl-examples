@@ -42,8 +42,10 @@ entity  ZunDoko_Main is
     port (
         clk             : in  std_logic;
         reset           : in  std_logic;
-        req             : in  std_logic;
-        busy            : out std_logic;
+        req_valid       : in  std_logic;
+        req_ready       : out std_logic;
+        res_valid       : out std_logic;
+        res_ready       : in  std_logic;
         ret_valid       : out std_logic;
         ret_code        : out MsgPack_RPC.Code_Type;
         ret_last        : out std_logic;
@@ -383,7 +385,7 @@ begin
     end block;
 
     MAIN: block
-        type     STATE_TYPE      is(IDLE_STATE, ZUNDOKO_GEN_STATE, KIYOSHI_RET_STATE, DUMMY_RET_STATE);
+        type     STATE_TYPE      is(IDLE_STATE, ZUNDOKO_GEN_STATE, KIYOSHI_RET_STATE, DUMMY_RET_STATE, RES_STATE);
         signal   state           :  STATE_TYPE;
     begin
         process(clk, reset) begin
@@ -392,7 +394,7 @@ begin
             elsif (clk'event and clk = '1') then
                 case state is
                     when IDLE_STATE =>
-                        if (req = '1') then
+                        if (req_valid = '1') then
                             state <= ZUNDOKO_GEN_STATE;
                         else
                             state <= IDLE_STATE;
@@ -411,15 +413,21 @@ begin
                         end if;
                     when KIYOSHI_RET_STATE =>
                         if (return_done = TRUE) then
-                            state <= IDLE_STATE;
+                            state <= RES_STATE;
                         else
                             state <= KIYOSHI_RET_STATE;
                         end if;
                     when DUMMY_RET_STATE   =>
                         if (return_done = TRUE) then
-                            state <= IDLE_STATE;
+                            state <= RES_STATE;
                         else
                             state <= DUMMY_RET_STATE;
+                        end if;
+                    when RES_STATE =>
+                        if (res_ready = '1') then
+                            state <= IDLE_STATE;
+                        else
+                            state <= RES_STATE;
                         end if;
                     when others =>
                             state <= IDLE_STATE;
@@ -430,6 +438,7 @@ begin
         zundoko_gen    <= (state  = ZUNDOKO_GEN_STATE);
         return_dummy   <= (state  = DUMMY_RET_STATE  );
         return_kiyoshi <= (state  = KIYOSHI_RET_STATE);
-        busy           <= '1' when (state = ZUNDOKO_GEN_STATE) else '0';
+        req_ready      <= '1' when (state = IDLE_STATE) else '0';
+        res_valid      <= '1' when (state = RES_STATE ) else '0';
     end block;
 end RTL;
