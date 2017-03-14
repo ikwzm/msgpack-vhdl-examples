@@ -1,12 +1,12 @@
 -----------------------------------------------------------------------------------
 --!     @file    add_server.vhd
 --!     @brief   Sample Module for MsgPack_RPC_Server
---!     @version 0.2.2
---!     @date    2016/7/29
+--!     @version 0.2.5
+--!     @date    2017/3/14
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
---      Copyright (C) 2016 Ichiro Kawazome
+--      Copyright (C) 2016-2017 Ichiro Kawazome
 --      All rights reserved.
 --
 --      Redistribution and use in source and binary forms, with or without
