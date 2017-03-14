@@ -20,9 +20,10 @@ entity  Fibonacci_Interface is
         O_LAST               : out std_logic;
         O_VALID              : out std_logic;
         O_READY              : in  std_logic;
-        GO                   : out std_logic;
-        BUSY                 : in  std_logic;
-        DONE                 : in  std_logic;
+        REQ_VAL              : out std_logic;
+        REQ_RDY              : in  std_logic;
+        RES_VAL              : in  std_logic;
+        RES_RDY              : out std_logic;
         N                    : out std_logic_vector(8-1 downto 0);
         O                    : in  std_logic_vector(64-1 downto 0)
     );
@@ -139,10 +140,10 @@ begin
                 SET_PARAM_ERROR         => proc_set_param_error         , -- In  :
                 SET_PARAM_DONE          => proc_set_param_done          , -- In  :
                 SET_PARAM_SHIFT         => proc_set_param_shift         , -- In  :
-                RUN_REQ                 => GO                           , -- Out :
-                RUN_ACK                 => BUSY                         , -- In  :
-                RUN_BUSY                => BUSY                         , -- In  :
-                RUN_DONE                => DONE                         , -- In  :
+                RUN_REQ_VAL             => REQ_VAL                      , -- Out :
+                RUN_REQ_RDY             => REQ_RDY                      , -- In  :
+                RUN_RES_VAL             => RES_VAL                      , -- In  :
+                RUN_RES_RDY             => RES_RDY                      , -- Out :
                 RUNNING                 => open                         , -- Out :
                 RET_ID                  => proc_res_id     (0)          , -- Out :
                 RET_START               => proc_return_start            , -- Out :

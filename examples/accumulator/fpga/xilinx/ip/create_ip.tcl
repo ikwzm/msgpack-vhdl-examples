@@ -85,7 +85,7 @@ set_property supported_families {zynq Production virtex7 Production qvirtex7 Pro
 #
 # Set Core Version
 #
-set_property core_revision 2 [ipx::current_core]
+set_property core_revision 3 [ipx::current_core]
 #
 # Generate files
 #

@@ -76,9 +76,11 @@ proc add_verilog_file {fileset library_name file_name} {
     set_property "file_type" "Verilog"     $file_obj
     set_property "library"   $library_name $file_obj
 }
-add_verilog_file sources_1 WORK ../../../src/main/polyphony/fib.v
 source "add_sources.tcl"
 source "add_sim.tcl"
+add_verilog_file sources_1 WORK ../../../src/main/polyphony/polyphony_out_fib.v
+add_verilog_file sim_1     WORK ../../../src/main/polyphony/polyphony_out.v
+add_verilog_file sim_1     WORK ../../../src/main/polyphony/polyphony_out_test.v
 #
 # Set 'constrs_1'  fileset object
 #
@@ -92,8 +94,11 @@ set_property "top" "Fibonacci_Server"  $obj
 # Set 'sim_1' fileset properties
 #
 set obj [get_filesets sim_1]
+
 set_property "top" "TEST_BENCH"  $obj
 set_property "generic" "SCENARIO_FILE=../../../../../../src/test/scenarios/test_42.snr" $obj
+
+# set_property "top" "test"  $obj
 
 update_compile_order -fileset sources_1
 update_compile_order -fileset sim_1

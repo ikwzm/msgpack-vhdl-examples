@@ -1,15 +1,21 @@
 SYNTHESIJER ?= ../synthesijer/bin
-SOURCES = Fib.java 
-          $(END_LIST)
-
+JAVA_SOURCES = Fib.java 
+             $(END_LIST)
 #OPT = --chaining --ip-exact=HW
 #OPT = --ip-exact=HW
-CLASSES = $(SOURCES:.java=.class)
-VHDL_SOURCES = $(SOURCES:.java=.vhd)
+CLASSES = $(JAVA_SOURCES:.java=.class)
+VHDL_SOURCES = $(JAVA_SOURCES:.java=.vhd)
 VERILOG_SOURCES = $(SOURCES:.java=.v)
 
-all: $(SOURCES)
-	java -cp $(SYNTHESIJER):. synthesijer.Main --vhdl --verilog $(OPT) $(SOURCES)
+RPC_IF_GEN  = ../../../../../msgpack-vhdl/tools/msgpack-rpc-synthesijer-ifgen
+
+all: $(JAVA_SOURCES) Fib_Interface.vhd
+
+$(VHDL_SOURCES)   : $(JAVA_SOURCES)
+	java -cp $(SYNTHESIJER):. synthesijer.Main --vhdl --verilog $(OPT) $(JAVA_SOURCES)
+
+Fib_Interface.vhd : $(VHDL_SOURCES)
+	$(RPC_IF_GEN) -v $(VHDL_SOURCES)
 
 clean:
 	-rm -f $(CLASSES)

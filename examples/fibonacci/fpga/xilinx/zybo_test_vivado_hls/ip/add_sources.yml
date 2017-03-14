@@ -9,6 +9,6 @@
     Print    :  true
     Format   :  "add_vhdl_file sources_1 #{library_name} #{file_name}"
     PathList :  
-      - "../../../../src/main/vivado_hls/fib_interface.vhd"
+      - "../../../../src/main/vivado_hls/fibonacci_interface.vhd"
       - "../../../../src/main/vivado_hls/fibonacci_server.vhd"
     Top      :  ["Fibonacci_Server"]

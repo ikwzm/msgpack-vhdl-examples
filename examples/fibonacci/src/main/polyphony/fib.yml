@@ -1,0 +1,18 @@
+---
+name     : fib
+generate :
+    interface  : {name: Fibonacci_Interface, file: fibonacci_interface.vhd}
+    server     : {name: Fibonacci_Server   , file: fibonacci_server.vhd   }
+port     : {clock: clk, reset: rst, clear: }
+methods  :
+    - name     : fib
+      interface: {type: polyphony}
+      arguments:
+        - name      : n
+          type      : Integer
+          interface : {name: Signal , type: {name: Signed, width: 32}, port: {data: fib_in_n}}
+      returns  :
+        - name      : o
+          type      : Integer
+          interface : {name: Signal , type: {name: Signed, width: 32}, port: {data: fib_out_0}}
+---

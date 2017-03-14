@@ -12,6 +12,6 @@
     Name     :  work
     Format   :  "add_vhdl_file sources_1 #{library_name} #{file_name}"
     PathList :  
-      - "../../../src/main/polyphony/fib_interface.vhd"
+      - "../../../src/main/polyphony/fibonacci_interface.vhd"
       - "../../../src/main/polyphony/fibonacci_server.vhd"
     Top      :  ["Fibonacci_Server"]

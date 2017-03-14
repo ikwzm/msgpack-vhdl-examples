@@ -1,8 +1,8 @@
 -----------------------------------------------------------------------------------
 --!     @file    zundoko_server.vhd
 --!     @brief   Zun-Doko for MsgPack_RPC_Server
---!     @version 0.2.0
---!     @date    2016/6/26
+--!     @version 0.2.5
+--!     @date    2017/3/14
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
@@ -82,38 +82,40 @@ architecture RTL of ZunDoko_Server is
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
-    constant PROC_NUM       :  integer :=  1;
-    constant MATCH_PHASE    :  integer :=  8;
-    signal   reset          :  std_logic;
+    constant PROC_NUM           :  integer :=  1;
+    constant MATCH_PHASE        :  integer :=  8;
+    signal   reset              :  std_logic;
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
-    signal   match_req      :  std_logic_vector        (MATCH_PHASE-1 downto 0);
-    signal   match_code     :  MsgPack_RPC.Code_Type;
-    signal   match_ok       :  std_logic_vector        (PROC_NUM-1 downto 0);
-    signal   match_not      :  std_logic_vector        (PROC_NUM-1 downto 0);
-    signal   match_shift    :  MsgPack_RPC.Shift_Vector(PROC_NUM-1 downto 0);
-    signal   proc_req_id    :  MsgPack_RPC.MsgID_Type;
-    signal   proc_req       :  std_logic_vector        (PROC_NUM-1 downto 0);
-    signal   proc_busy      :  std_logic_vector        (PROC_NUM-1 downto 0);
-    signal   param_code     :  MsgPack_RPC.Code_Vector (PROC_NUM-1 downto 0);
-    signal   param_valid    :  std_logic_vector        (PROC_NUM-1 downto 0);
-    signal   param_last     :  std_logic_vector        (PROC_NUM-1 downto 0);
-    signal   param_shift    :  MsgPack_RPC.Shift_Vector(PROC_NUM-1 downto 0);
-    signal   proc_res_id    :  MsgPack_RPC.MsgID_Vector(PROC_NUM-1 downto 0);
-    signal   proc_res_code  :  MsgPack_RPC.Code_Vector (PROC_NUM-1 downto 0);
-    signal   proc_res_valid :  std_logic_vector        (PROC_NUM-1 downto 0);
-    signal   proc_res_last  :  std_logic_vector        (PROC_NUM-1 downto 0);
-    signal   proc_res_ready :  std_logic_vector        (PROC_NUM-1 downto 0);
+    signal   match_req          :  std_logic_vector        (MATCH_PHASE-1 downto 0);
+    signal   match_code         :  MsgPack_RPC.Code_Type;
+    signal   match_ok           :  std_logic_vector        (PROC_NUM-1 downto 0);
+    signal   match_not          :  std_logic_vector        (PROC_NUM-1 downto 0);
+    signal   match_shift        :  MsgPack_RPC.Shift_Vector(PROC_NUM-1 downto 0);
+    signal   proc_req_id        :  MsgPack_RPC.MsgID_Type;
+    signal   proc_req           :  std_logic_vector        (PROC_NUM-1 downto 0);
+    signal   proc_busy          :  std_logic_vector        (PROC_NUM-1 downto 0);
+    signal   param_code         :  MsgPack_RPC.Code_Vector (PROC_NUM-1 downto 0);
+    signal   param_valid        :  std_logic_vector        (PROC_NUM-1 downto 0);
+    signal   param_last         :  std_logic_vector        (PROC_NUM-1 downto 0);
+    signal   param_shift        :  MsgPack_RPC.Shift_Vector(PROC_NUM-1 downto 0);
+    signal   proc_res_id        :  MsgPack_RPC.MsgID_Vector(PROC_NUM-1 downto 0);
+    signal   proc_res_code      :  MsgPack_RPC.Code_Vector (PROC_NUM-1 downto 0);
+    signal   proc_res_valid     :  std_logic_vector        (PROC_NUM-1 downto 0);
+    signal   proc_res_last      :  std_logic_vector        (PROC_NUM-1 downto 0);
+    signal   proc_res_ready     :  std_logic_vector        (PROC_NUM-1 downto 0);
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
-    signal   zundoko_req    :  std_logic;
-    signal   zundoko_busy   :  std_logic;
-    signal   zundoko_valid  :  std_logic;
-    signal   zundoko_last   :  std_logic;
-    signal   zundoko_code   :  MsgPack_RPC.Code_Type;
-    signal   zundoko_ready  :  std_logic;
+    signal   zundoko_req_valid  :  std_logic;
+    signal   zundoko_req_ready  :  std_logic;
+    signal   zundoko_res_valid  :  std_logic;
+    signal   zundoko_res_ready  :  std_logic;
+    signal   zundoko_valid      :  std_logic;
+    signal   zundoko_last       :  std_logic;
+    signal   zundoko_code       :  MsgPack_RPC.Code_Type;
+    signal   zundoko_ready      :  std_logic;
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------
@@ -143,8 +145,10 @@ architecture RTL of ZunDoko_Server is
             PROC_RES_VALID  : out std_logic;
             PROC_RES_LAST   : out std_logic;
             PROC_RES_READY  : in  std_logic;
-            zundoko_req     : out std_logic;
-            zundoko_busy    : in  std_logic;
+            zundoko_req_val : out std_logic;
+            zundoko_req_rdy : in  std_logic;
+            zundoko_res_val : in  std_logic;
+            zundoko_res_rdy : out std_logic;
             zundoko_valid   : in  std_logic;
             zundoko_code    : in  MsgPack_RPC.Code_Type;
             zundoko_last    : in  std_logic;
@@ -158,8 +162,10 @@ architecture RTL of ZunDoko_Server is
         port (
             clk             : in  std_logic;
             reset           : in  std_logic;
-            req             : in  std_logic;
-            busy            : out std_logic;
+            req_valid       : in  std_logic;
+            req_ready       : out std_logic;
+            res_valid       : out std_logic;
+            res_ready       : in  std_logic;
             ret_valid       : out std_logic;
             ret_code        : out MsgPack_RPC.Code_Type;
             ret_last        : out std_logic;
@@ -239,8 +245,10 @@ begin
             PROC_RES_VALID  => proc_res_valid(0)   , -- Out :
             PROC_RES_LAST   => proc_res_last (0)   , -- Out :
             PROC_RES_READY  => proc_res_ready(0)   , -- In  :
-            zundoko_req     => zundoko_req         , -- Out :
-            zundoko_busy    => zundoko_busy        , -- In  :
+            zundoko_req_val => zundoko_req_valid   , -- Out :
+            zundoko_req_rdy => zundoko_req_ready   , -- In  :
+            zundoko_res_val => zundoko_res_valid   , -- In  :
+            zundoko_res_rdy => zundoko_res_ready   , -- Out :
             zundoko_valid   => zundoko_valid       , -- In  :
             zundoko_code    => zundoko_code        , -- In  :
             zundoko_last    => zundoko_last        , -- In  :
@@ -253,8 +261,10 @@ begin
         port map (                                   -- 
             clk             => CLK                 , -- In  :
             reset           => reset               , -- In  :
-            req             => zundoko_req         , -- In  :
-            busy            => zundoko_busy        , -- Out :
+            req_valid       => zundoko_req_valid   , -- In  :
+            req_ready       => zundoko_req_ready   , -- Out :
+            res_valid       => zundoko_res_valid   , -- Out :
+            res_ready       => zundoko_res_ready   , -- In  :
             ret_valid       => zundoko_valid       , -- Out :
             ret_code        => zundoko_code        , -- Out :
             ret_last        => zundoko_last        , -- Out :

@@ -94,7 +94,7 @@ set_property "top" "Fibonacci_Server"  $obj
 #
 set obj [get_filesets sim_1]
 set_property "top" "TEST_BENCH"  $obj
-set_property "generic" "SCENARIO_FILE=../../../../../../src/test/scenarios/test_1_32.snr" $obj
+set_property "generic" "SCENARIO_FILE=../../../../../../src/test/scenarios/test_42.snr" $obj
 
 update_compile_order -fileset sources_1
 update_compile_order -fileset sim_1

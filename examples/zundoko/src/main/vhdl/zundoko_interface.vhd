@@ -1,12 +1,12 @@
 -----------------------------------------------------------------------------------
 --!     @file    zundoko_interface.vhd
 --!     @brief   Zun-Doko Interface Module
---!     @version 0.2.2
---!     @date    2016/7/29
+--!     @version 0.2.5
+--!     @date    2017/3/14
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
---      Copyright (C) 2016 Ichiro Kawazome
+--      Copyright (C) 2016-2017 Ichiro Kawazome
 --      All rights reserved.
 --
 --      Redistribution and use in source and binary forms, with or without
@@ -65,8 +65,10 @@ entity  ZunDoko_Interface is
         PROC_RES_VALID  : out std_logic;
         PROC_RES_LAST   : out std_logic;
         PROC_RES_READY  : in  std_logic;
-        zundoko_req     : out std_logic;
-        zundoko_busy    : in  std_logic;
+        zundoko_req_val : out std_logic;
+        zundoko_req_rdy : in  std_logic;
+        zundoko_res_val : in  std_logic;
+        zundoko_res_rdy : out std_logic;
         zundoko_valid   : in  std_logic;
         zundoko_code    : in  MsgPack_RPC.Code_Type;
         zundoko_last    : in  std_logic;
@@ -117,10 +119,10 @@ begin
             PARAM_VALID     => PARAM_VALID         , -- In  :
             PARAM_LAST      => PARAM_LAST          , -- In  :
             PARAM_SHIFT     => PARAM_SHIFT         , -- Out :
-            RUN_REQ         => zundoko_req         , -- Out :
-            RUN_ACK         => zundoko_busy        , -- In  :
-            RUN_BUSY        => zundoko_busy        , -- In  :
-            RUN_DONE        => '0'                 , -- In  :
+            RUN_REQ_VAL     => zundoko_req_val     , -- Out :
+            RUN_REQ_RDY     => zundoko_req_rdy     , -- In  :
+            RUN_RES_VAL     => zundoko_res_val     , -- In  :
+            RUN_RES_RDY     => zundoko_res_rdy     , -- Out :
             RUNNING         => open                , -- Out :
             RET_ID          => PROC_RES_ID         , -- Out :
             RET_ERROR       => return_error        , -- Out :
