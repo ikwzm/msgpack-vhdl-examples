@@ -26,9 +26,10 @@ use     ieee.numeric_std.all;
 architecture RTL of Fibonacci_Server is
     signal    reset            :  std_logic;
     signal    reset_n          :  std_logic;
-    signal    GO               :  std_logic;
-    signal    BUSY             :  std_logic;
-    signal    DONE             :  std_logic;
+    signal    REQ_VAL          :  std_logic;
+    signal    REQ_RDY          :  std_logic;
+    signal    RES_VAL          :  std_logic;
+    signal    RES_RDY          :  std_logic;
     signal    N                :  std_logic_vector(8-1 downto 0);
     signal    O                :  std_logic_vector(64-1 downto 0);
     component Fibonacci_Interface is
@@ -50,9 +51,10 @@ architecture RTL of Fibonacci_Server is
             O_LAST               : out std_logic;
             O_VALID              : out std_logic;
             O_READY              : in  std_logic;
-            GO                   : out std_logic;
-            BUSY                 : in  std_logic;
-            DONE                 : in  std_logic;
+            REQ_VAL              : out std_logic;
+            REQ_RDY              : in  std_logic;
+            RES_VAL              : in  std_logic;
+            RES_RDY              : out std_logic;
             N                    : out std_logic_vector(8-1 downto 0);
             O                    : in  std_logic_vector(64-1 downto 0)
         );
@@ -61,9 +63,10 @@ architecture RTL of Fibonacci_Server is
         port(
             CLK                  : in  std_logic;
             RST                  : in  std_logic;
-            GO                   : in  std_logic;
-            BUSY                 : out std_logic;
-            DONE                 : out std_logic;
+            REQ_VAL              : in  std_logic;
+            REQ_RDY              : out std_logic;
+            RES_VAL              : out std_logic;
+            RES_RDY              : in  std_logic;
             N                    : in  std_logic_vector(8-1 downto 0);
             O                    : out std_logic_vector(64-1 downto 0)
         );
@@ -90,9 +93,10 @@ begin
             O_LAST               => O_TLAST             ,
             O_VALID              => O_TVALID            ,
             O_READY              => O_TREADY            ,
-            GO                   => GO                  ,
-            BUSY                 => BUSY                ,
-            DONE                 => DONE                ,
+            REQ_VAL              => REQ_VAL             ,
+            REQ_RDY              => REQ_RDY             ,
+            RES_VAL              => RES_VAL             ,
+            RES_RDY              => RES_RDY             ,
             N                    => N                   ,
             O                    => O                   
         );
@@ -100,9 +104,10 @@ begin
         port map(
             CLK                  => CLK                 ,
             RST                  => reset               ,
-            GO                   => GO                  ,
-            BUSY                 => BUSY                ,
-            DONE                 => DONE                ,
+            REQ_VAL              => REQ_VAL             ,
+            REQ_RDY              => REQ_RDY             ,
+            RES_VAL              => RES_VAL             ,
+            RES_RDY              => RES_RDY             ,
             N                    => N                   ,
             O                    => O                   
         );

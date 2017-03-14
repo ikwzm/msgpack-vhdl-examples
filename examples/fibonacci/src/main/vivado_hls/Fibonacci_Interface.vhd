@@ -1,7 +1,7 @@
 library ieee;
 use     ieee.std_logic_1164.all;
 use     ieee.numeric_std.all;
-entity  Fib_Interface is
+entity  Fibonacci_Interface is
     generic(
         I_BYTES              : integer := 1;
         O_BYTES              : integer := 1
@@ -20,12 +20,14 @@ entity  Fib_Interface is
         O_LAST               : out std_logic;
         O_VALID              : out std_logic;
         O_READY              : in  std_logic;
-        fib_req              : out std_logic;
-        fib_busy             : in  std_logic;
-        fib_n                : out signed(32-1 downto 0);
-        fib_return           : in  signed(64-1 downto 0)
+        ap_start             : out std_logic;
+        ap_idle              : in  std_logic;
+        ap_ready             : in  std_logic;
+        ap_done              : in  std_logic;
+        n                    : out std_logic_vector(32-1 downto 0);
+        ap_return            : in  std_logic_vector(64-1 downto 0)
     );
-end     Fib_Interface;
+end     Fibonacci_Interface;
 library ieee;
 use     ieee.std_logic_1164.all;
 use     ieee.numeric_std.all;
@@ -36,7 +38,7 @@ use     MsgPack.MsgPack_RPC_Components.MsgPack_RPC_Server;
 use     MsgPack.MsgPack_RPC_Components.MsgPack_RPC_Method_Main_with_Param;
 use     MsgPack.MsgPack_Object_Components.MsgPack_Object_Store_Integer_Register;
 use     MsgPack.MsgPack_RPC_Components.MsgPack_RPC_Method_Return_Integer;
-architecture RTL of Fib_Interface is
+architecture RTL of Fibonacci_Interface is
     constant  PROC_NUM          :  integer := 1;
     signal    proc_match_req    :  std_logic_vector        (8-1 downto 0);
     signal    proc_match_code   :  MsgPack_RPC.Code_Type;
@@ -138,10 +140,10 @@ begin
                 SET_PARAM_ERROR         => proc_set_param_error         , -- In  :
                 SET_PARAM_DONE          => proc_set_param_done          , -- In  :
                 SET_PARAM_SHIFT         => proc_set_param_shift         , -- In  :
-                RUN_REQ                 => fib_req                      , -- Out :
-                RUN_ACK                 => fib_busy                     , -- In  :
-                RUN_BUSY                => fib_busy                     , -- In  :
-                RUN_DONE                => '0'                          , -- In  :
+                RUN_REQ_VAL             => ap_start                     , -- Out :
+                RUN_REQ_RDY             => ap_ready                     , -- In  :
+                RUN_RES_VAL             => ap_done                      , -- In  :
+                RUN_RES_RDY             => open                         , -- Out :
                 RUNNING                 => open                         , -- Out :
                 RET_ID                  => proc_res_id     (0)          , -- Out :
                 RET_START               => proc_return_start            , -- Out :
@@ -155,12 +157,12 @@ begin
         begin
             process(CLK, RST) begin
                 if (RST = '1') then
-                         fib_n <= (others => '0');
+                         n <= (others => '0');
                 elsif (CLK'event and CLK = '1') then
                     if    (CLR = '1') then
-                         fib_n <= (others => '0');
+                         n <= (others => '0');
                     elsif (proc_0_valid = '1') then
-                         fib_n <= signed(proc_0_value);
+                         n <= proc_0_value;
                     end if;
                 end if;
             end process;
@@ -195,8 +197,8 @@ begin
             RET: MsgPack_RPC_Method_Return_Integer  -- 
                 generic map (                                                 -- 
                     VALUE_WIDTH             => 64                           , --
-                    RETURN_UINT             => FALSE                        , --
-                    RETURN_INT              => TRUE                         , --
+                    RETURN_UINT             => TRUE                         , --
+                    RETURN_INT              => FALSE                        , --
                     RETURN_FLOAT            => FALSE                        , --
                     RETURN_BOOLEAN          => FALSE                          --
                 )                                                             -- 
@@ -214,7 +216,7 @@ begin
                     RES_READY               => proc_res_ready  (0)          , -- In  :
                     VALUE                   => proc_return_value              -- In  :
                 );
-            proc_return_value <= std_logic_vector(fib_return);
+            proc_return_value <= ap_return;
         end block;
     end block;
 end RTL;

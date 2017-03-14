@@ -3,16 +3,16 @@ name     : FIB
 generate :
     interface  : {name: Fibonacci_Interface, file: Fibonacci_Interface.vhd}
     server     : {name: Fibonacci_Server   , file: Fibonacci_Server.vhd   }
-port     : {clock: CLK, reset: RST, clear: }
+port     : {clock: ap_clk, reset: ap_rst, clear: }
 methods  :
     - name     : fib
-      interface: {port: {req_valid: REQ_VAL, req_ready: REQ_RDY, res_valid: RES_VAL, res_ready: RES_RDY}}
+      interface: {type: ap_ctrl_hs}
       arguments:
         - name      : n
           type      : Integer
-          interface : {name: Signal , type: {name: Integer, width:  8}, port: {data: N}}
+          interface : {name: Signal , type: {name: Integer, width:  32}, port: {data: n}}
       returns  :
         - name      : o
           type      : Unsigned
-          interface : {name: Signal , type: {name: Logic_Vector, width: 64}, port: {data: O}}
+          interface : {name: Signal , type: {name: Logic_Vector, width: 64}, port: {data: ap_return}}
 ---

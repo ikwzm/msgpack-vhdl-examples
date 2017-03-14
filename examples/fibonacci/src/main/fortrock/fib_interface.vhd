@@ -1,12 +1,12 @@
 -----------------------------------------------------------------------------------
 --!     @file    fib_interface.vhd
 --!     @brief   Fib Interface Module
---!     @version 0.2.2
---!     @date    2016/6/29
+--!     @version 0.2.5
+--!     @date    2017/3/14
 --!     @author  Ichiro Kawazome <ichiro_k@ca2.so-net.ne.jp>
 -----------------------------------------------------------------------------------
 --
---      Copyright (C) 2012-2016 Ichiro Kawazome
+--      Copyright (C) 2012-2017 Ichiro Kawazome
 --      All rights reserved.
 --
 --      Redistribution and use in source and binary forms, with or without
@@ -97,9 +97,6 @@ architecture RTL of Fib_Interface is
     signal    return_done       :  std_logic;
     signal    return_busy       :  std_logic;
     signal    proc_start        :  std_logic;
-    signal    fib_req_o         :  std_logic;
-    signal    fib_run           :  std_logic;
-    signal    fib_busy          :  std_logic;
     signal    fib_n_default     :  std_logic_vector(fib_n'range) := (others => '0');
 begin
     -------------------------------------------------------------------------------
@@ -134,10 +131,10 @@ begin
             SET_PARAM_ERROR => set_param_error     , -- In  :
             SET_PARAM_DONE  => set_param_done      , -- In  :
             SET_PARAM_SHIFT => set_param_shift     , -- In  :
-            RUN_REQ         => fib_req_o           , -- Out :
-            RUN_ACK         => fib_run             , -- In  :
-            RUN_BUSY        => fib_run             , -- In  :
-            RUN_DONE        => fib_fin             , -- In  :
+            RUN_REQ_VAL     => fib_req             , -- Out :
+            RUN_REQ_RDY     => '1'                 , -- In  :
+            RUN_RES_VAL     => fib_fin             , -- In  :
+            RUN_RES_RDY     => open                , -- Out :
             RUNNING         => open                , -- Out :
             RET_ID          => PROC_RES_ID         , -- Out :
             RET_ERROR       => return_error        , -- Out :
@@ -145,22 +142,6 @@ begin
             RET_DONE        => return_done         , -- Out :
             RET_BUSY        => return_busy           -- In  :
         );                                           --
-    fib_req   <= '1' when (fib_req_o = '1') else '0';
-    process (CLK, RST) begin
-        if (RST = '1') then
-                fib_run <= '0';
-        elsif (CLK'event and CLK = '1') then
-            if (CLR = '1') then
-                fib_run <= '0';
-            elsif (fib_run = '0' and fib_req_o = '1') or
-                  (fib_run = '1' and fib_fin   = '0') then
-                fib_run <= '1';
-            else
-                fib_run <= '0';
-            end if;
-        end if;
-    end process;
-    fib_busy  <= '1' when (fib_run = '1' and fib_fin = '0') else '0';
     -------------------------------------------------------------------------------
     --
     -------------------------------------------------------------------------------

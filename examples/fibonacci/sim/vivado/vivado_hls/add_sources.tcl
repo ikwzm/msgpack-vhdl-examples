@@ -21,9 +21,9 @@ add_vhdl_file sources_1 MSGPACK ../../../../../msgpack-vhdl/src/msgpack/object/m
 add_vhdl_file sources_1 MSGPACK ../../../../../msgpack-vhdl/src/msgpack/rpc/msgpack_rpc_components.vhd
 add_vhdl_file sources_1 MSGPACK ../../../../../msgpack-vhdl/src/msgpack/rpc/msgpack_rpc_server_requester.vhd
 add_vhdl_file sources_1 MSGPACK ../../../../../msgpack-vhdl/src/msgpack/rpc/msgpack_rpc_server_responder.vhd
+add_vhdl_file sources_1 MSGPACK ../../../../../msgpack-vhdl/src/msgpack/object/msgpack_object_store_integer_register.vhd
 add_vhdl_file sources_1 MSGPACK ../../../../../msgpack-vhdl/src/msgpack/rpc/msgpack_rpc_method_main_with_param.vhd
 add_vhdl_file sources_1 MSGPACK ../../../../../msgpack-vhdl/src/msgpack/rpc/msgpack_rpc_method_return_integer.vhd
-add_vhdl_file sources_1 MSGPACK ../../../../../msgpack-vhdl/src/msgpack/rpc/msgpack_rpc_method_set_param_integer.vhd
 add_vhdl_file sources_1 MSGPACK ../../../../../msgpack-vhdl/src/msgpack/rpc/msgpack_rpc_server.vhd
-add_vhdl_file sources_1 WORK ../../../src/main/vivado_hls/fib_interface.vhd
+add_vhdl_file sources_1 WORK ../../../src/main/vivado_hls/Fibonacci_Interface.vhd
 add_vhdl_file sources_1 WORK ../../../src/main/vivado_hls/fibonacci_server.vhd
